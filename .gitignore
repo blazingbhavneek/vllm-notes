@@ -10,4 +10,3 @@ wheels/
 .venv
 vllm/
 vllm-gguf-plugin/
-vllm-bolt/

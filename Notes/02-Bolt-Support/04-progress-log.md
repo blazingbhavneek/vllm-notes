@@ -8,6 +8,7 @@ Plan: `03-improvment-handoff.md`. Review: `review.md`.
   - `HEAD` = `f513496e9b`, the rewrite.
   - `HEAD~1` = `b477391ff3`, the old draft rebased, kept as the A/B baseline.
   - Base = `upstream/main` `274a5e19a1`.
+- On the home box the branch is checked out directly in `vllm/`, on the in-place build. The `vllm-bolt` worktree is gone.
 - Rebased a second time onto that base (16 new upstream commits, none touching our files). After the rebase all three suites still pass: 76 passed + 1 skipped, 71 passed, 51 passed.
 - **Open decision, see "Conflict with hard rule §0.2.2" below.**
 - Next: the H200 list at the bottom of this file.
@@ -16,14 +17,13 @@ Plan: `03-improvment-handoff.md`. Review: `review.md`.
 
 ### Where the code is
 
-- Worktree `/mnt/common/Code/vllmServer/vllm-bolt`, branch `feature/modelopt-block-triton`.
+- At the time: worktree `vllm-bolt` (since removed), branch `feature/modelopt-block-triton`.
 - First rebased onto `upstream/main` `d0c20bb840` with no conflicts. The hashes in this round are from before the second rebase; see Status above for the current ones.
 - `HEAD~1` = the old draft, rebased, kept as the A/B baseline. `HEAD` = this rewrite.
 - The old branch `feature/wip-nvidia-bolt-low-sm-support` is untouched.
 - Diff vs upstream: 7 files, +1549 / −21.
   - New non-test code: `modelopt_block_quant_triton.py` 612 lines (64 of them are the grid table), the MoE experts file 96 lines, and the quant method +98 lines.
   - That's about 740 lines without the table, a little over §9.1's "~700".
-- The worktree has untracked symlinks to `../vllm` build outputs (`.so` files, flashmla, fmha_sm100, tml_fa4, triton_kernels, vllm_flash_attn/*, `_version.py`, vllm-rs). **Never commit them.** On the work box, use a normal build instead.
 
 ### What's done (plan phases)
 
@@ -83,7 +83,7 @@ Review findings: B1–B4 are fixed by design (the draft files and env var are go
 ### Verified on sm_120
 
 ```bash
-source <scratchpad>/env.sh   # PYTHONPATH=worktree, ~/.venvs/vllmNotes, caches on tmpfs
+source <scratchpad>/env.sh   # PYTHONPATH=vllm/, ~/.venvs/vllmNotes, caches on tmpfs
 python -m pytest tests/kernels/quantization/test_modelopt_block_triton.py -q   # 76 passed, 1 skipped (gguf missing)
 python -m pytest tests/quantization/test_modelopt.py -q -k "block or iq2 or mixed_precision or triton"   # 71 passed (incl. tiny Nemotron-H e2e)
 python -m pytest tests/model_executor/kernels/test_b12x_linear.py tests/model_executor/test_b12x_warmup.py -q   # 51 passed (b12x path unchanged)
@@ -134,7 +134,7 @@ Against §2.2. These are 5060 Ti numbers; the bars are defined on the H200.
    git switch -c feature/modelopt-block-triton --track origin/feature/modelopt-block-triton
    git worktree add ../vllm-draft HEAD~1   # the draft, rebased, for the Phase 0 A/B (replaces §4.2's 2064cc2efb worktree)
    ```
-   - Then set up the venv as in handoff §4.3: a normal `VLLM_USE_PRECOMPILED=1` install, not the home-box symlinks.
+   - Then set up the venv as in handoff §4.3: a normal `VLLM_USE_PRECOMPILED=1` install, the same as the home box.
    - If upstream has moved, run `git rebase upstream/main` first. It has been conflict-free twice.
 2. Phase 0: duplicate check, baselines on the **draft** (`HEAD~1`) per §4. `proto_kernels.py` ALL OK.
 3. Gate 1: kernel tests on the H200 (and the RTX 4000 Ada if it's available).
