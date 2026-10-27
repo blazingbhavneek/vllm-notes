@@ -5,7 +5,8 @@ Written 2026-10-22, for the implementer working on the work box (H200 + RTX 4000
 > **Status 2026-10-27:** Phases 1–2 are done and Phase 3 is started.
 > - The code is on the fork branch `feature/modelopt-block-triton`: the draft rebased, then the rewrite on top.
 > - Start from that branch, not the `2064cc2efb` steps in §4.2.
-> - Read `04-progress-log.md` first. It has the current hashes, what changed from this plan and why, the 5060 Ti numbers, one open conflict with §0.2.2, and the ordered H200 to-do list.
+> - Read `05-handoff-h200.md` first (state, code map, tools, H200 plan), then `04-progress-log.md`.
+> - `04-progress-log.md` has the hashes, the deviations from this plan and why, the 5060 Ti numbers and the experiment log.
 
 - **Start point:** commit `2064cc2efb` on branch `feature/wip-nvidia-bolt-low-sm-support` in the fork `blazingbhavneek/vllm`. This doc calls that commit **"the draft"**.
 - **Upstream issue:** vllm-project/vllm#62609 (Bolt can't run on A100/H100/H200 because these formats require b12x on SM12x). The user has claimed it.

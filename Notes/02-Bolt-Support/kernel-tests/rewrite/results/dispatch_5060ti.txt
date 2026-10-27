@@ -1,0 +1,24 @@
+ok  gemv iq2_xxs BM1 BN8 BK256 w1 s2 sm120=0 sm80=0 sm86=0 sm89=0 sm90=0(r128 spill0) sm100=0
+ok  gemv iq2_xxs BM2 BN8 BK256 w1 s2 sm120=0 sm80=1 sm86=1 sm89=1 sm90=0(r129 spill0) sm100=0
+ok  gemv iq2_xxs BM4 BN8 BK256 w1 s2 sm120=0 sm80=1 sm86=1 sm89=1 sm90=0(r165 spill0) sm100=0
+ok  gemm iq2_xxs BM16 BN64 BK128 w4 s2 sm120=25 sm80=25 sm86=25 sm89=25 sm90=25(r168 spill0) sm100=25
+ok  gemm iq2_xxs BM32 BN64 BK128 w4 s2 sm120=29 sm80=29 sm86=29 sm89=29 sm90=29(r245 spill0) sm100=29
+ok  gemm iq2_xxs BM64 BN64 BK128 w4 s2 sm120=37 sm80=37 sm86=37 sm89=37 sm90=53(r190 spill0) sm100=54
+ok  gemm iq2_xxs BM64 BN128 BK64 w8 s2 sm120=29 sm80=29 sm86=29 sm89=29 sm90=37(r124 spill0) sm100=38
+ok  gemm iq2_xxs BM128 BN128 BK64 w8 s2 sm120=37 sm80=37 sm86=37 sm89=37 sm90=53(r187 spill0) sm100=54
+ok  dequant iq2_xxs BN8 BK256 w1 s3 sm120=0 sm80=0 sm86=0 sm89=0 sm90=0(r96 spill0) sm100=0
+ok  moe iq2_xxs BM16 BN64 BK128 w4 s2 sm120=25 sm80=25 sm86=25 sm89=25 sm90=25(r166 spill0) sm100=25
+ok  moe iq2_xxs BM32 BN64 BK128 w4 s2 sm120=29 sm80=29 sm86=29 sm89=29 sm90=29(r241 spill0) sm100=29
+ok  moe iq2_xxs BM64 BN64 BK64 w4 s2 sm120=18 sm80=18 sm86=18 sm89=18 sm90=26(r126 spill0) sm100=27
+ok  moe iq2_xxs BM128 BN128 BK64 w8 s2 sm120=37 sm80=37 sm86=37 sm89=37 sm90=53(r175 spill0) sm100=54
+ok  gemv q8_0 BM1 BN32 BK256 w4 s2 sm120=1 sm80=1 sm86=1 sm89=1 sm90=1(r80 spill0) sm100=1
+ok  gemm q8_0 BM16 BN64 BK128 w4 s2 sm120=12 sm80=12 sm86=12 sm89=12 sm90=12(r128 spill0) sm100=12
+ok  gemm q8_0 BM32 BN64 BK128 w4 s2 sm120=16 sm80=16 sm86=16 sm89=16 sm90=16(r164 spill0) sm100=16
+ok  gemm q8_0 BM64 BN64 BK128 w4 s2 sm120=24 sm80=24 sm86=24 sm89=24 sm90=56(r138 spill0) sm100=57
+ok  gemm q8_0 BM64 BN128 BK64 w8 s2 sm120=16 sm80=16 sm86=16 sm89=16 sm90=40(r80 spill0) sm100=41
+ok  gemm q8_0 BM128 BN128 BK64 w8 s2 sm120=24 sm80=32 sm86=32 sm89=32 sm90=56(r128 spill0) sm100=57
+ok  dequant q8_0 BN32 BK256 w4 s3 sm120=4 sm80=4 sm86=4 sm89=4 sm90=4(r64 spill0) sm100=4
+ok  moe q8_0 BM16 BN64 BK128 w4 s2 sm120=12 sm80=12 sm86=12 sm89=12 sm90=12(r80 spill0) sm100=12
+ok  moe q8_0 BM32 BN64 BK128 w4 s2 sm120=16 sm80=16 sm86=16 sm89=16 sm90=16(r142 spill0) sm100=16
+ok  moe q8_0 BM64 BN64 BK64 w4 s2 sm120=12 sm80=12 sm86=12 sm89=12 sm90=28(r96 spill0) sm100=29
+ok  moe q8_0 BM128 BN128 BK64 w8 s2 sm120=24 sm80=32 sm86=32 sm89=32 sm90=56(r128 spill0) sm100=57

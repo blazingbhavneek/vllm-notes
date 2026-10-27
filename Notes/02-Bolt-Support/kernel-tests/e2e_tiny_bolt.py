@@ -151,7 +151,7 @@ if MODE == "compiled":
                      SamplingParams(temperature=0.0, max_tokens=6, ignore_eos=True),
                      use_tqdm=False)
     names = sorted({e.key for e in prof.key_averages()
-                    if any(s in e.key for s in ("iq2", "q8", "block", "moe_pass", "combine"))})
+                    if any(s in e.key for s in ("iq2", "q8", "block", "gemv", "gemm", "moe_pass", "combine"))})
     print(f"[{MODE}] block kernels seen during a 1-token decode: {names}")
 
 outs = llm.generate(prompts, sp, use_tqdm=False)

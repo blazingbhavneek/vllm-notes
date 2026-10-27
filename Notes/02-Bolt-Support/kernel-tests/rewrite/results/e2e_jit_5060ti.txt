@@ -1,0 +1,9 @@
+tiny_bolt, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'cust
+log_compiled_kernels.txt:(MainProcess pid=86358) INFO 10-27 18:15:29 [jit_monitor.py:84] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+log_compiled_kernels.txt:(MainProcess pid=86358) WARNING 10-27 18:15:29 [jit_monitor.py:140] Triton kernel JIT compilation during inference: _gemm_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+log_compiled_kernels.txt:[compiled] block kernels seen during a 1-token decode: ['_gemv_kernel', '_moe_gemm_kernel', '_q8_embedding_kernel', 'std::enable_if<!(false), void>::type internal::gemvx::kernel<int, int, __nv_bfloat16, __nv_bfloat16, __nv_bfloat16, fl
+tiny_bolt, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'cust
+log_graphs.txt:(MainProcess pid=147874) INFO 10-27 19:16:45 [model_runner.py:1188] Graph capturing finished in 44 secs, took 0.04 GiB
+log_graphs.txt:(MainProcess pid=147874) INFO 10-27 19:16:46 [model_runner.py:1188] Graph capturing finished in 1 secs, took 0.04 GiB
+log_graphs.txt:(MainProcess pid=147874) INFO 10-27 19:16:46 [jit_monitor.py:84] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+log_graphs.txt:(MainProcess pid=147874) WARNING 10-27 19:16:47 [jit_monitor.py:140] Triton kernel JIT compilation during inference: _gemm_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.

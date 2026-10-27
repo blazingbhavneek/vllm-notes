@@ -10,8 +10,9 @@ Plan: `03-improvment-handoff.md`. Review: `review.md`.
   - Base = `upstream/main` `274a5e19a1`.
 - On the home box the branch is checked out directly in `vllm/`, on the in-place build. The `vllm-bolt` worktree is gone.
 - Rebased a second time onto that base (16 new upstream commits, none touching our files). After the rebase all three suites still pass: 76 passed + 1 skipped, 71 passed, 51 passed.
+- **Next agent: start at `05-handoff-h200.md`.** It has the code map, tools, must-fix items and the H200 plan.
 - **Open decision, see "Conflict with hard rule §0.2.2" below.**
-- Next: the H200 list at the bottom of this file.
+- **New finding (2026-10-27):** `_gemm_kernel` JIT-compiles during inference in the tiny e2e (compiled and graphs). That fails the §2.1 no-JIT rule; the fix is in 05 §5.3. The first FULL graph capture took 43 s (bf16: 1 s).
 
 ## Round 1 — 2026-10-27, home box (RTX 5060 Ti, sm_120, 16 GB)
 
@@ -94,6 +95,7 @@ uvx ruff@0.14.0 check / format --check <changed files>   # clean
 - Tiny e2e with `kernel-tests/e2e_tiny_bolt.py --triton` in eager / compiled / graphs:
   - All three exit 0, and all 9 block layers are on Triton.
   - **Graphs capture (B4 fixed).**
+  - **But the JIT monitor warns** `Triton kernel JIT compilation during inference: _gemm_kernel` in compiled and graphs (not in the bf16 control). Open: 05 §5.3. Raw lines: `kernel-tests/rewrite/results/e2e_jit_5060ti.txt`.
   - `compare` passes: prompts 0–1 are identical, and prompt 2 diverges at step 2 with close=True. The bf16 control also diverges, which is expected with random dummy weights.
 - B2 inside vLLM: the compiled 1-token decode runs `_gemv_kernel` + `_moe_gemm_kernel` + `_q8_embedding_kernel`.
 - Appendix D cross-compile of every dispatched config (GEMV, GEMM, dequant, MoE × both codecs): fits on sm_80/86/89/90/100/120, with zero spills on sm_90. The largest is 57 KB on sm_100.
@@ -127,6 +129,9 @@ Against §2.2. These are 5060 Ti numbers; the bars are defined on the H200.
 - Weak spots, but no bar: dense M=128–256 at 1.3–2× (the dequant pass writes the bf16 copy), and lm_head M ≥ 128 at 1.5× (over the dequant cap).
 
 ### Next: at work (H200), in order
+
+Superseded by `05-handoff-h200.md` §5, which adds the JIT fix and the tool commands. Kept for reference:
+
 
 1. Get the branch onto the work box:
    ```bash
