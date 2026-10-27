@@ -1,0 +1,18 @@
+W1027 21:16:09.037000 220770 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+  return statistics.median(bench_gpu_time_with_cupti(fn, use_cuda_graph=True)) * 1e3
+  return bench_gpu_time_with_cudagraph(
+qkv_proj     M=  128 | cublas    102.0us | dequant 2.25 | fused BM64 1.30 | fused BM128 1.63
+qkv_proj     M= 2048 | cublas   1613.8us | dequant 1.06 | fused BM64 1.32 | fused BM128 1.62
+o_proj       M=  128 | cublas    102.6us | dequant 2.03 | fused BM64 1.37 | fused BM128 1.64
+o_proj       M= 2048 | cublas   1442.5us | dequant 1.06 | fused BM64 1.23 | fused BM128 1.61
+fc1_latent   M=  128 | cublas     30.7us | dequant 1.30 | fused BM64 1.42 | fused BM128 1.85
+fc1_latent   M= 2048 | cublas    380.8us | dequant 1.03 | fused BM64 1.29 | fused BM128 1.61
+fc2_latent   M=  128 | cublas     28.1us | dequant 1.32 | fused BM64 1.61 | fused BM128 2.03
+fc2_latent   M= 2048 | cublas    374.7us | dequant 1.03 | fused BM64 1.19 | fused BM128 1.55
+shared_up    M=  128 | cublas    131.5us | dequant 1.97 | fused BM64 3.24 | fused BM128 2.36
+shared_up    M= 2048 | cublas   1894.8us | dequant 1.06 | fused BM64 2.89 | fused BM128 2.07
+shared_down  M=  128 | cublas    136.7us | dequant 1.93 | fused BM64 2.83 | fused BM128 2.02
+shared_down  M= 2048 | cublas   1889.3us | dequant 1.06 | fused BM64 2.88 | fused BM128 2.15
+lm_head      M=  128 | cublas   2995.0us | dequant 2.56 | fused BM64 1.49 | fused BM128 1.59
+
+[exited with code 0]

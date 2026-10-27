@@ -175,6 +175,12 @@ This can also be done on the home 5060 Ti.
 python ../Notes/02-Bolt-Support/kernel-tests/rewrite/fused_vs_cublas.py 96 128 256 512 2048 8192
 ```
 
+Home-box data (`results/fused_vs_cublas_5060ti.txt`, M = 2048, time / cuBLAS):
+- **Q8** fused: BM64 1.19–1.32, BM128 1.55–1.62. That already passes the bar without dequant, so Q8 may not need the dequant path at all.
+- **IQ2** fused: BM128 2.07–2.15, BM64 2.9. It just misses the bar.
+- Dequant: 1.03–1.06.
+- Note: BM128 loses to BM64 for Q8 on this card. The H200 takes the BM128 row (smem ≥ 160 KB), so compare both there.
+
 - **Fused BM128 ≤ 2.0 at M ≥ 2048 on every shape** (the merge bar):
   - Delete the dequant path: `DEQUANT_*`, the branch in `_modelopt_block_linear`, and the benchmark's dequant label.
   - Keep `dequantize_blocks`, which the tests and benchmark use as their reference.

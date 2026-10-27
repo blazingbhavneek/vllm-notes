@@ -81,6 +81,19 @@ Review findings: B1–B4 are fixed by design (the draft files and env var are go
   - If the fused GEMM meets it there (wgmma, BM128), delete the dequant path. That's about 30 lines.
   - If not, keep the path and justify it in the PR with the AWQ precedent and the numbers.
 
+### 2026-10-27 fused GEMM alone vs dequant+cuBLAS (for the §0.2.2 decision)
+
+Command: `python ../Notes/02-Bolt-Support/kernel-tests/rewrite/fused_vs_cublas.py 128 2048` (from the vllm root). Raw: `kernel-tests/rewrite/results/fused_vs_cublas_5060ti.txt`.
+
+| M = 2048, time / cuBLAS | fused BM64 | fused BM128 | dequant+cuBLAS |
+|---|---|---|---|
+| Q8 (qkv, o, fc1, fc2) | 1.19–1.32 | 1.55–1.62 | 1.03–1.06 |
+| IQ2 (shared_up, shared_down) | 2.88–2.89 | 2.07–2.15 | 1.06 |
+
+- Q8 meets the ≤ 2.0 bar without dequant. IQ2 misses it by about 5–8%.
+- At M = 128, fused Q8 beats dequant on o_proj (1.37 vs 2.03) and qkv.
+- Next: the same run on the H200 (05 §5.4).
+
 ### Verified on sm_120
 
 ```bash
