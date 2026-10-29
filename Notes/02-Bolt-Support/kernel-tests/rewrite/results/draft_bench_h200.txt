@@ -1,0 +1,66 @@
+PASS E=64 K=1024 I=1536 topk=9 M=1 rel=3.96e-03
+PASS E=64 K=1024 I=1536 topk=9 M=3 rel=4.02e-03
+PASS E=64 K=1024 I=1536 topk=9 M=16 rel=3.22e-03
+PASS E=64 K=1024 I=1536 topk=9 M=33 rel=2.19e-03
+PASS E=64 K=1024 I=1536 topk=9 M=200 rel=3.04e-03
+PASS E=128 K=1024 I=2560 topk=9 M=1 rel=3.87e-03
+PASS E=128 K=1024 I=2560 topk=9 M=3 rel=2.84e-03
+PASS E=128 K=1024 I=2560 topk=9 M=16 rel=3.59e-03
+PASS E=128 K=1024 I=2560 topk=9 M=33 rel=3.00e-03
+PASS E=128 K=1024 I=2560 topk=9 M=200 rel=4.54e-03
+PASS E=8 K=512 I=256 topk=2 M=1 rel=2.14e-03
+PASS E=8 K=512 I=256 topk=2 M=3 rel=5.24e-03
+PASS E=8 K=512 I=256 topk=2 M=16 rel=2.18e-03
+PASS E=8 K=512 I=256 topk=2 M=33 rel=3.37e-03
+PASS E=8 K=512 I=256 topk=2 M=200 rel=2.44e-03
+FAILURES: none
+GPU NVIDIA H200 NVL SMs=132
+codec    shape            M  fused us   GB/s  TFLOP cuBLAS us frozen us
+q8_0     lm_head          1     777.4    734    1.4     606.7    1838.2
+q8_0     lm_head          4    1304.0    438    3.3     563.4    1963.4
+q8_0     lm_head         16    1377.5    417   12.5     607.0    1909.9
+q8_0     lm_head         64    1837.0    320   37.4     738.6    1955.5
+q8_0     lm_head        256    3731.6    171   73.7     955.6       nan
+q8_0     lm_head       1024   14107.8     60   77.9    3650.2       nan
+q8_0     lm_head       4096   56123.8     30   78.4   14161.5       nan
+q8_0     attn-ish         1     319.0     56    0.1      50.9     318.6
+q8_0     attn-ish         4     110.9    161    1.2      49.6     284.0
+q8_0     attn-ish        16     107.0    169    5.0      58.4     291.3
+q8_0     attn-ish        64     108.7    174   19.7      42.1     315.4
+q8_0     attn-ish       256     286.6     77   30.0      81.9       nan
+q8_0     attn-ish      1024     444.2     78   77.4     158.1       nan
+q8_0     attn-ish      4096    1811.1     47   75.9     442.4       nan
+q8_0     fc1_latent       1      54.4     82    0.2      29.8     305.3
+q8_0     fc1_latent       4      48.8     92    0.7      43.3     252.3
+q8_0     fc1_latent      16      47.0     98    2.9      28.5     272.9
+q8_0     fc1_latent      64      45.6    112   11.8      23.4     253.3
+q8_0     fc1_latent     256      85.9     82   25.0      46.8       nan
+q8_0     fc1_latent    1024     205.7     73   41.8      54.0       nan
+q8_0     fc1_latent    4096     702.7     66   48.9     147.0       nan
+q8_0     fc2_latent       1     114.3     39    0.1      29.3      77.9
+q8_0     fc2_latent       4      47.5     95    0.7      25.3     145.3
+q8_0     fc2_latent      16      48.1     96    2.8      27.3     104.0
+q8_0     fc2_latent      64      44.6    115   12.0      29.4      99.6
+q8_0     fc2_latent     256      85.0     83   25.3      40.9       nan
+q8_0     fc2_latent    1024     159.5     94   53.9      62.5       nan
+q8_0     fc2_latent    4096     444.3    104   77.3     140.0       nan
+iq2_xxs  shared up        1     148.1     38    0.3      56.1     201.8
+iq2_xxs  shared up        4     476.6     12    0.4      52.9     178.3
+iq2_xxs  shared up       16     260.8     23    2.7      62.4     186.1
+iq2_xxs  shared up       64     265.9     26   10.6      60.6     234.6
+iq2_xxs  shared up      256     459.6     23   24.5      62.7       nan
+iq2_xxs  shared up     1024    1448.8     17   31.1     169.1       nan
+iq2_xxs  shared up     4096    5088.2     16   35.5     620.9       nan
+iq2_xxs  shared down      1     162.2     35    0.3      29.1     286.4
+iq2_xxs  shared down      4     579.6     10    0.3      24.8     285.8
+iq2_xxs  shared down     16     349.6     17    2.0      40.2     305.0
+iq2_xxs  shared down     64     407.6     17    6.9     116.5     287.4
+iq2_xxs  shared down    256     449.9     23   25.1     102.4       nan
+iq2_xxs  shared down   1024    1356.8     18   33.2     152.6       nan
+iq2_xxs  shared down   4096    5215.3     16   34.6     528.1       nan
+
+MoE (IQ2_XXS, relu2), Bolt's largest layer: E=432 K=1024 I=2560 topk=9
+M=    1 experts=  9 fused    502.7 us      24 GB/s    0.2 TFLOP/s | same-FLOP dense cuBLAS     37.0 us
+M=   16 experts=127 fused   5029.4 us      34 GB/s    0.3 TFLOP/s | same-FLOP dense cuBLAS     30.1 us
+M=  256 experts=431 fused  16237.4 us      36 GB/s    1.5 TFLOP/s | same-FLOP dense cuBLAS    133.5 us
+M= 2048 experts=432 fused  50904.4 us      11 GB/s    3.8 TFLOP/s | same-FLOP dense cuBLAS    659.0 us

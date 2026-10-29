@@ -1,0 +1,31 @@
+W1028 02:38:36.469000 393989 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 02:38:36.469000 393989 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 02:38:36.469000 393989 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Using default MoE config. Performance might be sub-optimal! Config file not found at /home/seigyo/vllmServer/vllm/vllm/model_executor/layers/fused_moe/configs/E=496,N=2560,device_name=NVIDIA_H200.json
+== M=1 default 44.0us bf16
+     172.3us  3.91x {'BLOCK_SIZE_M': 16, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 1}
+     176.1us  4.00x {'BLOCK_SIZE_M': 16, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 2}
+     176.1us  4.00x {'BLOCK_SIZE_M': 64, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 1}
+     149.3us  3.39x {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 256, 'num_warps': 4, 'num_stages': 1}
+     192.0us  4.36x {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1}
+     240.8us  5.47x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1}
+     244.5us  5.55x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 8, 'num_stages': 1}
+     284.3us  6.45x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 8, 'num_stages': 2}
+== M=64 default 841.0us bf16
+    6211.1us  7.39x {'BLOCK_SIZE_M': 16, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 1}
+    6202.7us  7.38x {'BLOCK_SIZE_M': 16, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 2}
+    6346.6us  7.55x {'BLOCK_SIZE_M': 64, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 1}
+    6352.6us  7.55x {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 256, 'num_warps': 4, 'num_stages': 1}
+    5802.4us  6.90x {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1}
+    6539.5us  7.78x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1}
+   10386.1us 12.35x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 8, 'num_stages': 1}
+   13909.8us 16.54x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 8, 'num_stages': 2}
+== M=4096 default 1803.0us bf16
+   60403.4us 33.50x {'BLOCK_SIZE_M': 16, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 1}
+   60608.7us 33.62x {'BLOCK_SIZE_M': 16, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 2}
+   23547.5us 13.06x {'BLOCK_SIZE_M': 64, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 1}
+   23515.2us 13.04x {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 256, 'num_warps': 4, 'num_stages': 1}
+   19503.0us 10.82x {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1}
+   13942.2us  7.73x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1}
+   18758.9us 10.40x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 8, 'num_stages': 1}
+   19845.8us 11.01x {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 8, 'num_stages': 2}

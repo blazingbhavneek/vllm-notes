@@ -1,0 +1,9 @@
+W1028 02:07:52.742000 385055 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 02:07:52.742000 385055 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 02:07:52.742000 385055 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Using default MoE config. Performance might be sub-optimal! Config file not found at /home/seigyo/vllmServer/vllm/vllm/model_executor/layers/fused_moe/configs/E=496,N=2560,device_name=NVIDIA_H200.json
+NVIDIA H200 NVL, copy bandwidth 2324 GB/s
+layer M ours_us baseline_us ratio GB/s TFLOP/s config
+moe_496x2560 1 149.0 44.5 3.35 82 0.6 {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 256, 'num_warps': 4, 'num_stages': 1}
+moe_496x2560 64 5786.1 840.9 6.88 78 1.0 {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1}
+moe_496x2560 4096 13952.3 1802.0 7.74 49 27.7 {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1}

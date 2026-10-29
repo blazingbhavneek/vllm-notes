@@ -1,0 +1,44 @@
+W1028 00:36:18.572000 366159 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 00:36:18.572000 366159 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 00:36:18.572000 366159 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+qkv_proj     M=   32 | cublas     15.4us | dequant 1.84 | fused BM32 1.63 | fused BM32 1.63
+qkv_proj     M=   64 | cublas     16.9us | dequant 1.72 | fused BM64 1.92 | fused BM64 1.92
+qkv_proj     M=   96 | cublas     16.2us | dequant 1.89 | fused BM64 2.92 | fused BM128 3.09
+qkv_proj     M=  128 | cublas     16.7us | dequant 1.85 | fused BM64 2.93 | fused BM128 3.20
+qkv_proj     M=  192 | cublas     21.9us | dequant 1.57 | fused BM64 3.33 | fused BM128 3.52
+qkv_proj     M= 2048 | cublas    109.9us | dequant 1.14 | fused BM64 3.46 | fused BM128 3.44
+o_proj       M=   32 | cublas     15.5us | dequant 1.67 | fused BM32 1.54 | fused BM32 1.54
+o_proj       M=   64 | cublas     15.0us | dequant 1.70 | fused BM64 2.10 | fused BM64 2.10
+o_proj       M=   96 | cublas     15.5us | dequant 1.93 | fused BM64 2.93 | fused BM128 2.45
+o_proj       M=  128 | cublas     15.9us | dequant 1.86 | fused BM64 2.94 | fused BM128 2.64
+o_proj       M=  192 | cublas     20.4us | dequant 1.68 | fused BM64 2.48 | fused BM128 2.78
+o_proj       M= 2048 | cublas     98.5us | dequant 1.16 | fused BM64 3.53 | fused BM128 2.62
+fc1_latent   M=   32 | cublas      9.2us | dequant 1.53 | fused BM32 1.47 | fused BM32 1.46
+fc1_latent   M=   64 | cublas      9.1us | dequant 1.48 | fused BM64 1.77 | fused BM64 1.74
+fc1_latent   M=   96 | cublas      9.9us | dequant 1.47 | fused BM64 1.96 | fused BM128 1.99
+fc1_latent   M=  128 | cublas      9.6us | dequant 1.48 | fused BM64 2.08 | fused BM128 2.17
+fc1_latent   M=  192 | cublas     10.6us | dequant 1.49 | fused BM64 2.10 | fused BM128 2.14
+fc1_latent   M= 2048 | cublas     27.3us | dequant 1.19 | fused BM64 4.79 | fused BM128 3.58
+fc2_latent   M=   32 | cublas      6.6us | dequant 1.58 | fused BM32 2.38 | fused BM32 2.44
+fc2_latent   M=   64 | cublas      5.9us | dequant 1.79 | fused BM64 3.34 | fused BM64 3.27
+fc2_latent   M=   96 | cublas      6.5us | dequant 1.71 | fused BM64 3.58 | fused BM128 3.88
+fc2_latent   M=  128 | cublas      6.8us | dequant 1.70 | fused BM64 3.57 | fused BM128 4.28
+fc2_latent   M=  192 | cublas      6.9us | dequant 1.75 | fused BM64 3.63 | fused BM128 4.49
+fc2_latent   M= 2048 | cublas     29.7us | dequant 1.17 | fused BM64 3.03 | fused BM128 2.35
+shared_up    M=   32 | cublas     16.2us | dequant 2.28 | fused BM32 4.79 | fused BM32 4.78
+shared_up    M=   64 | cublas     16.4us | dequant 2.28 | fused BM64 4.60 | fused BM64 4.59
+shared_up    M=   96 | cublas     17.0us | dequant 2.32 | fused BM64 9.38 | fused BM128 6.46
+shared_up    M=  128 | cublas     17.5us | dequant 2.27 | fused BM64 9.16 | fused BM128 6.46
+shared_up    M=  192 | cublas     22.1us | dequant 2.00 | fused BM64 9.42 | fused BM128 9.00
+shared_up    M= 2048 | cublas    128.5us | dequant 1.17 | fused BM64 15.94 | fused BM128 11.09
+shared_down  M=   32 | cublas     18.5us | dequant 1.99 | fused BM32 4.39 | fused BM32 4.39
+shared_down  M=   64 | cublas     17.5us | dequant 2.19 | fused BM64 4.72 | fused BM64 4.72
+shared_down  M=   96 | cublas     20.6us | dequant 2.16 | fused BM64 6.88 | fused BM128 4.43
+shared_down  M=  128 | cublas     19.1us | dequant 2.11 | fused BM64 7.48 | fused BM128 4.90
+shared_down  M=  192 | cublas     21.3us | dequant 2.08 | fused BM64 9.69 | fused BM128 8.23
+shared_down  M= 2048 | cublas    125.1us | dequant 1.17 | fused BM64 15.57 | fused BM128 10.32
+lm_head      M=   32 | cublas    272.6us | dequant 2.82 | fused BM32 1.08 | fused BM32 1.08
+lm_head      M=   64 | cublas    289.1us | dequant 2.71 | fused BM64 1.56 | fused BM64 1.55
+lm_head      M=   96 | cublas    279.7us | dequant 2.78 | fused BM64 2.80 | fused BM128 1.94
+lm_head      M=  128 | cublas    286.5us | dequant 2.74 | fused BM64 2.76 | fused BM128 1.96
+lm_head      M=  192 | cublas    333.2us | dequant 2.48 | fused BM64 3.43 | fused BM128 3.24

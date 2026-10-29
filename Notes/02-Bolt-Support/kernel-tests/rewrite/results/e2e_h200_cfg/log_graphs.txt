@@ -1,0 +1,111 @@
+W1028 02:52:01.444000 400035 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 02:52:01.445000 400035 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 02:52:01.445000 400035 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Failed to load plugin gguf
+Traceback (most recent call last):
+  File "/home/seigyo/vllmServer/vllm/vllm/plugins/__init__.py", line 69, in load_plugins_by_group
+    func = plugin.load()
+  File "/home/seigyo/.local/share/uv/python/cpython-3.13.11-linux-x86_64-gnu/lib/python3.13/importlib/metadata/__init__.py", line 179, in load
+    module = import_module(match.group('module'))
+  File "/home/seigyo/.local/share/uv/python/cpython-3.13.11-linux-x86_64-gnu/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1023, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/seigyo/vllmServer/vllm-gguf-plugin/vllm_gguf_plugin/__init__.py", line 3, in <module>
+    from .config_parser import GGUFConfigParser
+  File "/home/seigyo/vllmServer/vllm-gguf-plugin/vllm_gguf_plugin/config_parser.py", line 17, in <module>
+    from .weights_adapter import get_adapter_architecture
+  File "/home/seigyo/vllmServer/vllm-gguf-plugin/vllm_gguf_plugin/weights_adapter/__init__.py", line 16, in <module>
+    from .qwen3_5 import Qwen35GGUFAdapter, Qwen35MtpGGUFAdapter
+  File "/home/seigyo/vllmServer/vllm-gguf-plugin/vllm_gguf_plugin/weights_adapter/qwen3_5.py", line 14, in <module>
+    from vllm.transformers_utils.configs.qwen3_5 import Qwen3_5Config
+ModuleNotFoundError: No module named 'vllm.transformers_utils.configs.qwen3_5'
+(MainProcess pid=400035) INFO 10-28 02:52:04 [startup.py:96] non-default args: {'skip_tokenizer_init': True, 'load_format': 'dummy', 'max_model_len': 256, 'moe_backend': 'triton', 'linear_backend': 'triton', 'gpu_memory_utilization': 0.24, 'max_num_batched_tokens': 256, 'max_num_seqs': 4, 'disable_log_stats': True, 'compilation_config': {'mode': None, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': [], 'ir_enable_torch_wrap': None, 'splitting_ops': None, 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': None, 'compile_ranges_endpoints': None, 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': None, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [1, 2, 4], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': None, 'pass_config': {}, 'max_cudagraph_capture_size': None, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': None, 'static_all_moe_layers': []}, 'model': '/home/seigyo/vllmServer/vllm-notes/Notes/02-Bolt-Support/kernel-tests/tiny_bolt'}
+(MainProcess pid=400035) WARNING 10-28 02:52:04 [arg_utils.py:1989] The global random seed is set to 0. Since VLLM_ENABLE_V1_MULTIPROCESSING is set to False, this may affect the random state of the Python process that launched vLLM.
+(MainProcess pid=400035) INFO 10-28 02:52:04 [model.py:751] Resolved architecture: NemotronHForCausalLM
+(MainProcess pid=400035) INFO 10-28 02:52:04 [model.py:2177] Using max model len 256
+(MainProcess pid=400035) INFO 10-28 02:52:05 [scheduler.py:310] Chunked prefill is enabled with max_num_batched_tokens=256.
+(MainProcess pid=400035) INFO 10-28 02:52:05 [config.py:879] Updating mamba_ssm_cache_dtype to 'float32' for NemotronH model
+(MainProcess pid=400035) INFO 10-28 02:52:05 [config.py:817] Mamba cache mode is set to 'align' for NemotronHForCausalLM by default when prefix caching is enabled
+(MainProcess pid=400035) INFO 10-28 02:52:05 [kernel.py:506] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(MainProcess pid=400035) INFO 10-28 02:52:05 [core.py:146] Initializing a V1 LLM engine (v0.1.dev23589+g2064cc2ef) with config: model='/home/seigyo/vllmServer/vllm-notes/Notes/02-Bolt-Support/kernel-tests/tiny_bolt', speculative_config=None, tokenizer='/home/seigyo/vllmServer/vllm-notes/Notes/02-Bolt-Support/kernel-tests/tiny_bolt', skip_tokenizer_init=True, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=False, dtype=torch.bfloat16, max_seq_len=256, download_dir=None, load_format=dummy, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=modelopt_mixed, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, custom_histogram_buckets=None, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=/home/seigyo/vllmServer/vllm-notes/Notes/02-Bolt-Support/kernel-tests/tiny_bolt, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::qwen4_exp_qsa_prepare_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': [], 'compile_ranges_endpoints': [256], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 4, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_rocm_segmented_attn_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, monokernel=False, moe_backend='triton', sparse_indexer_topk_backend='auto', linear_backend='triton', linear_backend_per_quant=None, rdna_hybrid_w4a16_prefill_dequant='disable')
+(MainProcess pid=400035) INFO 10-28 02:52:06 [parallel_state.py:1931] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_09d3e3c5200545ef970c18ed6404187b backend=nccl
+(MainProcess pid=400035) INFO 10-28 02:52:06 [parallel_state.py:2387] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A
+(MainProcess pid=400035) INFO 10-28 02:52:06 [gpu_worker.py:513] Using V2 Model Runner
+(MainProcess pid=400035) INFO 10-28 02:52:07 [model_runner.py:402] Loading model from scratch...
+(MainProcess pid=400035) INFO 10-28 02:52:07 [modelopt_block_quant.py:56] Using Triton kernels for ModelOpt Q8_0 linear weights.
+(MainProcess pid=400035) INFO 10-28 02:52:08 [modelopt_block_quant.py:56] Using Triton kernels for ModelOpt IQ2_XXS linear weights.
+(MainProcess pid=400035) INFO 10-28 02:52:08 [cuda.py:508] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(MainProcess pid=400035) INFO 10-28 02:52:08 [flash_attn.py:1122] Using FlashAttention version 3
+(MainProcess pid=400035) INFO 10-28 02:52:08 [modelopt_block_quant.py:56] Using Triton kernels for ModelOpt IQ2_XXS MoE weights.
+(MainProcess pid=400035) INFO 10-28 02:52:08 [base_loader.py:82] Initializing model took 0.936247 seconds
+(MainProcess pid=400035) INFO 10-28 02:52:09 [model_runner.py:434] Model loading took 0.17 GiB memory and 2.394707 seconds
+(MainProcess pid=400035) INFO 10-28 02:52:09 [topk_topp_sampler.py:152] Using FlashInfer for top-p & top-k sampling.
+(MainProcess pid=400035) INFO 10-28 02:52:09 [torch_utils.py:293] Reducing Torch threads from 96 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(MainProcess pid=400035) INFO 10-28 02:52:09 [interface.py:1108] Setting attention block size to 1056 tokens to ensure that attention page size is >= mamba page size.
+(MainProcess pid=400035) INFO 10-28 02:52:09 [interface.py:1132] Padding mamba page size by 0.69% to ensure that mamba page size and attention page size are exactly equal.
+(MainProcess pid=400035) INFO 10-28 02:52:09 [utils.py:381] Using LBNHC KV cache layout.
+(MainProcess pid=400035) INFO 10-28 02:52:10 [caching.py:342] reconstructed serializable fn from standalone compile artifacts. num_artifacts=3 num_submods=3
+(MainProcess pid=400035) INFO 10-28 02:52:10 [decorators.py:326] [backbone] Directly load AOT compilation from path /home/seigyo/.cache/vllm/torch_compile_cache/torch_aot_compile/d96d38fc2347c8ae4b9ed77f1b26cb7620b673af5f53732ecd3b0606d21f6e00/rank_0_0/model
+(MainProcess pid=400035) INFO 10-28 02:52:10 [monitor.py:62] [backbone] torch.compile took 0.14 s in total
+(MainProcess pid=400035) INFO 10-28 02:52:10 [mamba_mixer2.py:623] Warming up Mamba2 SSD Triton kernels...
+(MainProcess pid=400035) INFO 10-28 02:52:11 [monitor.py:91] [backbone] Initial profiling/warmup run took 0.50 s
+(MainProcess pid=400035) INFO 10-28 02:52:12 [ssu_dispatch.py:635] Using triton Mamba SSU backend.
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/3 [00:00<?, ?it/s](MainProcess pid=400035) WARNING 10-28 02:52:12 [mamba_ssm.py:107] Using default Mamba SSU config. Performance might be sub-optimal! Config file not found at /home/seigyo/vllmServer/vllm/vllm/model_executor/layers/mamba/ops/configs/selective_state_update/headdim=64,dstate=64,device_name=NVIDIA_H200_NVL,cache_dtype=float32.json
+Capturing CUDA graphs (PIECEWISE):  33%|███▎      | 1/3 [00:00<00:00,  7.84it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 3/3 [00:00<00:00, 11.81it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 3/3 [00:00<00:00, 11.23it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/2 [00:00<?, ?it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00, 125.71it/s]
+(MainProcess pid=400035) INFO 10-28 02:52:13 [model_runner.py:1189] Graph capturing finished in 1 secs, took 0.06 GiB
+(MainProcess pid=400035) INFO 10-28 02:52:13 [gpu_worker.py:775] Available KV cache memory: 33.12 GiB
+(MainProcess pid=400035) INFO 10-28 02:52:13 [gpu_worker.py:790] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.2400 is equivalent to --gpu-memory-utilization=0.2396 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.2404. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(MainProcess pid=400035) INFO 10-28 02:52:13 [kv_cache_utils.py:1147] GPU KV cache size: 2,105,088 tokens, Maximum concurrency for 256 tokens per request: 8223.00x
+(MainProcess pid=400035) INFO 10-28 02:52:13 [kv_cache_utils.py:865] kv cache group sizes (1056, 1056)
+(MainProcess pid=400035) INFO 10-28 02:52:13 [kv_cache_utils.py:866] kv lcm block sizes 1056
+(MainProcess pid=400035) INFO 10-28 02:52:13 [kernel_warmup.py:182] JIT kernel warmup starting.
+(MainProcess pid=400035) INFO 10-28 02:52:13 [kernel_warmup.py:195] JIT kernel warmup finished in 0.00s.
+(MainProcess pid=400035) INFO 10-28 02:52:13 [mamba_triton_warmup.py:42] Warmed Mamba batch_memcpy_kernel.
+(MainProcess pid=400035) INFO 10-28 02:52:13 [modelopt_block_triton_warmup.py:137] Warmed 37 ModelOpt block Triton configs.
+(MainProcess pid=400035) INFO 10-28 02:52:13 [kernel_warmup.py:103] Warming up ll_bf16 router GEMM kernels for shapes: ((4096, 16),).
+(MainProcess pid=400035) INFO 10-28 02:52:14 [kernel_warmup.py:489] Using FlashInfer managed autotune cache (root=flashinfer default). Pass --disable-flashinfer-autotune to skip autotuning.
+2026-10-28 02:52:14,955 - INFO - autotuner.py:1048 - flashinfer.jit: [Autotuner]: Autotuning process starts ...
+2026-10-28 02:52:15,010 - INFO - autotune_cache.py:495 - flashinfer.jit: [Autotuner]: Managed autotune cache attached for this process: ManagedAutotuneCache(env_dir='/home/seigyo/.cache/flashinfer/autotune/v2/8ebcd586db9cedfd', hits=0, misses=0)
+(MainProcess pid=400035) INFO 10-28 02:52:15 [kernel_warmup.py:375] Running FlashInfer autotune with 256 tokens and token buckets (1, 2, 4, 8, 16, 32, 64, 128, 256).
+2026-10-28 02:52:15,342 - INFO - autotuner.py:1071 - flashinfer.jit: [Autotuner]: Autotuning process ends
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/3 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 3/3 [00:00<00:00, 94.29it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/3 [00:00<?, ?it/s]Capturing CUDA graphs (FULL): 100%|██████████| 3/3 [00:00<00:00, 129.25it/s]
+(MainProcess pid=400035) INFO 10-28 02:52:16 [model_runner.py:1189] Graph capturing finished in 1 secs, took 0.06 GiB
+(MainProcess pid=400035) INFO 10-28 02:52:16 [gpu_worker.py:1006] CUDA graph pool memory: 0.06 GiB (actual), 0.06 GiB (estimated), difference: 0.01 GiB (10.3%).
+(MainProcess pid=400035) INFO 10-28 02:52:16 [gpu_worker.py:1069] Free memory on device (40.65/139.8 GiB) on startup. Desired GPU memory utilization is (0.24, 33.55 GiB). Actual usage is 0.35 GiB for consumed memory (weights + non-torch), 0.08 GiB for peak activation, and 0.06 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=35349513421` (32.92 GiB) to fit into requested memory, or `--kv-cache-memory=42972608512` (40.02 GiB) to fully utilize gpu memory. Current kv cache memory in use is 33.12 GiB.
+(MainProcess pid=400035) INFO 10-28 02:52:16 [jit_monitor.py:84] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(MainProcess pid=400035) INFO 10-28 02:52:17 [core.py:412] init engine (profile, create kv cache, warmup model) took 7.23 s (compilation: 0.14 s)
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383] Chat template warmup failed
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383] Traceback (most recent call last):
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]   File "/home/seigyo/vllmServer/vllm/vllm/renderers/base.py", line 376, in warmup
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]     self.render_chat([[{"role": "user", "content": "warmup"}]], chat_params)
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]   File "/home/seigyo/vllmServer/vllm/vllm/renderers/base.py", line 1357, in render_chat
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]     self.render_messages(conversation, chat_params)
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]   File "/home/seigyo/vllmServer/vllm/vllm/renderers/hf.py", line 1110, in render_messages
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]     tokenizer = self.get_tokenizer()
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]   File "/home/seigyo/vllmServer/vllm/vllm/renderers/base.py", line 220, in get_tokenizer
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383]     raise ValueError("Tokenizer not available when `skip_tokenizer_init=True`")
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:383] ValueError: Tokenizer not available when `skip_tokenizer_init=True`
+[graphs] block-quant layers: 9; non-b12x path on all: True
+    model.embed_tokens: non-b12x=True
+    model.layers.1.mixer.qkv_proj: non-b12x=True
+    model.layers.1.mixer.o_proj: non-b12x=True
+    model.layers.2.mixer.shared_experts.up_proj: non-b12x=True
+    model.layers.2.mixer.shared_experts.down_proj: non-b12x=True
+    model.layers.2.mixer.fc1_latent_proj: non-b12x=True
+    model.layers.2.mixer.fc2_latent_proj: non-b12x=True
+    model.layers.2.mixer.experts.routed_experts: non-b12x=True
+    lm_head: non-b12x=True
+[graphs] sanitized 10 scale tensors ({'repacked'})
+(MainProcess pid=400035) WARNING 10-28 02:52:17 [base.py:446] Using None for EOS token id because tokenizer is not initialized
+[graphs] tokens: [[92, 234, 3988, 2305, 1137, 1787, 81, 627, 2568, 1020, 986, 173], [1315, 1486, 3404, 1402, 2588, 1653, 3341, 1864, 2433, 2219, 3643, 572], [1087, 1097, 5, 2991, 3386, 3301, 403, 502, 3618, 1043, 88, 3020]]
+[graphs] logprobs finite: True

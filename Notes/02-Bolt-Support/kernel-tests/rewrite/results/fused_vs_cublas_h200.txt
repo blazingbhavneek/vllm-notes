@@ -1,0 +1,33 @@
+W1028 00:26:07.855000 356227 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 00:26:07.855000 356227 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 00:26:07.855000 356227 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+/home/seigyo/vllmServer/vllm/benchmarks/kernels/benchmark_modelopt_block_triton.py:61: UserWarning: CUPTI is not installed. Try 'pip install -U cupti-python'. Falling back to CUDA events for benchmarking.
+  return statistics.median(bench_gpu_time_with_cupti(fn, use_cuda_graph=True)) * 1e3
+/home/seigyo/vllmServer/.venv/lib/python3.13/site-packages/flashinfer/testing/utils.py:1069: UserWarning: cold_l2_cache=True but no GPU tensors found in input_args/input_kwargs. Cold L2 benchmarking disabled.
+  return bench_gpu_time_with_cudagraph(
+qkv_proj     M=  128 | cublas     12.5us | dequant 2.41 | fused BM64 3.54 | fused BM128 3.86
+qkv_proj     M=  256 | cublas     17.4us | dequant 1.97 | fused BM64 4.45 | fused BM128 4.74
+qkv_proj     M= 2048 | cublas    361.8us | dequant 1.03 | fused BM64 2.45 | fused BM128 2.44
+qkv_proj     M= 8192 | cublas    944.8us | dequant 1.01 | fused BM64 3.39 | fused BM128 2.68
+o_proj       M=  128 | cublas     15.1us | dequant 1.89 | fused BM64 2.76 | fused BM128 2.74
+o_proj       M=  256 | cublas     16.8us | dequant 1.84 | fused BM64 4.33 | fused BM128 3.60
+o_proj       M= 2048 | cublas     95.9us | dequant 3.78 | fused BM64 8.78 | fused BM128 5.32
+o_proj       M= 8192 | cublas    893.1us | dequant 1.01 | fused BM64 3.16 | fused BM128 2.54
+fc1_latent   M=  128 | cublas      8.0us | dequant 1.52 | fused BM64 1.91 | fused BM128 2.02
+fc1_latent   M=  256 | cublas      9.6us | dequant 1.46 | fused BM64 2.68 | fused BM128 2.14
+fc1_latent   M= 2048 | cublas     25.1us | dequant 1.21 | fused BM64 15.16 | fused BM128 3.74
+fc1_latent   M= 8192 | cublas     95.7us | dequant 1.05 | fused BM64 8.97 | fused BM128 5.40
+fc2_latent   M=  128 | cublas      5.8us | dequant 1.71 | fused BM64 3.27 | fused BM128 4.56
+fc2_latent   M=  256 | cublas      6.2us | dequant 1.68 | fused BM64 4.58 | fused BM128 5.33
+fc2_latent   M= 2048 | cublas     27.9us | dequant 1.18 | fused BM64 3.12 | fused BM128 2.37
+fc2_latent   M= 8192 | cublas    349.1us | dequant 1.05 | fused BM64 2.38 | fused BM128 1.48
+shared_up    M=  128 | cublas     13.3us | dequant 2.83 | fused BM64 30.69 | fused BM128 27.04
+shared_up    M=  256 | cublas     20.4us | dequant 2.10 | fused BM64 27.33 | fused BM128 22.19
+shared_up    M= 2048 | cublas    382.6us | dequant 1.05 | fused BM64 11.61 | fused BM128 8.38
+shared_up    M= 8192 | cublas   1153.3us | dequant 1.13 | fused BM64 14.42 | fused BM128 9.66
+shared_down  M=  128 | cublas     17.5us | dequant 2.19 | fused BM64 22.13 | fused BM128 4.81
+shared_down  M=  256 | cublas     23.3us | dequant 1.96 | fused BM64 22.11 | fused BM128 18.21
+shared_down  M= 2048 | cublas    378.0us | dequant 1.05 | fused BM64 11.16 | fused BM128 7.44
+shared_down  M= 8192 | cublas   1008.2us | dequant 1.13 | fused BM64 16.50 | fused BM128 11.05
+lm_head      M=  128 | cublas    540.6us | dequant 3.32 | fused BM64 3.34 | fused BM128 2.44
+lm_head      M=  256 | cublas    927.2us | dequant 2.07 | fused BM64 3.54 | fused BM128 2.58

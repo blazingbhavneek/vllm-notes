@@ -10,3 +10,4 @@ wheels/
 .venv
 vllm/
 vllm-gguf-plugin/
+Notes/02-Bolt-Support/research/clones/

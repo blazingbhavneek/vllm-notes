@@ -1,0 +1,31 @@
+W1028 00:51:46.677000 369151 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 00:51:46.677000 369151 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 00:51:46.677000 369151 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+qkv_proj     M=    2 | cublas     17.4us | dequant 1.71 | fused BM16 1.22 | fused BM16 1.22
+qkv_proj     M=    4 | cublas     17.3us | dequant 1.71 | fused BM16 1.23 | fused BM16 1.23
+qkv_proj     M=    8 | cublas     17.3us | dequant 1.71 | fused BM16 1.24 | fused BM16 1.25
+qkv_proj     M=   16 | cublas     14.9us | dequant 1.88 | fused BM16 1.48 | fused BM16 1.49
+o_proj       M=    2 | cublas     15.4us | dequant 1.69 | fused BM16 1.15 | fused BM16 1.14
+o_proj       M=    4 | cublas     15.6us | dequant 1.63 | fused BM16 1.13 | fused BM16 1.12
+o_proj       M=    8 | cublas     15.3us | dequant 1.63 | fused BM16 1.16 | fused BM16 1.16
+o_proj       M=   16 | cublas     15.6us | dequant 1.62 | fused BM16 1.19 | fused BM16 1.19
+fc1_latent   M=    2 | cublas      8.1us | dequant 1.51 | fused BM16 1.51 | fused BM16 1.51
+fc1_latent   M=    4 | cublas      8.0us | dequant 1.57 | fused BM16 1.55 | fused BM16 1.55
+fc1_latent   M=    8 | cublas      8.1us | dequant 1.53 | fused BM16 1.51 | fused BM16 1.51
+fc1_latent   M=   16 | cublas      8.3us | dequant 1.53 | fused BM16 1.50 | fused BM16 1.49
+fc2_latent   M=    2 | cublas      5.5us | dequant 1.81 | fused BM16 2.13 | fused BM16 2.15
+fc2_latent   M=    4 | cublas      5.5us | dequant 1.82 | fused BM16 2.19 | fused BM16 2.14
+fc2_latent   M=    8 | cublas      5.6us | dequant 1.93 | fused BM16 2.14 | fused BM16 2.12
+fc2_latent   M=   16 | cublas      6.0us | dequant 1.71 | fused BM16 2.13 | fused BM16 2.10
+shared_up    M=    2 | cublas     16.0us | dequant 2.26 | fused BM2 2.29 | fused BM2 2.29
+shared_up    M=    4 | cublas     16.4us | dequant 2.20 | fused BM4 2.71 | fused BM4 2.72
+shared_up    M=    8 | cublas     16.1us | dequant 2.23 | fused BM16 4.31 | fused BM16 4.31
+shared_up    M=   16 | cublas     16.4us | dequant 2.20 | fused BM16 4.25 | fused BM16 4.25
+shared_down  M=    2 | cublas     18.0us | dequant 2.01 | fused BM2 2.23 | fused BM2 2.23
+shared_down  M=    4 | cublas     18.2us | dequant 1.98 | fused BM4 2.63 | fused BM4 2.63
+shared_down  M=    8 | cublas     18.6us | dequant 1.93 | fused BM16 4.70 | fused BM16 4.70
+shared_down  M=   16 | cublas     18.1us | dequant 2.01 | fused BM16 4.85 | fused BM16 4.86
+lm_head      M=    2 | cublas    267.1us | dequant 2.85 | fused BM16 0.87 | fused BM16 0.87
+lm_head      M=    4 | cublas    267.6us | dequant 2.85 | fused BM16 0.87 | fused BM16 0.87
+lm_head      M=    8 | cublas    268.2us | dequant 2.84 | fused BM16 0.87 | fused BM16 0.87
+lm_head      M=   16 | cublas    269.7us | dequant 2.84 | fused BM16 0.87 | fused BM16 0.87

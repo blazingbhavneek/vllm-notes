@@ -1,0 +1,14 @@
+W1028 03:26:37.149000 410799 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 03:26:37.149000 410799 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 03:26:37.149000 410799 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+== qkv_proj q8_0 cublas 16.3us
+     17.5us  1.07x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 3}
+     17.6us  1.08x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     17.8us  1.09x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 3}
+     17.9us  1.09x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     17.9us  1.10x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 4}
+     17.9us  1.10x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 4}
+     17.9us  1.10x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 3}
+     18.0us  1.10x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+     18.1us  1.11x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 4}
+     18.1us  1.11x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}

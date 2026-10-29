@@ -93,7 +93,7 @@ with open(os.path.join(MODEL, "config.json"), "w") as f:
 from vllm import LLM, SamplingParams  # noqa: E402
 
 kw = dict(model=MODEL, load_format="dummy", skip_tokenizer_init=True, max_model_len=256,
-          max_num_seqs=4, max_num_batched_tokens=256, gpu_memory_utilization=0.3, seed=0)
+          max_num_seqs=4, max_num_batched_tokens=256, gpu_memory_utilization=float(os.environ.get("E2E_GPU_UTIL", "0.24")), seed=0)
 if "--triton" in sys.argv:
     kw.update(linear_backend="triton", moe_backend="triton")
 if MODE == "eager":

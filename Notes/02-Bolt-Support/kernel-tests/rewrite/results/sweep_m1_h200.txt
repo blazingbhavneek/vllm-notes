@@ -1,0 +1,64 @@
+W1028 01:31:14.690000 377831 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 01:31:14.691000 377831 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 01:31:14.691000 377831 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+== qkv_proj q8_0 cublas 16.6us
+     17.8us  1.07x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     17.9us  1.08x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     18.3us  1.10x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+     18.3us  1.11x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+     18.3us  1.11x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+     18.4us  1.11x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+     18.4us  1.11x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 8, 'num_stages': 2}
+     18.5us  1.11x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+== o_proj q8_0 cublas 15.3us
+     16.5us  1.08x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     16.8us  1.10x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+     16.9us  1.10x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+     17.0us  1.11x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 8, 'num_stages': 2}
+     17.0us  1.12x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+     17.2us  1.13x {'BM': 1, 'BN': 64, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     17.2us  1.13x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+     17.3us  1.13x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+== fc1_latent q8_0 cublas 8.1us
+     11.3us  1.40x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 16, 'num_warps': 8, 'num_stages': 2}
+     11.4us  1.42x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+     11.5us  1.42x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 8, 'num_stages': 2}
+     11.7us  1.46x {'BM': 1, 'BN': 64, 'BK': 256, 'SPLIT': 16, 'num_warps': 8, 'num_stages': 2}
+     11.9us  1.47x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     12.0us  1.48x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+     12.0us  1.49x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+     12.0us  1.49x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 8, 'num_stages': 2}
+== fc2_latent q8_0 cublas 5.7us
+     10.4us  1.81x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 4, 'num_warps': 8, 'num_stages': 2}
+     10.4us  1.81x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 8, 'num_stages': 2}
+     10.7us  1.87x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     10.7us  1.87x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+     10.8us  1.89x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+     10.9us  1.91x {'BM': 1, 'BN': 64, 'BK': 256, 'SPLIT': 4, 'num_warps': 8, 'num_stages': 2}
+     10.9us  1.91x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 2, 'num_warps': 8, 'num_stages': 2}
+     11.0us  1.92x {'BM': 1, 'BN': 128, 'BK': 128, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+== shared_up iq2_xxs cublas 16.3us
+     24.6us  1.51x {'BM': 1, 'BN': 8, 'BK': 256, 'SPLIT': 8, 'num_warps': 1, 'num_stages': 2}
+     25.7us  1.58x {'BM': 1, 'BN': 8, 'BK': 256, 'SPLIT': 16, 'num_warps': 1, 'num_stages': 2}
+     25.9us  1.59x {'BM': 1, 'BN': 8, 'BK': 128, 'SPLIT': 16, 'num_warps': 1, 'num_stages': 2}
+     26.0us  1.60x {'BM': 1, 'BN': 8, 'BK': 256, 'SPLIT': 4, 'num_warps': 1, 'num_stages': 2}
+     26.3us  1.62x {'BM': 1, 'BN': 8, 'BK': 128, 'SPLIT': 8, 'num_warps': 1, 'num_stages': 2}
+     26.7us  1.64x {'BM': 1, 'BN': 8, 'BK': 256, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+     26.8us  1.65x {'BM': 1, 'BN': 16, 'BK': 128, 'SPLIT': 16, 'num_warps': 2, 'num_stages': 2}
+     26.9us  1.65x {'BM': 1, 'BN': 16, 'BK': 128, 'SPLIT': 16, 'num_warps': 1, 'num_stages': 2}
+== shared_down iq2_xxs cublas 19.8us
+     32.6us  1.64x {'BM': 1, 'BN': 8, 'BK': 128, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+     35.8us  1.80x {'BM': 1, 'BN': 16, 'BK': 128, 'SPLIT': 2, 'num_warps': 2, 'num_stages': 2}
+     37.0us  1.86x {'BM': 1, 'BN': 8, 'BK': 128, 'SPLIT': 2, 'num_warps': 2, 'num_stages': 2}
+     38.3us  1.93x {'BM': 1, 'BN': 16, 'BK': 128, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+     39.6us  2.00x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 2, 'num_warps': 2, 'num_stages': 2}
+     53.2us  2.68x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+== lm_head q8_0 cublas 267.2us
+    194.2us  0.73x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+    195.8us  0.73x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+    197.7us  0.74x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+    199.5us  0.75x {'BM': 1, 'BN': 128, 'BK': 128, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+    201.6us  0.75x {'BM': 1, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+    202.6us  0.76x {'BM': 1, 'BN': 128, 'BK': 128, 'SPLIT': 4, 'num_warps': 8, 'num_stages': 2}
+    202.6us  0.76x {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+    202.9us  0.76x {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}

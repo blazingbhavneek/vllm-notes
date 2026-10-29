@@ -1,0 +1,21 @@
+W1028 05:55:59.274000 450960 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1028 05:55:59.274000 450960 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1028 05:55:59.275000 450960 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+== qkv_proj q8_0 cublas 17.6us packed 19.1 MB
+     17.4us  0.98x   8.7 ctas/SM 1127.07 TB/s {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     17.4us  0.98x  17.5 ctas/SM 1127.01 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     17.4us  0.98x   8.7 ctas/SM 1127.01 TB/s {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 3}
+     17.4us  0.99x  17.5 ctas/SM 1125.00 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 3}
+     17.5us  0.99x   8.7 ctas/SM 1116.79 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 3}
+     17.5us  0.99x   8.7 ctas/SM 1116.72 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+     17.6us  1.00x  17.5 ctas/SM 1114.75 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 8, 'num_warps': 2, 'num_stages': 3}
+     17.7us  1.00x   8.7 ctas/SM 1108.63 TB/s {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+== o_proj q8_0 cublas 15.7us packed 17.0 MB
+     16.4us  1.04x  15.5 ctas/SM 1064.58 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 3}
+     16.4us  1.04x  15.5 ctas/SM 1064.51 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     16.4us  1.04x   7.8 ctas/SM 1062.44 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+     16.4us  1.04x   7.8 ctas/SM 1062.44 TB/s {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+     16.4us  1.04x   7.8 ctas/SM 1058.37 TB/s {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 3}
+     16.4us  1.04x   7.8 ctas/SM 1058.30 TB/s {'BM': 1, 'BN': 16, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 3}
+     16.5us  1.05x  15.5 ctas/SM 1054.26 TB/s {'BM': 1, 'BN': 16, 'BK': 128, 'SPLIT': 8, 'num_warps': 2, 'num_stages': 2}
+     16.5us  1.05x  15.5 ctas/SM 1052.22 TB/s {'BM': 1, 'BN': 32, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}

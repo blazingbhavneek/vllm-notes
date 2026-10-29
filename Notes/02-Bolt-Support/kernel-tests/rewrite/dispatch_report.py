@@ -68,3 +68,17 @@ for codec in ("iq2_xxs", "q8_0"):
         eids = torch.zeros((16,), dtype=torch.int32, device=dev); ntp = torch.zeros((1,), dtype=torch.int32, device=dev)
         ck = t._moe_gemm_kernel.warmup(a, qe, se, lut, cc_, tw, ids, eids, ntp, N, K, 256, 64, a.stride(0), qe.stride(0), qe.stride(1), se.stride(0), se.stride(1), cc_.stride(0), top_k=1, MUL_ROUTED_WEIGHT=True, CODEC=c, BM=bm, BN=bn, BK=bk, num_warps=w, num_stages=2, grid=(1,))
         report(f"moe {codec} BM{bm} BN{bn} BK{bk}", ck, w, 2)
+    # Decode MoE: one program per routed row (moe_gemv_config), GEMM1 and GEMM2 tiles.
+    bn, bk, w = (8, 256, 1) if codec == "iq2_xxs" else (32, 256, 4)
+    a = torch.zeros((2, K), dtype=torch.bfloat16, device=dev)
+    cc_ = torch.zeros((2, 1, N), dtype=torch.bfloat16, device=dev)
+    tw = torch.zeros((2,), dtype=torch.float32, device=dev)
+    ids = torch.zeros((2,), dtype=torch.int32, device=dev); eids = torch.zeros((2,), dtype=torch.int32, device=dev)
+    ck = t._moe_gemv_kernel.warmup(a, qe, se, lut, cc_, tw, ids, eids, N, K, 2, a.stride(0), qe.stride(0), qe.stride(1), se.stride(0), se.stride(1), cc_.stride(-2), top_k=1, MUL_ROUTED_WEIGHT=True, CODEC=c, BN=bn, BK=bk, num_warps=w, num_stages=2, grid=(1,))
+    report(f"moe_gemv {codec} BN{bn} BK{bk}", ck, w, 2)
+
+# Split-K partial reduction, one config for every shape (BN is not a tile choice).
+p = torch.zeros((2, 4096), dtype=torch.float32, device=dev)
+o = torch.zeros((4096,), dtype=torch.bfloat16, device=dev)
+ck = t._splitk_reduce_kernel.warmup(p, o, 4096, 2, BN=1024, num_warps=4, grid=(1,))
+report("splitk_reduce", ck, 4, 3)

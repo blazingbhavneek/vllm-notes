@@ -12,4 +12,7 @@ for m in eager compiled graphs; do
   python "$here/e2e_tiny_bolt.py" $m --bf16 > log_${m}_bf16.txt 2>&1; echo "$m bf16 exit $?"
 done
 python "$here/e2e_tiny_bolt.py" compare --bf16 > log_compare_bf16.txt 2>&1; echo "compare bf16 exit $?"
-grep -H 'jit_monitor.py:140' log_*.txt && echo "JIT DURING INFERENCE (see 05 §5.3)" || echo "no JIT during inference"
+# The bf16 control legitimately JITs upstream's fused_moe_kernel; only the
+# Triton path is in scope for the §5.3 "no JIT during inference" check.
+grep -H 'jit_monitor.py:140' log_eager.txt log_compiled.txt log_graphs.txt \
+  && echo "JIT DURING INFERENCE (see 05 §5.3)" || echo "no JIT during inference"
