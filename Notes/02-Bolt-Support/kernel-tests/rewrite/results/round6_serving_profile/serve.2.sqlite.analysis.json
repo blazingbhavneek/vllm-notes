@@ -1,0 +1,1230 @@
+{
+  "trace": "/home/seigyo/vllmServer/vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/results/round6_serving_profile/serve.2.sqlite",
+  "kernel_count": 78215,
+  "capture_span_ms": 2970.740133,
+  "capture_union_busy_ms": 2815.58814,
+  "graph_count": 63,
+  "steady_graph_count": 55,
+  "median_graph_duration_ms": 32.159168,
+  "median_graph_busy_ms": 31.806139,
+  "median_graph_idle_ms": 0.355043000000002,
+  "median_graph_api_ms": 3.521893,
+  "median_inter_graph": {
+    "period_ms": 32.640745,
+    "outside_graph_ms": 0.485191,
+    "model_kernel_idle_ms": 0.0689305
+  },
+  "kernels": [
+    {
+      "name": "_moe_gemm_kernel",
+      "calls_per_graph": 80.0,
+      "summed_ms_per_graph": 21.540995199999994,
+      "registers": [
+        147,
+        148,
+        242,
+        244
+      ],
+      "threads": [
+        128
+      ],
+      "shared_bytes": [
+        24576
+      ],
+      "common_grid_ctas": [
+        [
+          9216,
+          1540
+        ],
+        [
+          23040,
+          715
+        ],
+        [
+          1928,
+          660
+        ],
+        [
+          20736,
+          605
+        ],
+        [
+          3856,
+          385
+        ],
+        [
+          4338,
+          220
+        ]
+      ]
+    },
+    {
+      "name": "_selective_scan_update_kernel",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 3.682757854545451,
+      "registers": [
+        32
+      ],
+      "threads": [
+        128
+      ],
+      "shared_bytes": [
+        512
+      ],
+      "common_grid_ctas": [
+        [
+          65536,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "Marlin",
+      "calls_per_graph": 80.0,
+      "summed_ms_per_graph": 2.3251225636363624,
+      "registers": [
+        206,
+        214
+      ],
+      "threads": [
+        128
+      ],
+      "shared_bytes": [
+        232448
+      ],
+      "common_grid_ctas": [
+        [
+          132,
+          4400
+        ]
+      ]
+    },
+    {
+      "name": "_gemm_kernel",
+      "calls_per_graph": 96.0,
+      "summed_ms_per_graph": 0.8793317090909117,
+      "registers": [
+        166
+      ],
+      "threads": [
+        128
+      ],
+      "shared_bytes": [
+        16896
+      ],
+      "common_grid_ctas": [
+        [
+          512,
+          2640
+        ],
+        [
+          256,
+          2200
+        ],
+        [
+          288,
+          440
+        ]
+      ]
+    },
+    {
+      "name": "nvjet_sm90_tst_64x32_64x16_4x1_v_bz_TNT",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.7141998727272723,
+      "registers": [
+        168
+      ],
+      "threads": [
+        384
+      ],
+      "shared_bytes": [
+        213460
+      ],
+      "common_grid_ctas": [
+        [
+          84,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "nvjet_sm90_tst_64x32_64x16_2x1_v_bz_splitK_TNT",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.6631216363636382,
+      "registers": [
+        168
+      ],
+      "threads": [
+        384
+      ],
+      "shared_bytes": [
+        213444
+      ],
+      "common_grid_ctas": [
+        [
+          128,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "single_group_topk_block_kernel",
+      "calls_per_graph": 28.0,
+      "summed_ms_per_graph": 0.5438291818181813,
+      "registers": [
+        48
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        4096
+      ],
+      "common_grid_ctas": [
+        [
+          32,
+          1540
+        ]
+      ]
+    },
+    {
+      "name": "single_group_topk_warp_kernel",
+      "calls_per_graph": 12.0,
+      "summed_ms_per_graph": 0.4154961454545459,
+      "registers": [
+        62
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          4,
+          660
+        ]
+      ]
+    },
+    {
+      "name": "_splitk_reduce_kernel",
+      "calls_per_graph": 96.0,
+      "summed_ms_per_graph": 0.41023080000000434,
+      "registers": [
+        29
+      ],
+      "threads": [
+        128
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          128,
+          2640
+        ],
+        [
+          32,
+          2200
+        ],
+        [
+          144,
+          440
+        ]
+      ]
+    },
+    {
+      "name": "moe_align_block_size_kernel",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.30866761818181837,
+      "registers": [
+        48
+      ],
+      "threads": [
+        1024
+      ],
+      "shared_bytes": [
+        5280,
+        5536,
+        5792,
+        6048,
+        6304
+      ],
+      "common_grid_ctas": [
+        [
+          2,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "_causal_conv1d_update_kernel",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.27620632727272704,
+      "registers": [
+        30
+      ],
+      "threads": [
+        128
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          1280,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "vectorized_elementwise_kernel",
+      "calls_per_graph": 80.0,
+      "summed_ms_per_graph": 0.22774720000000181,
+      "registers": [
+        29,
+        32
+      ],
+      "threads": [
+        128
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          648,
+          1650
+        ],
+        [
+          720,
+          1430
+        ],
+        [
+          576,
+          1210
+        ],
+        [
+          432,
+          110
+        ]
+      ]
+    },
+    {
+      "name": "nvjet_sm90_tss_16x64_64x16_4x1_v_bz_splitK_TNN",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.2176651636363637,
+      "registers": [
+        168
+      ],
+      "threads": [
+        384
+      ],
+      "shared_bytes": [
+        180676
+      ],
+      "common_grid_ctas": [
+        [
+          48,
+          660
+        ],
+        [
+          84,
+          550
+        ],
+        [
+          72,
+          495
+        ],
+        [
+          60,
+          330
+        ],
+        [
+          96,
+          165
+        ]
+      ]
+    },
+    {
+      "name": "splitKreduce_kernel",
+      "calls_per_graph": 80.0,
+      "summed_ms_per_graph": 0.20467590909090919,
+      "registers": [
+        32
+      ],
+      "threads": [
+        512
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          256,
+          2200
+        ],
+        [
+          16,
+          660
+        ],
+        [
+          28,
+          550
+        ],
+        [
+          24,
+          495
+        ],
+        [
+          20,
+          330
+        ],
+        [
+          32,
+          165
+        ]
+      ]
+    },
+    {
+      "name": "triton_per_fused__to_copy_add_mean_mul_pow_rsqrt_silu_view_0",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.1594831090909087,
+      "registers": [
+        130
+      ],
+      "threads": [
+        32
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          256,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "triton_red_fused_add_fused_add_rms_norm_3",
+      "calls_per_graph": 32.0,
+      "summed_ms_per_graph": 0.13717370909090695,
+      "registers": [
+        32,
+        40
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        32
+      ],
+      "common_grid_ctas": [
+        [
+          32,
+          1760
+        ]
+      ]
+    },
+    {
+      "name": "device_kernel",
+      "calls_per_graph": 16.0,
+      "summed_ms_per_graph": 0.12437116363636312,
+      "registers": [
+        46,
+        255
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        17536,
+        150528
+      ],
+      "common_grid_ctas": [
+        [
+          132,
+          440
+        ],
+        [
+          160,
+          440
+        ]
+      ]
+    },
+    {
+      "name": "count_and_sort_expert_tokens_kernel",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.10839667272727298,
+      "registers": [
+        20
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          2,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "moe_sum_vec_kernel",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.09851452727272654,
+      "registers": [
+        34
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          16,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "triton_red_fused_fused_add_rms_norm_1",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.08743981818181862,
+      "registers": [
+        28,
+        30
+      ],
+      "threads": [
+        512
+      ],
+      "shared_bytes": [
+        64
+      ],
+      "common_grid_ctas": [
+        [
+          32,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "triton_poi_fused_pow_relu_0",
+      "calls_per_graph": 40.0,
+      "summed_ms_per_graph": 0.0831511818181829,
+      "registers": [
+        16
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          336,
+          2200
+        ]
+      ]
+    },
+    {
+      "name": "triton_poi_fused_mul_2",
+      "calls_per_graph": 32.0,
+      "summed_ms_per_graph": 0.038550181818182316,
+      "registers": [
+        16
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          64,
+          1760
+        ]
+      ]
+    },
+    {
+      "name": "triton_red_fused_add_fused_add_rms_norm_2",
+      "calls_per_graph": 8.0,
+      "summed_ms_per_graph": 0.0337664363636364,
+      "registers": [
+        40
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        32
+      ],
+      "common_grid_ctas": [
+        [
+          32,
+          440
+        ]
+      ]
+    },
+    {
+      "name": "reshape_and_cache_flash_kernel",
+      "calls_per_graph": 8.0,
+      "summed_ms_per_graph": 0.019504054545454536,
+      "registers": [
+        40
+      ],
+      "threads": [
+        256
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          32,
+          440
+        ]
+      ]
+    },
+    {
+      "name": "triton_red_fused_fused_add_rms_norm_0",
+      "calls_per_graph": 8.0,
+      "summed_ms_per_graph": 0.016730454545454552,
+      "registers": [
+        28
+      ],
+      "threads": [
+        512
+      ],
+      "shared_bytes": [
+        64
+      ],
+      "common_grid_ctas": [
+        [
+          32,
+          440
+        ]
+      ]
+    },
+    {
+      "name": "triton_poi_fused_mul_1",
+      "calls_per_graph": 8.0,
+      "summed_ms_per_graph": 0.00943139999999999,
+      "registers": [
+        16
+      ],
+      "threads": [
+        128
+      ],
+      "shared_bytes": [
+        0
+      ],
+      "common_grid_ctas": [
+        [
+          32,
+          440
+        ]
+      ]
+    },
+    {
+      "name": "triton_red_fused__to_copy_embedding_rms_norm_0",
+      "calls_per_graph": 1.0,
+      "summed_ms_per_graph": 0.0029352909090909077,
+      "registers": [
+        24
+      ],
+      "threads": [
+        512
+      ],
+      "shared_bytes": [
+        64
+      ],
+      "common_grid_ctas": [
+        [
+          32,
+          55
+        ]
+      ]
+    }
+  ],
+  "graphs": [
+    {
+      "start": 1062861091,
+      "end": 1098055857,
+      "duration_ms": 35.194766,
+      "busy_ms": 34.826795,
+      "kernel_count": 1105,
+      "api_ms": 3.034921,
+      "enqueue_to_start_ms": 56.668778
+    },
+    {
+      "start": 1098555992,
+      "end": 1132213327,
+      "duration_ms": 33.657335,
+      "busy_ms": 33.302929,
+      "kernel_count": 1105,
+      "api_ms": 1.541381,
+      "enqueue_to_start_ms": 31.352345
+    },
+    {
+      "start": 1132698359,
+      "end": 1165078587,
+      "duration_ms": 32.380228,
+      "busy_ms": 32.02669,
+      "kernel_count": 1105,
+      "api_ms": 1.515894,
+      "enqueue_to_start_ms": 29.725083
+    },
+    {
+      "start": 1165562370,
+      "end": 1197382813,
+      "duration_ms": 31.820443,
+      "busy_ms": 31.465077,
+      "kernel_count": 1105,
+      "api_ms": 1.76844,
+      "enqueue_to_start_ms": 27.510181
+    },
+    {
+      "start": 1197865861,
+      "end": 1230175303,
+      "duration_ms": 32.309442,
+      "busy_ms": 31.947578,
+      "kernel_count": 1105,
+      "api_ms": 2.268752,
+      "enqueue_to_start_ms": 24.667514
+    },
+    {
+      "start": 1230658639,
+      "end": 1262321192,
+      "duration_ms": 31.662553,
+      "busy_ms": 31.312657,
+      "kernel_count": 1105,
+      "api_ms": 2.412694,
+      "enqueue_to_start_ms": 24.1505
+    },
+    {
+      "start": 1262804911,
+      "end": 1294475496,
+      "duration_ms": 31.670585,
+      "busy_ms": 31.315412,
+      "kernel_count": 1105,
+      "api_ms": 3.180903,
+      "enqueue_to_start_ms": 19.782517
+    },
+    {
+      "start": 1294959216,
+      "end": 1327286387,
+      "duration_ms": 32.327171,
+      "busy_ms": 31.973441,
+      "kernel_count": 1105,
+      "api_ms": 3.533285,
+      "enqueue_to_start_ms": 18.052806
+    },
+    {
+      "start": 1327770554,
+      "end": 1360348705,
+      "duration_ms": 32.578151,
+      "busy_ms": 32.228254,
+      "kernel_count": 1105,
+      "api_ms": 3.521893,
+      "enqueue_to_start_ms": 19.050128
+    },
+    {
+      "start": 1360833128,
+      "end": 1392788038,
+      "duration_ms": 31.95491,
+      "busy_ms": 31.596698,
+      "kernel_count": 1105,
+      "api_ms": 3.52892,
+      "enqueue_to_start_ms": 19.297933
+    },
+    {
+      "start": 1393271213,
+      "end": 1425974837,
+      "duration_ms": 32.703624,
+      "busy_ms": 32.345698,
+      "kernel_count": 1105,
+      "api_ms": 3.497186,
+      "enqueue_to_start_ms": 18.633511
+    },
+    {
+      "start": 1426458045,
+      "end": 1458617213,
+      "duration_ms": 32.159168,
+      "busy_ms": 31.806139,
+      "kernel_count": 1105,
+      "api_ms": 3.510821,
+      "enqueue_to_start_ms": 19.406717
+    },
+    {
+      "start": 1459097348,
+      "end": 1491545257,
+      "duration_ms": 32.447909,
+      "busy_ms": 32.092957,
+      "kernel_count": 1105,
+      "api_ms": 3.538058,
+      "enqueue_to_start_ms": 18.673469
+    },
+    {
+      "start": 1492027025,
+      "end": 1524462997,
+      "duration_ms": 32.435972,
+      "busy_ms": 32.082488,
+      "kernel_count": 1105,
+      "api_ms": 3.522697,
+      "enqueue_to_start_ms": 19.188628
+    },
+    {
+      "start": 1524946365,
+      "end": 1556942779,
+      "duration_ms": 31.996414,
+      "busy_ms": 31.641786,
+      "kernel_count": 1105,
+      "api_ms": 3.533453,
+      "enqueue_to_start_ms": 19.161126
+    },
+    {
+      "start": 1557426466,
+      "end": 1589791782,
+      "duration_ms": 32.365316,
+      "busy_ms": 32.010014,
+      "kernel_count": 1105,
+      "api_ms": 3.621733,
+      "enqueue_to_start_ms": 18.551458
+    },
+    {
+      "start": 1590272173,
+      "end": 1622142441,
+      "duration_ms": 31.870268,
+      "busy_ms": 31.512984,
+      "kernel_count": 1105,
+      "api_ms": 3.519866,
+      "enqueue_to_start_ms": 19.112425
+    },
+    {
+      "start": 1622627632,
+      "end": 1654670479,
+      "duration_ms": 32.042847,
+      "busy_ms": 31.688503,
+      "kernel_count": 1105,
+      "api_ms": 3.714137,
+      "enqueue_to_start_ms": 18.182537
+    },
+    {
+      "start": 1655157910,
+      "end": 1687347512,
+      "duration_ms": 32.189602,
+      "busy_ms": 31.832185,
+      "kernel_count": 1105,
+      "api_ms": 3.552662,
+      "enqueue_to_start_ms": 18.250281
+    },
+    {
+      "start": 1687834495,
+      "end": 1719657018,
+      "duration_ms": 31.822523,
+      "busy_ms": 31.465461,
+      "kernel_count": 1105,
+      "api_ms": 3.496822,
+      "enqueue_to_start_ms": 18.981498
+    },
+    {
+      "start": 1720143042,
+      "end": 1752293986,
+      "duration_ms": 32.150944,
+      "busy_ms": 31.794745,
+      "kernel_count": 1105,
+      "api_ms": 3.507449,
+      "enqueue_to_start_ms": 18.579695
+    },
+    {
+      "start": 1752782889,
+      "end": 1785315024,
+      "duration_ms": 32.532135,
+      "busy_ms": 32.172738,
+      "kernel_count": 1105,
+      "api_ms": 3.548492,
+      "enqueue_to_start_ms": 18.801537
+    },
+    {
+      "start": 1785799639,
+      "end": 1817964055,
+      "duration_ms": 32.164416,
+      "busy_ms": 31.810203,
+      "kernel_count": 1105,
+      "api_ms": 3.501046,
+      "enqueue_to_start_ms": 19.218473
+    },
+    {
+      "start": 1818451583,
+      "end": 1849880756,
+      "duration_ms": 31.429173,
+      "busy_ms": 31.079023,
+      "kernel_count": 1105,
+      "api_ms": 3.525355,
+      "enqueue_to_start_ms": 18.737996
+    },
+    {
+      "start": 1850366716,
+      "end": 1881921811,
+      "duration_ms": 31.555095,
+      "busy_ms": 31.197105,
+      "kernel_count": 1105,
+      "api_ms": 3.51028,
+      "enqueue_to_start_ms": 18.08292
+    },
+    {
+      "start": 1882407067,
+      "end": 1915080291,
+      "duration_ms": 32.673224,
+      "busy_ms": 32.323553,
+      "kernel_count": 1105,
+      "api_ms": 3.500432,
+      "enqueue_to_start_ms": 18.089088
+    },
+    {
+      "start": 1915565354,
+      "end": 1947408006,
+      "duration_ms": 31.842652,
+      "busy_ms": 31.484441,
+      "kernel_count": 1105,
+      "api_ms": 3.479435,
+      "enqueue_to_start_ms": 19.264833
+    },
+    {
+      "start": 1947894029,
+      "end": 1980471892,
+      "duration_ms": 32.577863,
+      "busy_ms": 32.226372,
+      "kernel_count": 1105,
+      "api_ms": 3.509432,
+      "enqueue_to_start_ms": 18.303573
+    },
+    {
+      "start": 1980956795,
+      "end": 2013848711,
+      "duration_ms": 32.891916,
+      "busy_ms": 32.534052,
+      "kernel_count": 1105,
+      "api_ms": 3.514824,
+      "enqueue_to_start_ms": 19.211833
+    },
+    {
+      "start": 2014331310,
+      "end": 2046522863,
+      "duration_ms": 32.191553,
+      "busy_ms": 31.839482,
+      "kernel_count": 1105,
+      "api_ms": 3.550998,
+      "enqueue_to_start_ms": 19.385088
+    },
+    {
+      "start": 2047010742,
+      "end": 2079625374,
+      "duration_ms": 32.614632,
+      "busy_ms": 32.263103,
+      "kernel_count": 1105,
+      "api_ms": 3.50966,
+      "enqueue_to_start_ms": 18.956129
+    },
+    {
+      "start": 2080111205,
+      "end": 2113037971,
+      "duration_ms": 32.926766,
+      "busy_ms": 32.571496,
+      "kernel_count": 1105,
+      "api_ms": 3.502598,
+      "enqueue_to_start_ms": 19.379586
+    },
+    {
+      "start": 2113522682,
+      "end": 2146093764,
+      "duration_ms": 32.571082,
+      "busy_ms": 32.212194,
+      "kernel_count": 1105,
+      "api_ms": 6.08211,
+      "enqueue_to_start_ms": 16.967734
+    },
+    {
+      "start": 2146578763,
+      "end": 2179184661,
+      "duration_ms": 32.605898,
+      "busy_ms": 32.245474,
+      "kernel_count": 1105,
+      "api_ms": 3.57469,
+      "enqueue_to_start_ms": 17.846959
+    },
+    {
+      "start": 2179670077,
+      "end": 2211771935,
+      "duration_ms": 32.101858,
+      "busy_ms": 31.746839,
+      "kernel_count": 1105,
+      "api_ms": 3.575813,
+      "enqueue_to_start_ms": 19.045392
+    },
+    {
+      "start": 2212257671,
+      "end": 2244309352,
+      "duration_ms": 32.051681,
+      "busy_ms": 31.701402,
+      "kernel_count": 1105,
+      "api_ms": 3.524178,
+      "enqueue_to_start_ms": 18.847503
+    },
+    {
+      "start": 2244798096,
+      "end": 2276954995,
+      "duration_ms": 32.156899,
+      "busy_ms": 31.800956,
+      "kernel_count": 1105,
+      "api_ms": 3.528763,
+      "enqueue_to_start_ms": 18.852211
+    },
+    {
+      "start": 2277439739,
+      "end": 2309625726,
+      "duration_ms": 32.185987,
+      "busy_ms": 31.835519,
+      "kernel_count": 1105,
+      "api_ms": 3.67858,
+      "enqueue_to_start_ms": 18.610573
+    },
+    {
+      "start": 2310111398,
+      "end": 2342359658,
+      "duration_ms": 32.24826,
+      "busy_ms": 31.893409,
+      "kernel_count": 1105,
+      "api_ms": 3.517311,
+      "enqueue_to_start_ms": 18.911346
+    },
+    {
+      "start": 2342844978,
+      "end": 2375537437,
+      "duration_ms": 32.692459,
+      "busy_ms": 32.335589,
+      "kernel_count": 1105,
+      "api_ms": 3.544809,
+      "enqueue_to_start_ms": 18.928139
+    },
+    {
+      "start": 2376022117,
+      "end": 2407828131,
+      "duration_ms": 31.806014,
+      "busy_ms": 31.455892,
+      "kernel_count": 1105,
+      "api_ms": 3.51543,
+      "enqueue_to_start_ms": 19.408803
+    },
+    {
+      "start": 2408313034,
+      "end": 2440040167,
+      "duration_ms": 31.727133,
+      "busy_ms": 31.364817,
+      "kernel_count": 1105,
+      "api_ms": 3.603902,
+      "enqueue_to_start_ms": 18.479764
+    },
+    {
+      "start": 2440529806,
+      "end": 2472231339,
+      "duration_ms": 31.701533,
+      "busy_ms": 31.345783,
+      "kernel_count": 1105,
+      "api_ms": 3.51642,
+      "enqueue_to_start_ms": 18.247404
+    },
+    {
+      "start": 2472720274,
+      "end": 2505328636,
+      "duration_ms": 32.608362,
+      "busy_ms": 32.250978,
+      "kernel_count": 1105,
+      "api_ms": 3.500522,
+      "enqueue_to_start_ms": 18.326886
+    },
+    {
+      "start": 2505812740,
+      "end": 2538115081,
+      "duration_ms": 32.302341,
+      "busy_ms": 31.948447,
+      "kernel_count": 1105,
+      "api_ms": 3.567664,
+      "enqueue_to_start_ms": 16.143591
+    },
+    {
+      "start": 2538599089,
+      "end": 2571126970,
+      "duration_ms": 32.527881,
+      "busy_ms": 32.176609,
+      "kernel_count": 1105,
+      "api_ms": 3.515518,
+      "enqueue_to_start_ms": 18.741351
+    },
+    {
+      "start": 2571612385,
+      "end": 2603486560,
+      "duration_ms": 31.874175,
+      "busy_ms": 31.520122,
+      "kernel_count": 1105,
+      "api_ms": 3.526542,
+      "enqueue_to_start_ms": 19.072248
+    },
+    {
+      "start": 2603972071,
+      "end": 2635554722,
+      "duration_ms": 31.582651,
+      "busy_ms": 31.229937,
+      "kernel_count": 1105,
+      "api_ms": 3.501293,
+      "enqueue_to_start_ms": 18.520463
+    },
+    {
+      "start": 2636040169,
+      "end": 2667911081,
+      "duration_ms": 31.870912,
+      "busy_ms": 31.510138,
+      "kernel_count": 1105,
+      "api_ms": 3.510799,
+      "enqueue_to_start_ms": 18.255341
+    },
+    {
+      "start": 2668396592,
+      "end": 2701006106,
+      "duration_ms": 32.609514,
+      "busy_ms": 32.256162,
+      "kernel_count": 1105,
+      "api_ms": 3.748502,
+      "enqueue_to_start_ms": 17.581652
+    },
+    {
+      "start": 2701493505,
+      "end": 2733587716,
+      "duration_ms": 32.094211,
+      "busy_ms": 31.738329,
+      "kernel_count": 1105,
+      "api_ms": 3.545144,
+      "enqueue_to_start_ms": 18.928056
+    },
+    {
+      "start": 2734071947,
+      "end": 2766049196,
+      "duration_ms": 31.977249,
+      "busy_ms": 31.617978,
+      "kernel_count": 1105,
+      "api_ms": 3.485203,
+      "enqueue_to_start_ms": 18.78548
+    },
+    {
+      "start": 2766533715,
+      "end": 2798266384,
+      "duration_ms": 31.732669,
+      "busy_ms": 31.374132,
+      "kernel_count": 1105,
+      "api_ms": 3.548099,
+      "enqueue_to_start_ms": 18.510008
+    },
+    {
+      "start": 2798750615,
+      "end": 2830750840,
+      "duration_ms": 32.000225,
+      "busy_ms": 31.645917,
+      "kernel_count": 1105,
+      "api_ms": 3.536578,
+      "enqueue_to_start_ms": 18.389661
+    },
+    {
+      "start": 2831236416,
+      "end": 2862428117,
+      "duration_ms": 31.191701,
+      "busy_ms": 30.83525,
+      "kernel_count": 1105,
+      "api_ms": 3.499341,
+      "enqueue_to_start_ms": 18.774334
+    },
+    {
+      "start": 2862913948,
+      "end": 2895399076,
+      "duration_ms": 32.485128,
+      "busy_ms": 32.130369,
+      "kernel_count": 1105,
+      "api_ms": 3.507367,
+      "enqueue_to_start_ms": 17.899046
+    },
+    {
+      "start": 2895887052,
+      "end": 2928350068,
+      "duration_ms": 32.463016,
+      "busy_ms": 32.106533,
+      "kernel_count": 1105,
+      "api_ms": 3.525773,
+      "enqueue_to_start_ms": 19.141058
+    },
+    {
+      "start": 2928834331,
+      "end": 2960881309,
+      "duration_ms": 32.046978,
+      "busy_ms": 31.690108,
+      "kernel_count": 1105,
+      "api_ms": 3.485958,
+      "enqueue_to_start_ms": 19.203768
+    },
+    {
+      "start": 2961366500,
+      "end": 2992827229,
+      "duration_ms": 31.460729,
+      "busy_ms": 31.105686,
+      "kernel_count": 1105,
+      "api_ms": 3.530979,
+      "enqueue_to_start_ms": 18.755779
+    },
+    {
+      "start": 2993313700,
+      "end": 3026140242,
+      "duration_ms": 32.826542,
+      "busy_ms": 32.473479,
+      "kernel_count": 1105,
+      "api_ms": 3.517349,
+      "enqueue_to_start_ms": 18.173732
+    },
+    {
+      "start": 3026617753,
+      "end": 3059816076,
+      "duration_ms": 33.198323,
+      "busy_ms": 32.837968,
+      "kernel_count": 1105,
+      "api_ms": 3.488695,
+      "enqueue_to_start_ms": 20.142534
+    },
+    {
+      "start": 3060278515,
+      "end": 3080112285,
+      "duration_ms": 19.83377,
+      "busy_ms": 19.506055,
+      "kernel_count": 1105,
+      "api_ms": 8.011413,
+      "enqueue_to_start_ms": 16.329977
+    },
+    {
+      "start": 3080491747,
+      "end": 3095359266,
+      "duration_ms": 14.867519,
+      "busy_ms": 14.577434,
+      "kernel_count": 945,
+      "api_ms": 3.575308,
+      "enqueue_to_start_ms": 8.286251
+    }
+  ],
+  "scope": "Model-process kernels only. Kernel duration sums include overlap; union busy excludes overlap. Not hardware warp-stall measurements."
+}

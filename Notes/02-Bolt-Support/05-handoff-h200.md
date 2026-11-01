@@ -1,5 +1,15 @@
 # 05 · Handoff: finish the Bolt Triton path on the H200
 
+> **Current status (2026-10-30):** The historical plan below predates the
+> rewrite and is not the current code state. Rounds 4–6 and current working
+> tree/results are summarized in [`04-progress-log.md`](04-progress-log.md),
+> [`06-h200-gpu1-optimization.md`](06-h200-gpu1-optimization.md), and
+> [`07-round6-serving-profile.md`](07-round6-serving-profile.md). Round 6 added
+> an uncommitted, guarded SM90 Q8 decode candidate. It passed 126 focused
+> kernel tests but still needs full-model accuracy and serving A/B before
+> retention. The GPU 1 server is stopped; port 8001 is free. Start the next
+> round from the round 6 report, not the old branch/phase status below.
+
 Written 2026-10-27, after round 1 on the home box (RTX 5060 Ti, sm_120). This is for the next agent. Read in this order:
 
 1. This file.

@@ -1,0 +1,10 @@
+W1030 05:21:45.560000 693103 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1030 05:21:45.560000 693103 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1030 05:21:45.561000 693103 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+M 4096 config {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1} median_us 5110.67 scaled_gap 0.0
+M 4096 config {'BLOCK_SIZE_M': 128, 'BN': 64, 'BK': 64, 'num_warps': 4, 'num_stages': 1} median_us 6236.9 scaled_gap 0.0
+M 4096 config {'BLOCK_SIZE_M': 128, 'BN': 64, 'BK': 128, 'num_warps': 4, 'num_stages': 1} median_us 5324.4 scaled_gap 0.0
+M 4096 config {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 32, 'num_warps': 4, 'num_stages': 1} median_us 5811.96 scaled_gap 0.0
+M 4096 config {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 2} median_us 6246.02 scaled_gap 0.0
+M 4096 config {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1} median_us 7346.93 scaled_gap 0.0
+M 4096 config {'BLOCK_SIZE_M': 128, 'BN': 64, 'BK': 64, 'num_warps': 8, 'num_stages': 1} median_us 7919.4 scaled_gap 0.0

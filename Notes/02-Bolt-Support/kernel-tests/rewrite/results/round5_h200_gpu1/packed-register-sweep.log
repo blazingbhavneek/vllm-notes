@@ -1,0 +1,23 @@
+W1030 04:26:50.932000 609792 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1030 04:26:50.933000 609792 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1030 04:26:50.933000 609792 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+5376 4096 base 22.66 packed 23.84 speedup 0.95 (8, 512, 2, 1)
+5376 4096 base 22.66 packed 23.84 speedup 0.95 (4, 256, 4, 1)
+5376 4096 base 22.66 packed 23.9 speedup 0.948 (8, 256, 8, 1)
+5376 4096 base 22.66 packed 24.03 speedup 0.943 (2, 512, 4, 1)
+5376 4096 base 22.66 packed 24.16 speedup 0.938 (2, 512, 2, 1)
+4096 5376 base 23.23 packed 22.37 speedup 1.039 (8, 256, 3, 1)
+4096 5376 base 23.23 packed 23.27 speedup 0.999 (8, 256, 7, 1)
+4096 5376 base 23.23 packed 23.36 speedup 0.995 (4, 256, 3, 1)
+4096 5376 base 23.23 packed 24.19 speedup 0.96 (4, 256, 7, 1)
+4096 5376 base 23.23 packed 24.42 speedup 0.951 (8, 128, 3, 1)
+2048 1024 base 7.07 packed 6.11 speedup 1.157 (2, 512, 2, 1)
+2048 1024 base 7.07 packed 6.21 speedup 1.139 (2, 512, 1, 1)
+2048 1024 base 7.07 packed 6.22 speedup 1.136 (1, 512, 1, 1)
+2048 1024 base 7.07 packed 6.43 speedup 1.1 (4, 256, 2, 1)
+2048 1024 base 7.07 packed 6.62 speedup 1.068 (2, 256, 2, 1)
+1024 2048 base 8.32 packed 6.43 speedup 1.294 (1, 512, 2, 1)
+1024 2048 base 8.32 packed 6.46 speedup 1.287 (2, 512, 2, 1)
+1024 2048 base 8.32 packed 6.82 speedup 1.221 (2, 512, 4, 1)
+1024 2048 base 8.32 packed 6.91 speedup 1.204 (4, 256, 4, 1)
+1024 2048 base 8.32 packed 7.17 speedup 1.161 (2, 256, 4, 1)

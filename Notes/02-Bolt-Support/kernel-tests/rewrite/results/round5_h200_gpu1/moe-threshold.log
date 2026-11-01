@@ -1,0 +1,5 @@
+W1030 04:57:25.139000 667600 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1030 04:57:25.140000 667600 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1030 04:57:25.140000 667600 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+16 dot_us 1166.87 gemv_us 376.79 speedup 3.097 scaled_output_gap 0.005035400390625
+32 dot_us 2040.77 gemv_us 730.59 speedup 2.793 scaled_output_gap 0.00628662109375

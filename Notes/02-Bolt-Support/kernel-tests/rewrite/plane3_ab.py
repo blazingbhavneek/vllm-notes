@@ -7,7 +7,7 @@ codebook of 8-value patterns plus a parity-folded sign. The codebook is where th
 density comes from, and the gather + parity chain is where the decode time goes,
 so the one remaining speed/size lever is the trade between them: a "3-bit plane"
 rep (2-bit magnitudes and 1-bit signs in separate planes, no codebook, no
-parity) decodes in two selects, at ~1.5x the bytes.
+parity) decodes in two selects, at about 1.94x the bytes.
 
 This measures the trade instead of guessing at it:
 
@@ -17,11 +17,12 @@ This measures the trade instead of guessing at it:
      in-tree `launch_linear`, interleaved so box drift cannot fake a win.
 
 Layout: codes uint16 [N, K/8] (8 values, 2 bits each), signs uint8 [N, K/8]
-(8 values, 1 bit each), scale fp16 [N, K/32] -> 3.0625 bits/value.
+(8 values, 1 bit each), scale fp32 [N, K/32] -> 4 bits/value.
 
 Run from the vllm repo root:
   CUDA_VISIBLE_DEVICES=0 python ../vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/plane3_ab.py
 """
+
 import json
 import os
 import statistics
@@ -47,8 +48,18 @@ MAGS = torch.tensor([8.0, 25.0, 43.0], device="cuda")
 
 @triton.jit
 def _plane3_kernel(
-    x_ptr, code_ptr, sign_ptr, sc_ptr, out_ptr, N, k_per_split,
-    stride_cn, stride_sn, stride_sc, BN: tl.constexpr, BK: tl.constexpr,
+    x_ptr,
+    code_ptr,
+    sign_ptr,
+    sc_ptr,
+    out_ptr,
+    N,
+    k_per_split,
+    stride_cn,
+    stride_sn,
+    stride_sc,
+    BN: tl.constexpr,
+    BK: tl.constexpr,
 ):
     """`_gemv_kernel` for BM=1 against a codebook-free weight rep."""
     pid_n = tl.program_id(0)
@@ -65,15 +76,19 @@ def _plane3_kernel(
     for k0 in range(pid_k * k_per_split, (pid_k + 1) * k_per_split, BK):
         rs = tl.load(sc_ptr + row * stride_sc + k0 // 32 + tl.arange(0, R)[None, :],
                      mask=n_mask[:, None], other=0.0).to(tl.float32)  # fmt: skip
-        cd = tl.load(code_ptr + row * stride_cn + k0 // 8 + woffs,
-                     mask=n_mask[:, None], other=0)  # fmt: skip
-        sg = tl.load(sign_ptr + row * stride_sn + k0 // 8 + woffs,
-                     mask=n_mask[:, None], other=0)  # fmt: skip
+        cd = tl.load(code_ptr + row[:, :, None] * stride_cn + k0 // 8 + woffs,
+                     mask=n_mask[:, None, None], other=0)  # fmt: skip
+        sg = tl.load(sign_ptr + row[:, :, None] * stride_sn + k0 // 8 + woffs,
+                     mask=n_mask[:, None, None], other=0)  # fmt: skip
         x = tl.load(x_ptr + k0 + xoffs).to(tl.float32)
         c = (cd.to(tl.int32)[:, :, :, None] >> (2 * j8)) & 3
         s = (sg.to(tl.int32)[:, :, :, None] >> j8) & 1
-        w = tl.reshape(tl.where(c == 0, 8.0, tl.where(c == 1, 25.0, 43.0))
-                       * (1 - 2 * s) * rs[:, :, None, None], (BN, BK))
+        w = tl.reshape(
+            tl.where(c == 0, 8.0, tl.where(c == 1, 25.0, 43.0))
+            * (1 - 2 * s)
+            * rs[:, :, None, None],
+            (BN, BK),
+        )
         acc += tl.sum(w * x, axis=1)
     tl.store(out_ptr + pid_k * N + offs_n, acc, mask=n_mask)
 
@@ -86,7 +101,7 @@ def us(fn):
 
 
 def to_planes(raw):
-    """Real ggml IQ2_XXS blocks -> (codes u16, signs u8, scales fp16), exactly."""
+    """Real ggml IQ2_XXS blocks -> (codes u16, signs u8, scales fp32), exactly."""
     N = raw.shape[0]
     w = ref_decode(raw, "iq2_xxs")  # [N, K] fp32 ground truth
     K = w.shape[1]
@@ -95,20 +110,20 @@ def to_planes(raw):
     aux = blocks[:, 2:].contiguous().view(torch.int32).reshape(-1, 8, 2)[..., 1]
     rs = (d * (0.5 + ((aux >> 28) & 0xF).float()) * 0.25).reshape(N, -1)
     rs_rep = rs.repeat_interleave(32, 1)
-    live = rs_rep > 0
-    r = w.abs() / torch.where(live, rs_rep, torch.ones_like(rs_rep))
+    live = rs_rep != 0
+    r = w.abs() / torch.where(live, rs_rep.abs(), torch.ones_like(rs_rep))
     c = torch.argmin((r[:, :, None] - MAGS).abs(), dim=2)
     c = torch.where(live, c, torch.zeros_like(c)).to(torch.uint8)
     off = ((r - MAGS[c.long()]).abs() * live).max()
     assert off < 1e-3, f"magnitudes are not on the 8/25/43 grid: {off}"
-    sgn = (w < 0).to(torch.uint8)
+    sgn = ((w < 0) ^ (rs_rep < 0)).to(torch.uint8)
     dec = MAGS[c.long()] * (1.0 - 2.0 * sgn.to(torch.float32)) * rs_rep
     assert torch.equal(dec, w), "3-bit plane rep is not lossless"
     bits = torch.arange(8, device="cuda", dtype=torch.uint8)
     codes = ((c.reshape(N, -1, 8).to(torch.int32) << (2 * bits))
              .sum(2).to(torch.uint16))  # fmt: skip
     signs = (sgn.reshape(N, -1, 8) << bits).sum(2).to(torch.uint8)
-    return codes, signs, rs.half(), N, K
+    return codes, signs, rs, N, K
 
 
 def main():
@@ -121,42 +136,68 @@ def main():
     name = "language_model.backbone.layers.1.mixer.shared_experts.up_proj.weight"
     with safe_open(f"{CKPT}/{idx[name]}", framework="pt") as f:
         codes, signs, rs32, N, K = to_planes(f.get_tensor(name).cuda())
-    bpv = 8.0 * (2 * codes.numel() + signs.numel() + 2 * rs32.numel()) / (N * K)
-    print(f"real shared_experts.up_proj {N}x{K}: the codebook-free 3-bit plane rep "
-          f"is BIT-EXACT vs ref_decode, {bpv:.4f} bits/value vs 2.0625")
+    bpv = 8.0 * (2 * codes.numel() + signs.numel() + 4 * rs32.numel()) / (N * K)
+    print(
+        f"real shared_experts.up_proj {N}x{K}: the codebook-free 3-bit plane rep "
+        f"is BIT-EXACT vs ref_decode, {bpv:.4f} bits/value vs 2.0625"
+    )
 
     lut = t.iq2_lut(torch.device("cuda"))
-    for tag, n, k in [("shared_up", 5376, 4096), ("shared_down", 4096, 5376),
-                   ("expert_up", 2048, 1024), ("expert_down", 1024, 2048)]:
-        qweight, scales = (
-            x.contiguous()
-            for x in t.repack_blocks(
-                torch.randint(0, 256, (n, k // 256, 66), dtype=torch.uint8), "iq2_xxs"
-            )
-        )
+    for tag, n, k in [
+        ("shared_up", 5376, 4096),
+        ("shared_down", 4096, 5376),
+        ("expert_up", 2048, 1024),
+        ("expert_down", 1024, 2048),
+    ]:
+        suffix = {
+            "shared_up": "shared_experts.up_proj",
+            "shared_down": "shared_experts.down_proj",
+            "expert_up": "experts.0.up_proj",
+            "expert_down": "experts.0.down_proj",
+        }[tag]
+        name = f"language_model.backbone.layers.1.mixer.{suffix}.weight"
+        with safe_open(f"{CKPT}/{idx[name]}", framework="pt") as f:
+            raw = f.get_tensor(name).cuda()
+        qweight, scales = t.repack_blocks(raw, "iq2_xxs")
+        pc, ps, psc, n, k = to_planes(raw)
+        N, K = n, k
         cfg = t._linear_config(1, n, k, "iq2_xxs", sms, smem)
         bn, bk, split = cfg["BN"], cfg["BK"], cfg["SPLIT"]
         x = torch.randn(1, k, dtype=torch.bfloat16)
-        pc = torch.randint(0, 65536, (n, k // 8), dtype=torch.uint16)
-        ps = torch.randint(0, 256, (n, k // 8), dtype=torch.uint8)
-        psc = (torch.rand(n, k // 32) * 1e-3).half()
         pout = torch.empty((split, 1, n), dtype=torch.float32)
         py = torch.empty((1, n), dtype=torch.bfloat16)
 
         def plane():
             _plane3_kernel[(triton.cdiv(n, bn), split)](
-                x, pc, ps, psc, pout, n, k // split, k // 8, k // 8, k // 32,
-                BN=bn, BK=bk, num_warps=1, num_stages=2,
+                x,
+                pc,
+                ps,
+                psc,
+                pout,
+                n,
+                k // split,
+                k // 8,
+                k // 8,
+                k // 32,
+                BN=bn,
+                BK=bk,
+                num_warps=1,
+                num_stages=2,
             )
             # The same split-K reduce `launch_linear` runs, so the A/B is fair.
             t._splitk_reduce_kernel[(triton.cdiv(n, 1024),)](
                 pout, py, n, split, BN=1024, num_warps=4
             )
+
         tree = lambda: t.launch_linear(x, qweight, scales, lut, "iq2_xxs", cfg)  # noqa: E731
-        plane(), tree(), torch.cuda.synchronize()
+        plane()
+        want = tree()
+        torch.cuda.synchronize()
+        torch.testing.assert_close(py, want, rtol=0, atol=want.abs().max().item() / 256)
+        print("  actual GEMV checked against packed implementation", flush=True)
         a = sorted(us(plane) for _ in range(3))[1]
         b = sorted(us(tree) for _ in range(3))[1]
-        pmb, tmb = n * (2 * k / 8 + k / 8 + 2 * k / 32) / 1e6, n * k * 66 / 256 / 1e6
+        pmb, tmb = n * (2 * k / 8 + k / 8 + 4 * k / 32) / 1e6, n * k * 66 / 256 / 1e6
         print(f"\n{tag} N={n} K={k} M=1 BN={bn} BK={bk} SPLIT={split}")
         print(f"  3-bit plane : {a:6.1f} us  {pmb:5.1f} MB  {pmb / a * 1e3:5.0f} GB/s")
         print(f"  in-tree IQ2 : {b:6.1f} us  {tmb:5.1f} MB  {tmb / b * 1e3:5.0f} GB/s")

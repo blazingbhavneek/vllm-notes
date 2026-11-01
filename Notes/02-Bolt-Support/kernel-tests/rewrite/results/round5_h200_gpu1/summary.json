@@ -1,0 +1,174 @@
+{
+  "packed": {
+    "startup_seconds": 97.46677279600408,
+    "median_tok_s": {
+      "1": 127.97216412909965,
+      "8": 448.47182813270996,
+      "32": 1051.1298927268674
+    },
+    "median_diverse_tok_s": {},
+    "gsm_correct": 59,
+    "gsm_n": 64,
+    "gsm_correct_strict_text": 58,
+    "truncated": 1,
+    "eval_seconds": 27.223215884063393,
+    "linear_backend": null,
+    "dense_cache": null
+  },
+  "direct": {
+    "startup_seconds": 98.60413694498129,
+    "median_tok_s": {
+      "1": 128.14550319600625,
+      "8": 455.96623078188253,
+      "32": 989.6158762911093
+    },
+    "median_diverse_tok_s": {},
+    "gsm_correct": 55,
+    "gsm_n": 64,
+    "gsm_correct_strict_text": 54,
+    "truncated": 1,
+    "eval_seconds": 27.45753817190416,
+    "linear_backend": null,
+    "dense_cache": null
+  },
+  "fused": {
+    "startup_seconds": 97.15952200698666,
+    "median_tok_s": {
+      "1": 130.30104161312903,
+      "8": 457.7221967315475,
+      "32": 1069.1980942199402
+    },
+    "median_diverse_tok_s": {},
+    "gsm_correct": 58,
+    "gsm_n": 64,
+    "gsm_correct_strict_text": 57,
+    "truncated": 0,
+    "eval_seconds": 24.497724308050238,
+    "linear_backend": null,
+    "dense_cache": false
+  },
+  "cache": {
+    "startup_seconds": 96.26749581797048,
+    "median_tok_s": {
+      "1": 130.08890294197542,
+      "8": 476.5679918718025,
+      "32": 1235.542103173836
+    },
+    "median_diverse_tok_s": {},
+    "gsm_correct": 55,
+    "gsm_n": 64,
+    "gsm_correct_strict_text": 54,
+    "truncated": 0,
+    "eval_seconds": 22.52812367398292,
+    "linear_backend": null,
+    "dense_cache": true
+  },
+  "baseline250": {
+    "startup_seconds": 93.28825118299574,
+    "median_tok_s": {
+      "1": 129.2447358887785,
+      "8": 451.0618117522081,
+      "16": 647.5434796663429,
+      "32": 1102.7122810476849
+    },
+    "median_diverse_tok_s": {},
+    "gsm_correct": 228,
+    "gsm_n": 250,
+    "gsm_correct_strict_text": 225,
+    "truncated": 2,
+    "eval_seconds": 88.59006609697826,
+    "linear_backend": "marlin",
+    "dense_cache": false
+  },
+  "gate32": {
+    "startup_seconds": 92.71453592297621,
+    "median_tok_s": {
+      "1": 131.54986859492777,
+      "8": 495.4141788153636,
+      "16": 637.8477768336398,
+      "32": 724.1397688444213
+    },
+    "median_diverse_tok_s": {},
+    "gsm_correct": 1,
+    "gsm_n": 1,
+    "gsm_correct_strict_text": 1,
+    "truncated": 0,
+    "eval_seconds": 0.9780374569818377,
+    "linear_backend": "marlin",
+    "dense_cache": true
+  },
+  "final250": {
+    "startup_seconds": 92.51951404009014,
+    "median_tok_s": {
+      "1": 131.85085953959052,
+      "8": 494.96645961730917,
+      "16": 831.7115314092141,
+      "32": 1199.6481442619138
+    },
+    "median_diverse_tok_s": {
+      "1": 124.79176033901155,
+      "8": 465.0321755321751,
+      "16": 403.3538175082536,
+      "32": 518.2409555713616
+    },
+    "gsm_correct": 234,
+    "gsm_n": 250,
+    "gsm_correct_strict_text": 232,
+    "truncated": 1,
+    "eval_seconds": 77.36529374902602,
+    "linear_backend": "marlin",
+    "dense_cache": true
+  },
+  "baseline-repeat": {
+    "startup_seconds": 94.51715129194781,
+    "median_tok_s": {
+      "1": 128.98834832498235,
+      "8": 450.38672153667335,
+      "16": 648.6178737522129,
+      "32": 1079.9753534118308
+    },
+    "median_diverse_tok_s": {
+      "1": 120.88219923956096,
+      "8": 426.0111262431317,
+      "16": 323.49363353787294,
+      "32": 451.0739658844835
+    },
+    "gsm_correct": 1,
+    "gsm_n": 1,
+    "gsm_correct_strict_text": 1,
+    "truncated": 0,
+    "eval_seconds": 0.890420736046508,
+    "linear_backend": "marlin",
+    "dense_cache": false
+  },
+  "optimized250": {
+    "startup_seconds": 91.11879242397845,
+    "median_tok_s": {
+      "1": 133.25522605526407,
+      "8": 493.62681504055,
+      "16": 725.3202635262874,
+      "32": 1291.9248584366367
+    },
+    "median_diverse_tok_s": {
+      "1": 124.51088053095219,
+      "8": 469.21280029808605,
+      "16": 463.73722837924436,
+      "32": 568.7676794370005
+    },
+    "gsm_correct": 235,
+    "gsm_n": 250,
+    "gsm_correct_strict_text": 231,
+    "truncated": 0,
+    "eval_seconds": 69.75487298693042,
+    "linear_backend": "marlin",
+    "dense_cache": true
+  },
+  "paired_gsm": {
+    "improved": 9,
+    "regressed": 2,
+    "mcnemar_exact_p": 0.0654296875
+  },
+  "hardware": "index, name, uuid, memory.total [MiB], driver_version\n0, NVIDIA H200 NVL, GPU-b7735a9a-718d-5b9a-362c-22c28cc5097d, 143771 MiB, 580.178.04\n1, NVIDIA H200 NVL, GPU-5f88ab4b-58c7-9402-9b1d-c23540fcb85b, 143771 MiB, 580.178.04\n",
+  "baseline_commit": "779b13849a19096de9498f5ef6cdb8ce3b3778d0",
+  "grade_method": "Greedy raw Q/A, first 250 GSM8K test questions, max_tokens=768, final-number exact numeric match. Not an official few-shot lm-eval run."
+}

@@ -1,0 +1,32 @@
+W1030 05:42:00.905000 711564 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1030 05:42:00.905000 711564 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1030 05:42:00.906000 711564 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+real shared_experts.up_proj 5376x4096: the codebook-free 3-bit plane rep is BIT-EXACT vs ref_decode, 4.0000 bits/value vs 2.0625
+  actual GEMV checked against packed implementation
+
+shared_up N=5376 K=4096 M=1 BN=8 BK=256 SPLIT=8
+  3-bit plane :   28.3 us   11.0 MB    390 GB/s
+  in-tree IQ2 :   22.8 us    5.7 MB    250 GB/s
+  plane time / in-tree time = 1.24  for 1.94x bytes
+  (both sides include the split-K reduce kernel)
+  actual GEMV checked against packed implementation
+
+shared_down N=4096 K=5376 M=1 BN=8 BK=256 SPLIT=7
+  3-bit plane :   27.9 us   11.0 MB    395 GB/s
+  in-tree IQ2 :   23.2 us    5.7 MB    244 GB/s
+  plane time / in-tree time = 1.20  for 1.94x bytes
+  (both sides include the split-K reduce kernel)
+  actual GEMV checked against packed implementation
+
+expert_up N=2048 K=1024 M=1 BN=8 BK=256 SPLIT=4
+  3-bit plane :    7.2 us    1.0 MB    145 GB/s
+  in-tree IQ2 :    7.3 us    0.5 MB     74 GB/s
+  plane time / in-tree time = 0.99  for 1.94x bytes
+  (both sides include the split-K reduce kernel)
+  actual GEMV checked against packed implementation
+
+expert_down N=1024 K=2048 M=1 BN=8 BK=256 SPLIT=8
+  3-bit plane :    8.4 us    1.0 MB    124 GB/s
+  in-tree IQ2 :    8.3 us    0.5 MB     65 GB/s
+  plane time / in-tree time = 1.02  for 1.94x bytes
+  (both sides include the split-K reduce kernel)

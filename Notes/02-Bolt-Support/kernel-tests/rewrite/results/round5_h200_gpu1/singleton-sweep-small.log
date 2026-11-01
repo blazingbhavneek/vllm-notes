@@ -1,0 +1,23 @@
+W1030 05:26:18.231000 696542 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1030 05:26:18.232000 696542 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1030 05:26:18.232000 696542 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+16 diverse {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 256, 'num_warps': 4, 'num_stages': 1} old_us 1167.87 new_us 775.35 speedup 1.506 scaled_gap 0.00335693359375
+16 diverse {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 256, 'num_warps': 4, 'num_stages': 1} old_us 1167.87 new_us 710.52 speedup 1.644 scaled_gap 0.00335693359375
+16 diverse {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 128, 'num_warps': 4, 'num_stages': 1} old_us 1167.87 new_us 842.28 speedup 1.387 scaled_gap 0.00335693359375
+16 diverse {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 128, 'num_warps': 4, 'num_stages': 1} old_us 1167.87 new_us 625.49 speedup 1.867 scaled_gap 0.00335693359375
+16 diverse {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 256, 'num_warps': 2, 'num_stages': 1} old_us 1167.87 new_us 777.98 speedup 1.501 scaled_gap 0.00335693359375
+16 identical {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 256, 'num_warps': 4, 'num_stages': 1} old_us 131.65 new_us 133.54 speedup 0.986 scaled_gap 0.0
+16 identical {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 256, 'num_warps': 4, 'num_stages': 1} old_us 131.65 new_us 131.04 speedup 1.005 scaled_gap 0.0
+16 identical {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 128, 'num_warps': 4, 'num_stages': 1} old_us 131.65 new_us 157.73 speedup 0.835 scaled_gap 0.0
+16 identical {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 128, 'num_warps': 4, 'num_stages': 1} old_us 131.65 new_us 119.86 speedup 1.098 scaled_gap 0.0
+16 identical {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 256, 'num_warps': 2, 'num_stages': 1} old_us 131.65 new_us 178.51 speedup 0.738 scaled_gap 0.0
+32 diverse {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 256, 'num_warps': 4, 'num_stages': 1} old_us 2131.94 new_us 1524.65 speedup 1.398 scaled_gap 0.0030059814453125
+32 diverse {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 256, 'num_warps': 4, 'num_stages': 1} old_us 2131.94 new_us 1417.1 speedup 1.504 scaled_gap 0.0030059814453125
+32 diverse {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 128, 'num_warps': 4, 'num_stages': 1} old_us 2131.94 new_us 1688.04 speedup 1.263 scaled_gap 0.0030059814453125
+32 diverse {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 128, 'num_warps': 4, 'num_stages': 1} old_us 2131.94 new_us 1233.64 speedup 1.728 scaled_gap 0.0030059814453125
+32 diverse {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 256, 'num_warps': 2, 'num_stages': 1} old_us 2131.94 new_us 1595.63 speedup 1.336 scaled_gap 0.0030059814453125
+32 identical {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 256, 'num_warps': 4, 'num_stages': 1} old_us 145.12 new_us 146.79 speedup 0.989 scaled_gap 0.0
+32 identical {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 256, 'num_warps': 4, 'num_stages': 1} old_us 145.12 new_us 155.95 speedup 0.931 scaled_gap 0.0
+32 identical {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 128, 'num_warps': 4, 'num_stages': 1} old_us 145.12 new_us 177.51 speedup 0.818 scaled_gap 0.0
+32 identical {'BLOCK_SIZE_M': 64, 'BN': 32, 'BK': 128, 'num_warps': 4, 'num_stages': 1} old_us 145.12 new_us 128.13 speedup 1.133 scaled_gap 0.0
+32 identical {'BLOCK_SIZE_M': 64, 'BN': 16, 'BK': 256, 'num_warps': 2, 'num_stages': 1} old_us 145.12 new_us 192.66 speedup 0.753 scaled_gap 0.0

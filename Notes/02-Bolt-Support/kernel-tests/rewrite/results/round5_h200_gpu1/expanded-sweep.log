@@ -1,0 +1,37 @@
+W1030 04:18:49.899000 602960 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1030 04:18:49.900000 602960 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1030 04:18:49.900000 602960 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+5376 4096 1 fp32_decode_exact agreement 0.9996280074119568 23.2 27.3 speedup 0.85
+BEST 5376 4096 1 25.44 {'BM': 1, 'BN': 4, 'BK': 512, 'SPLIT': 4, 'num_warps': 1, 'num_stages': 2}
+BEST 5376 4096 1 26.62 {'BM': 1, 'BN': 4, 'BK': 512, 'SPLIT': 1, 'num_warps': 1, 'num_stages': 2}
+BEST 5376 4096 1 26.72 {'BM': 1, 'BN': 4, 'BK': 256, 'SPLIT': 4, 'num_warps': 1, 'num_stages': 2}
+BEST 5376 4096 1 26.78 {'BM': 1, 'BN': 4, 'BK': 256, 'SPLIT': 8, 'num_warps': 1, 'num_stages': 2}
+BEST 5376 4096 1 26.91 {'BM': 1, 'BN': 4, 'BK': 512, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+5376 4096 4 fp32_decode_exact agreement 1.0 37.95 37.57 speedup 1.01
+BEST 5376 4096 4 33.38 {'BM': 4, 'BN': 4, 'BK': 512, 'SPLIT': 4, 'num_warps': 1, 'num_stages': 2}
+BEST 5376 4096 4 33.51 {'BM': 4, 'BN': 4, 'BK': 512, 'SPLIT': 8, 'num_warps': 1, 'num_stages': 2}
+BEST 5376 4096 4 34.5 {'BM': 4, 'BN': 4, 'BK': 512, 'SPLIT': 1, 'num_warps': 1, 'num_stages': 2}
+BEST 5376 4096 4 34.82 {'BM': 4, 'BN': 4, 'BK': 256, 'SPLIT': 8, 'num_warps': 1, 'num_stages': 2}
+BEST 5376 4096 4 34.98 {'BM': 4, 'BN': 4, 'BK': 512, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+4096 5376 1 fp32_decode_exact agreement 1.0 23.3 26.85 speedup 0.868
+Traceback (most recent call last):
+  File "/home/seigyo/vllmServer/vllm/../vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/expanded_ab.py", line 67, in <module>
+    val=us(fn)
+  File "/home/seigyo/vllmServer/vllm/../vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/expanded_ab.py", line 27, in us
+    return statistics.median(bench_gpu_time_with_cupti(fn, use_cuda_graph=True))*1000
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seigyo/vllmServer/.venv/lib/python3.13/site-packages/flashinfer/testing/utils.py", line 1192, in bench_gpu_time_with_cupti
+    call_fn()
+    ~~~~~~~^^
+  File "/home/seigyo/vllmServer/.venv/lib/python3.13/site-packages/flashinfer/testing/utils.py", line 1175, in call_fn
+    fn()
+    ~~^^
+  File "/home/seigyo/vllmServer/vllm/../vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/expanded_ab.py", line 64, in <lambda>
+    fn=lambda c=c: t.launch_linear(x,e,es,lut,'iq2_xxs',c)
+                   ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seigyo/vllmServer/vllm/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py", line 585, in launch_linear
+    else torch.empty((split, M, N), dtype=torch.float32, device=x.device)
+         ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seigyo/vllmServer/.venv/lib/python3.13/site-packages/torch/utils/_device.py", line 122, in __torch_function__
+    return func(*args, **kwargs)
+KeyboardInterrupt

@@ -1,0 +1,24 @@
+W1030 04:20:58.693000 605043 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1030 04:20:58.694000 605043 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1030 04:20:58.694000 605043 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+sample tensor([ 6.9062,  0.6211,  2.6562,  2.4219, -1.2344], device='cuda:0',
+       dtype=torch.bfloat16) tensor([ 6.9062,  0.6211,  2.6562,  2.4219, -1.2344], device='cuda:0',
+       dtype=torch.bfloat16)
+tree error 0.0
+tree 26.945
+tree 27.424
+sample tensor([ 6.0727,  2.1315,  1.4058,  2.4781, -1.1442], device='cuda:0') tensor([ 6.9062,  0.6211,  2.6562,  2.4219, -1.2344], device='cuda:0',
+       dtype=torch.bfloat16)
+proto_views_fp32 error 41.65475845336914
+proto_views_fp32 14.463999999999999
+proto_views_fp32 14.496
+sample tensor([ 6.0727,  2.1315,  1.4058,  2.4781, -1.1442], device='cuda:0') tensor([ 6.9062,  0.6211,  2.6562,  2.4219, -1.2344], device='cuda:0',
+       dtype=torch.bfloat16)
+proto_contig_fp32 error 41.65475845336914
+proto_contig_fp32 14.08
+proto_contig_fp32 14.08
+sample tensor([ 6.0728,  2.1332,  1.4056,  2.4773, -1.1430], device='cuda:0') tensor([ 6.9062,  0.6211,  2.6562,  2.4219, -1.2344], device='cuda:0',
+       dtype=torch.bfloat16)
+proto_contig_fp16 error 41.6531867980957
+proto_contig_fp16 14.016
+proto_contig_fp16 14.048

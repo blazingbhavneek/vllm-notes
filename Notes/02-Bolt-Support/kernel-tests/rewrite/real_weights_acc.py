@@ -12,7 +12,9 @@ Run from the vllm repo root:
 
   CUDA_VISIBLE_DEVICES=0 python ../vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/real_weights_acc.py [layer]
 """
+
 import glob
+import os
 import json
 import sys
 
@@ -32,7 +34,9 @@ from vllm.model_executor.layers.fused_moe.config import (  # noqa: E402
     FusedMoEQuantConfig,
     FusedMoEQuantDesc,
 )
-from vllm.model_executor.layers.fused_moe.experts import modelopt_block_triton_moe as moe_mod
+from vllm.model_executor.layers.fused_moe.experts import (
+    modelopt_block_triton_moe as moe_mod,
+)
 from vllm.model_executor.layers.fused_moe.experts.modelopt_block_triton_moe import (
     ModelOptBlockTritonExperts,
 )
@@ -49,6 +53,9 @@ from vllm.v1.worker.workspace import init_workspace_manager  # noqa: E402
 
 CKPT = "/home/seigyo/models/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB"
 CODEC = {66: "iq2_xxs", 34: "q8_0"}
+EXPANDED = "--expanded" in sys.argv
+if EXPANDED:
+    sys.argv.remove("--expanded")
 L = sys.argv[1] if len(sys.argv) > 1 else "1"
 
 with open(glob.glob(f"{CKPT}/*.safetensors.index.json")[0]) as f:
@@ -83,9 +90,13 @@ def dense(label, raw, ms=(1, 4, 8, 64)):
     K = nb * (256 if codec == "iq2_xxs" else 32)
     qweight, scales = t.repack_blocks(raw, codec)
     lut = t.iq2_lut(raw.device) if codec == "iq2_xxs" else None
+    if EXPANDED and codec == "iq2_xxs":
+        qweight, scales = t.expand_iq2(qweight, scales, lut)
     wref = ref_decode(raw, codec).double()
     wbf16 = wref.to(torch.bfloat16)
-    exact = torch.equal(t.dequantize_blocks(qweight, scales, lut, codec).double(), wbf16.double())
+    exact = torch.equal(
+        t.dequantize_blocks(qweight, scales, lut, codec).double(), wbf16.double()
+    )
     props = torch.cuda.get_device_properties(raw.device)
     for M in ms:
         x = torch.randn(M, K, device="cuda", dtype=torch.bfloat16)
@@ -93,14 +104,28 @@ def dense(label, raw, ms=(1, 4, 8, 64)):
         want = x.double() @ wref.T
         bar = 1.5 * ((x @ wbf16.T).double() - want).abs().max()
         ours = (out.double() - want).abs().max()
-        cfg = t._linear_config(M, N, K, codec, props.multi_processor_count,
-                               props.shared_memory_per_block_optin)
-        path = ("dequant" if M >= t.DEQUANT_MIN_M[codec] and N * K <= t.DEQUANT_MAX_NUMEL
-                else "gemv" if cfg["BM"] < 16 else "gemm")
-        row(f"{label} M={M}", ours <= bar + 1e-6,
+        cfg = t._linear_config(
+            M,
+            N,
+            K,
+            codec,
+            props.multi_processor_count,
+            props.shared_memory_per_block_optin,
+        )
+        path = (
+            "dequant"
+            if M >= t.DEQUANT_MIN_M[codec] and N * K <= t.DEQUANT_MAX_NUMEL
+            else "gemv"
+            if cfg["BM"] < 16
+            else "gemm"
+        )
+        row(
+            f"{label} M={M}",
+            ours <= bar + 1e-6,
             f"err {ours:8.4f} bar {bar:8.4f} ratio {ours / max(bar, 1e-9):4.2f}  "
             f"{path} BN{cfg['BN']} BK{cfg['BK']} SPLIT{cfg['SPLIT']}  "
-            f"dequant-exact={exact}")
+            f"dequant-exact={exact}",
+        )
 
 
 def moe(layer, E=16, ms=(1, 8, 64)):
@@ -112,6 +137,9 @@ def moe(layer, E=16, ms=(1, 8, 64)):
     w1q, s1 = t.repack_blocks(up.contiguous(), codec)
     w2q, s2 = t.repack_blocks(dn.contiguous(), codec)
     lut = t.iq2_lut(w1q.device)
+    if EXPANDED:
+        w1q, s1 = t.expand_iq2(w1q, s1, lut)
+        w2q, s2 = t.expand_iq2(w2q, s2, lut)
     w1, w2 = ref_decode(up, codec), ref_decode(dn, codec)
     relu2 = MoEActivation.RELU2_NO_MUL
     quant = FusedMoEQuantConfig(
@@ -129,6 +157,13 @@ def moe(layer, E=16, ms=(1, 8, 64)):
             quant, codec, lut,
         ),
     )  # fmt: skip
+    sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+    from bolt_baseline_experts import ModelOptBlockTritonExperts as BaselineExperts
+
+    baseline_kernel = mk.FusedMoEKernel(
+        MoEPrepareAndFinalizeNoDPEPModular(),
+        BaselineExperts(kernel.fused_experts.moe_config, quant, codec, lut),
+    )
     for M in ms:
         gen = torch.Generator(device="cuda").manual_seed(M)
         x = torch.randn(M, K, device="cuda", dtype=torch.bfloat16)
@@ -151,17 +186,50 @@ def moe(layer, E=16, ms=(1, 8, 64)):
             )  # fmt: skip
             errs["gemv" if gate else "dot"] = (out.double() - want).abs().max()
         moe_mod.moe_gemv_config = GEMV_GATE
+        baseline = baseline_kernel.apply(
+            x,
+            w1q,
+            w2q,
+            wts,
+            ids,
+            activation=relu2,
+            global_num_experts=E,
+            expert_map=None,
+            apply_router_weight_on_input=False,
+        )
+        current = kernel.apply(
+            x,
+            w1q,
+            w2q,
+            wts,
+            ids,
+            activation=relu2,
+            global_num_experts=E,
+            expert_map=None,
+            apply_router_weight_on_input=False,
+        )
+        row(
+            f"routing/fusion vs HEAD layer{layer} M={M}",
+            torch.equal(baseline, current),
+            f"max-gap={(baseline - current).abs().max().item()}",
+        )
         g, d = errs["gemv"], errs["dot"]
-        row(f"moe E={E} layer {layer} M={M}", max(g, d) <= bar + 1e-9,
+        row(
+            f"moe E={E} layer {layer} M={M}",
+            max(g, d) <= bar + 1e-9,
             f"gemv {g:8.5f} dot {d:8.5f} bar {bar:8.5f}  "
-            f"ratio gemv {g / bar:4.2f} dot {d / bar:4.2f}")
+            f"ratio gemv {g / bar:4.2f} dot {d / bar:4.2f}",
+        )
 
 
 def layer_with(suffix: str) -> str:
     """First layer index that has this tensor (attention lives in some mixers)."""
     return next(
-        (str(i) for i in range(64)
-         if f"language_model.backbone.layers.{i}.mixer.{suffix}" in INDEX),
+        (
+            str(i)
+            for i in range(64)
+            if f"language_model.backbone.layers.{i}.mixer.{suffix}" in INDEX
+        ),
         "",
     )
 
@@ -170,19 +238,45 @@ if __name__ == "__main__":
     torch.manual_seed(0)
     init_workspace_manager(torch.device("cuda"))
     P = f"language_model.backbone.layers.{L}.mixer."
-    dense(f"layer{L} shared_up   {CODEC[66]}", read(P + "shared_experts.up_proj.weight"))
-    dense(f"layer{L} shared_down {CODEC[66]}", read(P + "shared_experts.down_proj.weight"))
-    dense(f"layer{L} expert0_up  {CODEC[66]}", read(P + f"experts.0.up_proj.weight"), (1, 8))
-    dense(f"layer{L} expert0_dn  {CODEC[66]}", read(P + f"experts.0.down_proj.weight"), (1, 8))
-    dense(f"layer{L} fc1_latent  {CODEC[34]}", read(P + "fc1_latent_proj.weight"), (1, 8))
-    dense(f"layer{L} fc2_latent  {CODEC[34]}", read(P + "fc2_latent_proj.weight"), (1, 8))
+    dense(
+        f"layer{L} shared_up   {CODEC[66]}", read(P + "shared_experts.up_proj.weight")
+    )
+    dense(
+        f"layer{L} shared_down {CODEC[66]}", read(P + "shared_experts.down_proj.weight")
+    )
+    dense(
+        f"layer{L} expert0_up  {CODEC[66]}",
+        read(P + f"experts.0.up_proj.weight"),
+        (1, 8),
+    )
+    dense(
+        f"layer{L} expert0_dn  {CODEC[66]}",
+        read(P + f"experts.0.down_proj.weight"),
+        (1, 8),
+    )
+    dense(
+        f"layer{L} fc1_latent  {CODEC[34]}", read(P + "fc1_latent_proj.weight"), (1, 8)
+    )
+    dense(
+        f"layer{L} fc2_latent  {CODEC[34]}", read(P + "fc2_latent_proj.weight"), (1, 8)
+    )
     A = layer_with("o_proj.weight")
     if A:
-        dense(f"layer{A} o_proj     {CODEC[34]}",
-              read(f"language_model.backbone.layers.{A}.mixer.o_proj.weight"), (1, 8))
-        dense(f"layer{A} q_proj     {CODEC[34]}",
-              read(f"language_model.backbone.layers.{A}.mixer.q_proj.weight"), (1, 8))
-    dense("lm_head           " + CODEC[34], read("language_model.lm_head.weight", 4096), (1, 8))
+        dense(
+            f"layer{A} o_proj     {CODEC[34]}",
+            read(f"language_model.backbone.layers.{A}.mixer.o_proj.weight"),
+            (1, 8),
+        )
+        dense(
+            f"layer{A} q_proj     {CODEC[34]}",
+            read(f"language_model.backbone.layers.{A}.mixer.q_proj.weight"),
+            (1, 8),
+        )
+    dense(
+        "lm_head           " + CODEC[34],
+        read("language_model.lm_head.weight", 4096),
+        (1, 8),
+    )
     moe(L)
     print("\nFAILURES:", FAILS if FAILS else "none")
     raise SystemExit(1 if FAILS else 0)

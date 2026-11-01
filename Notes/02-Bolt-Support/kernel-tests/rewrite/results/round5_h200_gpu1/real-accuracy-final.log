@@ -1,0 +1,33 @@
+W1030 04:43:01.323000 651876 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1030 04:43:01.324000 651876 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1030 04:43:01.324000 651876 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+ok   layer1 shared_up   iq2_xxs M=1         err   0.0039 bar   0.0075 ratio 0.52  gemv BN8 BK256 SPLIT8  dequant-exact=True
+ok   layer1 shared_up   iq2_xxs M=4         err   0.0072 bar   0.0127 ratio 0.57  gemv BN8 BK256 SPLIT8  dequant-exact=True
+ok   layer1 shared_up   iq2_xxs M=8         err   0.0062 bar   0.0093 ratio 0.67  dequant BN64 BK128 SPLIT4  dequant-exact=True
+ok   layer1 shared_up   iq2_xxs M=64        err   0.0101 bar   0.0151 ratio 0.67  dequant BN64 BK128 SPLIT4  dequant-exact=True
+ok   layer1 shared_down iq2_xxs M=1         err   0.0078 bar   0.0132 ratio 0.59  gemv BN8 BK256 SPLIT7  dequant-exact=True
+ok   layer1 shared_down iq2_xxs M=4         err   0.0078 bar   0.0141 ratio 0.55  gemv BN8 BK256 SPLIT7  dequant-exact=True
+ok   layer1 shared_down iq2_xxs M=8         err   0.0114 bar   0.0171 ratio 0.67  dequant BN64 BK128 SPLIT2  dequant-exact=True
+ok   layer1 shared_down iq2_xxs M=64        err   0.0124 bar   0.0186 ratio 0.67  dequant BN64 BK128 SPLIT2  dequant-exact=True
+ok   layer1 expert0_up  iq2_xxs M=1         err   0.0019 bar   0.0048 ratio 0.41  gemv BN8 BK256 SPLIT4  dequant-exact=True
+ok   layer1 expert0_up  iq2_xxs M=8         err   0.0040 bar   0.0060 ratio 0.67  dequant BN64 BK128 SPLIT8  dequant-exact=True
+ok   layer1 expert0_dn  iq2_xxs M=1         err   0.0039 bar   0.0076 ratio 0.51  gemv BN8 BK256 SPLIT8  dequant-exact=True
+ok   layer1 expert0_dn  iq2_xxs M=8         err   0.0059 bar   0.0088 ratio 0.67  dequant BN64 BK128 SPLIT16  dequant-exact=True
+ok   layer1 fc1_latent  q8_0 M=1            err   0.0130 bar   0.0195 ratio 0.67  gemv BN32 BK256 SPLIT16  dequant-exact=True
+ok   layer1 fc1_latent  q8_0 M=8            err   0.0183 bar   0.0274 ratio 0.67  gemm BN64 BK128 SPLIT16  dequant-exact=True
+ok   layer1 fc2_latent  q8_0 M=1            err   0.0077 bar   0.0142 ratio 0.54  gemv BN32 BK256 SPLIT4  dequant-exact=True
+ok   layer1 fc2_latent  q8_0 M=8            err   0.0093 bar   0.0140 ratio 0.67  gemm BN64 BK128 SPLIT8  dequant-exact=True
+ok   layer7 o_proj     q8_0 M=1             err   0.0078 bar   0.0134 ratio 0.58  gemv BN32 BK256 SPLIT16  dequant-exact=True
+ok   layer7 o_proj     q8_0 M=8             err   0.0131 bar   0.0197 ratio 0.67  gemm BN64 BK128 SPLIT8  dequant-exact=True
+ok   layer7 q_proj     q8_0 M=1             err   0.0077 bar   0.0141 ratio 0.55  gemv BN32 BK256 SPLIT16  dequant-exact=True
+ok   layer7 q_proj     q8_0 M=8             err   0.0174 bar   0.0260 ratio 0.67  gemm BN64 BK128 SPLIT8  dequant-exact=True
+ok   lm_head           q8_0 M=1             err   0.0078 bar   0.0190 ratio 0.41  gemv BN32 BK256 SPLIT16  dequant-exact=True
+ok   lm_head           q8_0 M=8             err   0.0171 bar   0.0256 ratio 0.67  gemm BN64 BK128 SPLIT8  dequant-exact=True
+ok   routing/fusion vs HEAD layer1 M=1      max-gap=0.0
+ok   moe E=16 layer 1 M=1                   gemv  0.00070 dot  0.00070 bar  0.00154  ratio gemv 0.45 dot 0.45
+ok   routing/fusion vs HEAD layer1 M=8      max-gap=0.0
+ok   moe E=16 layer 1 M=8                   gemv  0.00248 dot  0.00248 bar  0.00576  ratio gemv 0.43 dot 0.43
+ok   routing/fusion vs HEAD layer1 M=64     max-gap=0.0
+ok   moe E=16 layer 1 M=64                  gemv  0.00268 dot  0.00268 bar  0.00859  ratio gemv 0.31 dot 0.31
+
+FAILURES: none

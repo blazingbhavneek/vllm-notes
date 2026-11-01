@@ -1,0 +1,440 @@
+diff --git a/docs/features/quantization/b12x.md b/docs/features/quantization/b12x.md
+index 9278eddb90..38eaf936be 100644
+--- a/docs/features/quantization/b12x.md
++++ b/docs/features/quantization/b12x.md
+@@ -74,3 +74,16 @@ memory use matches the checkpoint. The startup log shows
+   This also works on SM120 and SM121.
+ - Routed experts support tensor parallelism only, as with b12x.
+ - ROCm is not supported.
++
++With spare GPU memory, opt into lossless IQ2_XXS expansion at load time:
++
++```bash
++vllm serve <model> --kernel-config '{"modelopt_iq2_expand": true}'
++```
++
++This stores magnitude and sign planes with exact FP32 group scales, reducing
++decode work without changing the decoded weights or quantizing activations.
++IQ2_XXS storage grows from 66 to 128 bytes per 256 values; Q8_0 and other
++formats are unaffected. The default retains checkpoint-sized storage. The
++option applies only to the Triton path; automatic b12x selection is unchanged.
++Include the expanded weights in your `--gpu-memory-utilization` budget.
+diff --git a/tests/kernels/quantization/test_modelopt_block_triton.py b/tests/kernels/quantization/test_modelopt_block_triton.py
+index 7198426147..8b18cc9003 100644
+--- a/tests/kernels/quantization/test_modelopt_block_triton.py
++++ b/tests/kernels/quantization/test_modelopt_block_triton.py
+@@ -15,7 +15,9 @@ from vllm.model_executor.layers.fused_moe.config import (
+     FusedMoEQuantConfig,
+     FusedMoEQuantDesc,
+ )
+-from vllm.model_executor.layers.fused_moe.experts import modelopt_block_triton_moe as moe_mod
++from vllm.model_executor.layers.fused_moe.experts import (
++    modelopt_block_triton_moe as moe_mod,
++)
+ from vllm.model_executor.layers.fused_moe.experts.modelopt_block_triton_moe import (
+     ModelOptBlockTritonExperts,
+ )
+@@ -24,8 +26,10 @@ from vllm.model_executor.layers.fused_moe.prepare_finalize import (
+ )
+ from vllm.model_executor.layers.quantization.modelopt_block_quant_triton import (
+     _IQ2XXS_GRID,
++    _dequant_kernel,
+     _linear_config,
+     dequantize_blocks,
++    expand_iq2,
+     iq2_lut,
+     launch_linear,
+     repack_blocks,
+@@ -92,9 +96,11 @@ def make_raw(lead, k, codec, seed, extreme=False):
+     return raw
+ 
+ 
+-def linear(x, raw, codec):
++def linear(x, raw, codec, expanded=False):
+     qweight, scales = repack_blocks(raw, codec)
+     lut = iq2_lut(raw.device) if codec == "iq2_xxs" else None
++    if expanded:
++        qweight, scales = expand_iq2(qweight, scales, lut)
+     return torch.ops.vllm.modelopt_block_linear(x, qweight, scales, lut, codec)
+ 
+ 
+@@ -118,13 +124,17 @@ def test_iq2_grid_matches_ggml():
+     assert torch.equal((grid[:, None] >> (8 * torch.arange(8))) & 0xFF, expected)
+ 
+ 
+-@pytest.mark.parametrize("codec", ["iq2_xxs", "q8_0"])
+-def test_decode_bit_exact(codec):
++@pytest.mark.parametrize(
++    "codec,expanded", [("iq2_xxs", False), ("iq2_xxs", True), ("q8_0", False)]
++)
++def test_decode_bit_exact(codec, expanded):
+     """Both decodes, table gather (dequant) and 2-bit codes (GEMM), are exact."""
+     K = K_FOR[codec]
+     raw = make_raw((264,), K, codec, seed=1, extreme=True)
+     qweight, scales = repack_blocks(raw, codec)
+     lut = iq2_lut(raw.device) if codec == "iq2_xxs" else None
++    if expanded:
++        qweight, scales = expand_iq2(qweight, scales, lut)
+     want = ref_decode(raw, codec).bfloat16()
+     assert torch.equal(dequantize_blocks(qweight, scales, lut, codec), want)
+     eye = torch.eye(K, device="cuda", dtype=torch.bfloat16)
+@@ -132,14 +142,33 @@ def test_decode_bit_exact(codec):
+     assert torch.equal(launch_linear(eye, qweight, scales, lut, codec, gemm).T, want)
+ 
+ 
+-@pytest.mark.parametrize("codec", ["iq2_xxs", "q8_0"])
++@pytest.mark.parametrize("K", [256, 5376])
++def test_expanded_iq2_preserves_fp32_weights(K):
++    """Precomputing group scales must not round them to fp16, even at extremes."""
++    raw = make_raw((2, 136), K, "iq2_xxs", seed=19, extreme=True)
++    qw, scales = repack_blocks(raw, "iq2_xxs")
++    lut = iq2_lut(raw.device)
++    qw, scales = expand_iq2(qw, scales, lut)
++    qw = qw.flatten(0, 1)
++    scales = scales.flatten(0, 1)
++    out = torch.empty((272, K), dtype=torch.float32, device="cuda")
++    _dequant_kernel[(34, K // 256)](
++        qw, scales, lut, out, 272, K, qw.stride(0), scales.stride(0),
++        CODEC=2, BN=8, BK=256, num_warps=1,
++    )  # fmt: skip
++    assert torch.equal(out, ref_decode(raw, "iq2_xxs").reshape(272, K))
++
++
++@pytest.mark.parametrize(
++    "codec,expanded", [("iq2_xxs", False), ("iq2_xxs", True), ("q8_0", False)]
++)
+ @pytest.mark.parametrize(
+     "M", [1, 2, 3, 4, 8, 15, 16, 17, 33, 64, 65, 128, 255, 256, 1000, 2048]
+ )
+-def test_linear_matches_reference(codec, M):
++def test_linear_matches_reference(codec, expanded, M):
+     raw = make_raw((1032,), K_FOR[codec], codec, seed=M)
+     x = torch.randn(M, K_FOR[codec], device="cuda", dtype=torch.bfloat16)
+-    assert_close_to_cublas(linear(x, raw, codec), x, ref_decode(raw, codec))
++    assert_close_to_cublas(linear(x, raw, codec, expanded), x, ref_decode(raw, codec))
+ 
+ 
+ def test_linear_odd_k_steps():
+@@ -204,11 +233,14 @@ def test_linear_compile_does_not_freeze_dispatch():
+     assert_close_to_cublas(compiled(x), x, ref_decode(raw, "iq2_xxs"))
+ 
+ 
++@pytest.mark.parametrize("expanded", [False, True])
+ @pytest.mark.parametrize("M", [1, 4, 17])
+-def test_linear_cuda_graph_replay(M):
++def test_linear_cuda_graph_replay(M, expanded):
+     raw = make_raw((520,), 1024, "iq2_xxs", seed=6)
+     qweight, scales = repack_blocks(raw, "iq2_xxs")
+     lut = iq2_lut(raw.device)
++    if expanded:
++        qweight, scales = expand_iq2(qweight, scales, lut)
+     x = torch.randn(M, 1024, device="cuda", dtype=torch.bfloat16)
+     torch.ops.vllm.modelopt_block_linear(x, qweight, scales, lut, "iq2_xxs")
+     graph = torch.cuda.CUDAGraph()
+@@ -257,12 +289,16 @@ def assert_moe_close_to_bf16(out, *args):
+     assert ours <= 2 * (bf16 - want).abs().max() + ulp + 1e-6, ours
+ 
+ 
+-def make_moe(codec, activation, E=16, K=1024, inter=512, top_k=2):
++def make_moe(codec, activation, E=16, K=1024, inter=512, top_k=2, expanded=False):
+     gated = activation == MoEActivation.SILU
+     raw1 = make_raw((E, (2 if gated else 1) * inter), K, codec, seed=7)
+     raw2 = make_raw((E, K), inter, codec, seed=8)
+     w1, s1 = repack_blocks(raw1, codec)
+     w2, s2 = repack_blocks(raw2, codec)
++    if expanded:
++        lut = iq2_lut(w1.device)
++        w1, s1 = expand_iq2(w1, s1, lut)
++        w2, s2 = expand_iq2(w2, s2, lut)
+     quant_config = FusedMoEQuantConfig(
+         _a1=FusedMoEQuantDesc(),
+         _a2=FusedMoEQuantDesc(),
+@@ -297,12 +333,14 @@ def make_routing(M, E, top_k):
+     return topk_weights, topk_ids.to(torch.int32)
+ 
+ 
+-@pytest.mark.parametrize("codec", ["iq2_xxs", "q8_0"])
++@pytest.mark.parametrize(
++    "codec,expanded", [("iq2_xxs", False), ("iq2_xxs", True), ("q8_0", False)]
++)
+ @pytest.mark.parametrize("activation", [MoEActivation.RELU2_NO_MUL, MoEActivation.SILU])
+ @pytest.mark.parametrize("top_k", [2, 9])
+ @pytest.mark.parametrize("M", [1, 7, 64, 333])
+-def test_moe_matches_reference(codec, activation, top_k, M, workspace_init):
+-    run, w1, w2 = make_moe(codec, activation, top_k=top_k)
++def test_moe_matches_reference(codec, expanded, activation, top_k, M, workspace_init):
++    run, w1, w2 = make_moe(codec, activation, top_k=top_k, expanded=expanded)
+     x = torch.randn(M, 1024, device="cuda", dtype=torch.bfloat16)
+     topk_weights, topk_ids = make_routing(M, 16, top_k)
+     got = run(x, topk_weights, topk_ids)
+diff --git a/tests/quantization/test_modelopt.py b/tests/quantization/test_modelopt.py
+index 9cb63a8701..f056aaef4c 100644
+--- a/tests/quantization/test_modelopt.py
++++ b/tests/quantization/test_modelopt.py
+@@ -1667,7 +1667,8 @@ def test_modelopt_block_quant_backend_selection(
+ 
+ 
+ @_requires_sm80
+-def test_modelopt_block_triton_tiny_nemotron_h(tmp_path, vllm_runner):
++@pytest.mark.parametrize("expanded", [False, True])
++def test_modelopt_block_triton_tiny_nemotron_h(tmp_path, vllm_runner, expanded):
+     """IQ2_XXS on traced attention and routed experts, Q8_0 on shared experts,
+     latent projections, lm_head and embeddings: torch.compile + CUDA graphs
+     agree with eager."""
+@@ -1773,6 +1774,7 @@ def test_modelopt_block_triton_tiny_nemotron_h(tmp_path, vllm_runner):
+             gpu_memory_utilization=0.3,
+             linear_backend="triton",
+             moe_backend="triton",
++            kernel_config={"modelopt_iq2_expand": expanded},
+             enforce_eager=not compiled,
+             compilation_config={"cudagraph_capture_sizes": [1, 2, 4]},
+         ) as llm:
+diff --git a/vllm/config/kernel.py b/vllm/config/kernel.py
+index 9e40c1528f..dc374f4e31 100644
+--- a/vllm/config/kernel.py
++++ b/vllm/config/kernel.py
+@@ -299,6 +299,12 @@ class KernelConfig:
+     enable_jit_warmup: bool = True
+     """If True, run JIT compile warmup during kernel warmup."""
+ 
++    modelopt_iq2_expand: bool = False
++    """Losslessly expand Triton IQ2_XXS weights from 66 to 128 bytes per 256
++    values at load time to reduce decode work. Requires extra GPU memory;
++    exact FP32 group scales and BF16 activations are preserved. Does not affect b12x.
++    """
++
+     monokernel: bool = False
+     """If True, run the eligible layers of decode steps on the model's
+     MonoKernel: a persistent kernel that runs most or all of one decoder layer
+diff --git a/vllm/model_executor/layers/quantization/modelopt_block_quant.py b/vllm/model_executor/layers/quantization/modelopt_block_quant.py
+index f867e9bcf0..f583edec36 100644
+--- a/vllm/model_executor/layers/quantization/modelopt_block_quant.py
++++ b/vllm/model_executor/layers/quantization/modelopt_block_quant.py
+@@ -28,6 +28,7 @@ from vllm.model_executor.layers.linear import (
+     register_weight_loader_v2_supported_method,
+ )
+ from vllm.model_executor.layers.quantization.modelopt_block_quant_triton import (
++    expand_iq2,
+     iq2_lut,
+     repack_blocks,
+ )
+@@ -252,6 +253,13 @@ class ModelOptBlockQuantMoEMethod(FusedMoEMethodBase):
+                 qweight, scales = repack_blocks(
+                     getattr(layer, f"{name}_weight").data, self.codec
+                 )
++                if (
++                    self.codec == "iq2_xxs"
++                    and get_current_vllm_config().kernel_config.modelopt_iq2_expand
++                ):
++                    qweight, scales = expand_iq2(
++                        qweight, scales, iq2_lut(qweight.device)
++                    )
+                 replace_parameter(layer, f"{name}_weight", qweight)
+                 layer.register_parameter(
+                     f"{name}_weight_scale",
+@@ -365,6 +373,11 @@ class ModelOptBlockQuantLinearMethod(LinearMethodBase):
+     def process_weights_after_loading(self, layer):
+         if self.use_triton:
+             qweight, scales = repack_blocks(layer.weight.data, self.codec)
++            if (
++                self.codec == "iq2_xxs"
++                and get_current_vllm_config().kernel_config.modelopt_iq2_expand
++            ):
++                qweight, scales = expand_iq2(qweight, scales, iq2_lut(qweight.device))
+             replace_parameter(layer, "weight", qweight)
+             layer.register_parameter(
+                 "weight_scale", torch.nn.Parameter(scales, requires_grad=False)
+diff --git a/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py b/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
+index 40ab9d7215..c9b1a983c4 100644
+--- a/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
++++ b/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
+@@ -82,6 +82,62 @@ _IQ2XXS_GRID = (
+ _CODEC_ID = {"q8_0": 0, "iq2_xxs": 1}
+ 
+ 
++def _codec_id(codec: str, scales: torch.Tensor) -> int:
++    if codec == "iq2_xxs" and scales.dtype == torch.float32:
++        return 2
++    return _CODEC_ID[codec]
++
++
++@triton.jit
++def _expand_iq2_kernel(
++    q_ptr, sc_ptr, lut_ptr, out_ptr, scale_ptr, total, groups_per_row, B: tl.constexpr
++):
++    i = tl.program_id(0) * B + tl.arange(0, B)
++    valid = i < total
++    idx = tl.load(q_ptr + (i // 4) * 2, valid, other=0)
++    aux = tl.load(q_ptr + (i // 4) * 2 + 1, valid, other=0)
++    group = i % 4
++    codes = tl.load(lut_ptr + 2048 + ((idx >> (group * 8)) & 255))
++    signs = (aux >> (group * 7)) & 127
++    parity = signs ^ (signs >> 4)
++    parity ^= parity >> 2
++    parity ^= parity >> 1
++    signs |= (parity & 1) << 7
++    row = (i // groups_per_row).to(tl.int64)
++    col = i % groups_per_row
++    base = out_ptr + row * groups_per_row * 3
++    tl.store(base.to(tl.pointer_type(tl.uint16)) + col, codes, valid)
++    tl.store(base + groups_per_row * 2 + col, signs, valid)
++    d = tl.load(sc_ptr + i // 32, valid, other=0.0).to(tl.float32)
++    rs = d * (0.5 + ((aux >> 28) & 15).to(tl.float32)) * 0.25
++    tl.store(scale_ptr + i // 4, rs, valid & (group == 0))
++
++
++def expand_iq2(
++    qweight: torch.Tensor, scales: torch.Tensor, lut: torch.Tensor
++) -> tuple[torch.Tensor, torch.Tensor]:
++    """Expand to code/sign planes and exact fp32 scales at load time.
++
++    Each row contains uint16 magnitude codes followed by uint8 sign masks.
++    Per-32 scales are stored in fp32, avoiding the rounding incurred by fp16.
++    Storage is 128 rather than 66 bytes per 256 weights.
++    """
++    groups = qweight.shape[-1] * 2
++    out = torch.empty(
++        (*qweight.shape[:-1], groups * 3), dtype=torch.uint8, device=qweight.device
++    )
++    rs = torch.empty(
++        (*scales.shape[:-1], scales.shape[-1] * 8),
++        dtype=torch.float32,
++        device=scales.device,
++    )
++    total = qweight.numel() * 2
++    _expand_iq2_kernel[(triton.cdiv(total, 256),)](
++        qweight.contiguous(), scales.contiguous(), lut, out, rs, total, groups, B=256
++    )
++    return out, rs
++
++
+ def repack_blocks(raw: torch.Tensor, codec: str) -> tuple[torch.Tensor, torch.Tensor]:
+     """Split ggml blocks into an aligned payload and fp16 block scales.
+ 
+@@ -135,7 +191,29 @@ def _decode_tile(
+     R: tl.constexpr = BK // 32
+     rr = k0 // 32 + tl.arange(0, R)
+     row = offs_n.to(tl.int64)[:, None]
+-    if CODEC == 1:
++    if CODEC == 2:
++        g = tl.arange(0, 4)[None, None, :]
++        gg = rr[None, :, None] * 4 + g
++        base = qw_ptr + row * stride_qn
++        codes = tl.load(
++            base.to(tl.pointer_type(tl.uint16))[:, :, None] + gg,
++            mask=n_mask[:, None, None],
++            other=0,
++        ).to(tl.int32)
++        signs = tl.load(
++            base[:, :, None] + stride_qn // 3 * 2 + gg,
++            mask=n_mask[:, None, None],
++            other=0,
++        ).to(tl.int32)
++        rs = tl.load(
++            sc_ptr + row * stride_sn + rr[None, :], mask=n_mask[:, None], other=0.0
++        )
++        j = tl.arange(0, 8)[None, None, None, :]
++        c = (codes[:, :, :, None] >> (2 * j)) & 3
++        mag = ((0x002B1908 >> (c * 8)) & 255).to(tl.float32)
++        neg = (signs[:, :, :, None] >> j) & 1
++        w = tl.reshape(tl.where(neg != 0, -mag, mag) * rs[:, :, None, None], (BN, BK))
++    elif CODEC == 1:
+         # Per record: scale. Per group of 8: grid index and sign mask.
+         d = tl.load(
+             sc_ptr + row * stride_sn + (rr // 8)[None, :],
+@@ -511,14 +589,14 @@ def launch_linear(
+         assert cfg["BM"] >= M
+         _gemv_kernel[(triton.cdiv(N, cfg["BN"]), split)](
+             x, qweight, scales, lut, out, M, N, K // split, x.stride(0),
+-            qweight.stride(0), scales.stride(0), CODEC=_CODEC_ID[codec],
++            qweight.stride(0), scales.stride(0), CODEC=_codec_id(codec, scales),
+             BM=cfg["BM"], BN=cfg["BN"], BK=cfg["BK"], **launch,
+         )  # fmt: skip
+     else:
+         grid = (triton.cdiv(M, cfg["BM"]) * triton.cdiv(N, cfg["BN"]), split)
+         _gemm_kernel[grid](
+             x, qweight, scales, lut, out, M, N, K // split, x.stride(0),
+-            qweight.stride(0), scales.stride(0), CODEC=_CODEC_ID[codec],
++            qweight.stride(0), scales.stride(0), CODEC=_codec_id(codec, scales),
+             BM=cfg["BM"], BN=cfg["BN"], BK=cfg["BK"], **launch,
+         )  # fmt: skip
+     if split == 1:
+@@ -539,13 +617,13 @@ def dequantize_blocks(
+ ) -> torch.Tensor:
+     """bf16 [N, K] from 2-D `repack_blocks` output."""
+     N, nb = scales.shape
+-    K = nb * (256 if codec == "iq2_xxs" else 32)
++    K = nb * (256 if codec == "iq2_xxs" and scales.dtype != torch.float32 else 32)
+     out = torch.empty((N, K), dtype=torch.bfloat16, device=qweight.device)
+     bk = next(b for b in (256, 128, 64, 32) if K % b == 0)
+     bn, warps = (8, 1) if codec == "iq2_xxs" else (32, 4)
+     _dequant_kernel[(triton.cdiv(N, bn), K // bk)](
+         qweight, scales, lut, out, N, K, qweight.stride(0), scales.stride(0),
+-        CODEC=_CODEC_ID[codec], BN=bn, BK=bk, num_warps=warps,
++        CODEC=_codec_id(codec, scales), BN=bn, BK=bk, num_warps=warps,
+     )  # fmt: skip
+     return out
+ 
+@@ -640,9 +718,7 @@ direct_register_custom_op(
+ )
+ 
+ 
+-def moe_gemv_config(
+-    M: int, E: int, top_k: int, codec: str
+-) -> dict[str, int] | None:
++def moe_gemv_config(M: int, E: int, top_k: int, codec: str) -> dict[str, int] | None:
+     """Tiles for the decode path, or None when `moe_config`'s tiles win.
+ 
+     One program per routed row: no `moe_align_block_size` padding and no
+@@ -687,7 +763,7 @@ def invoke_block_moe_gemv_kernel(
+         N, a.size(1), a.size(0) * top_k, a.stride(0), qweight.stride(0),
+         qweight.stride(1), scales.stride(0), scales.stride(1), c.stride(-2),
+         top_k=top_k, MUL_ROUTED_WEIGHT=mul_routed_weight,
+-        CODEC=_CODEC_ID[codec], BN=config["BN"], BK=config["BK"],
++        CODEC=_codec_id(codec, scales), BN=config["BN"], BK=config["BK"],
+         num_warps=config["num_warps"], num_stages=config["num_stages"],
+     )  # fmt: skip
+ 
+@@ -757,6 +833,6 @@ def invoke_block_moe_kernel(
+         num_tokens_post_padded, N, a.size(1), em, a.size(0) * top_k, a.stride(0),
+         qweight.stride(0), qweight.stride(1), scales.stride(0), scales.stride(1),
+         c.stride(-2), top_k=top_k, MUL_ROUTED_WEIGHT=mul_routed_weight,
+-        CODEC=_CODEC_ID[codec], BM=bm, BN=config["BN"], BK=config["BK"],
++        CODEC=_codec_id(codec, scales), BM=bm, BN=config["BN"], BK=config["BK"],
+         num_warps=config["num_warps"], num_stages=config["num_stages"],
+     )  # fmt: skip
+diff --git a/vllm/model_executor/warmup/modelopt_block_triton_warmup.py b/vllm/model_executor/warmup/modelopt_block_triton_warmup.py
+index 3357e54c56..db6c5c32fe 100644
+--- a/vllm/model_executor/warmup/modelopt_block_triton_warmup.py
++++ b/vllm/model_executor/warmup/modelopt_block_triton_warmup.py
+@@ -95,7 +95,9 @@ def modelopt_block_triton_warmup(worker: "Worker") -> None:
+ 
+         qweight = module.weight
+         n = qweight.shape[0]
+-        k = module.weight_scale.shape[1] * method.block_size
++        k = module.weight_scale.shape[1] * (
++            32 if module.weight_scale.dtype == torch.float32 else method.block_size
++        )
+         fused_configs: dict[tuple, int] = {}
+         for m in range(1, max_tokens + 1):
+             if m >= kernels.DEQUANT_MIN_M[codec] and n * k <= kernels.DEQUANT_MAX_NUMEL:
+@@ -153,7 +155,9 @@ def _warm_moe(
+     warm_k = module.w2_weight.shape[1]
+     n1 = module.w13_weight.shape[1]
+     n2 = module.w2_weight.shape[1]
+-    k2 = module.w2_weight.shape[2] * method.block_size
++    k2 = module.w2_weight_scale.shape[2] * (
++        32 if module.w2_weight_scale.dtype == torch.float32 else method.block_size
++    )
+     mul_routed_weight = not module.apply_router_weight_on_input
+     lut = kernels.iq2_lut(device) if codec == "iq2_xxs" else None
+ 
+@@ -208,7 +212,7 @@ def _warm_moe(
+             codec,
+         )
+         a2 = torch.empty((rows * top_k, k2), dtype=torch.bfloat16, device=device)
+-        c2 = torch.empty((rows, top_k, k2), dtype=torch.bfloat16, device=device)
++        c2 = torch.empty((rows, top_k, n2), dtype=torch.bfloat16, device=device)
+         launch(
+             a2,
+             module.w2_weight,

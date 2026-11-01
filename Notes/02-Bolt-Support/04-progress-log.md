@@ -2,7 +2,15 @@
 
 Plan: `03-improvment-handoff.md`. Review: `review.md`.
 
-## Status (updated 2026-10-29)
+## Status (updated 2026-10-30)
+
+**Correction:** the Round 3c claim of a 1.7x GEMV win from expanded planes was
+invalid. The prototype broadcast row offsets on the K-group axis and read the
+wrong weight rows; it checked encoding exactness separately, never its GEMV.
+It also rounded combined scales to fp16. Round 5 below records corrected
+experiments with exact fp32 scales and full-output validation. Do not use the
+old expansion speedup or memory-floor claims as an optimization premise.
+
 
 - **Two local commits are NOT pushed** on `origin/feature/modelopt-block-triton`
   (`blazingbhavneek/vllm`): `38578eebeb` (H200 tuning + JIT warmup) and
@@ -10,7 +18,7 @@ Plan: `03-improvment-handoff.md`. Review: `review.md`.
   - `HEAD~2` = `f513496e9b`, the rewrite.
   - `HEAD~3` = `b477391ff3`, the old draft rebased, kept as the A/B baseline.
   - Base = `upstream/main` `274a5e19a1`.
-- **Round 3 below is the current state of the work** (real 74B serving numbers,
+- **Round 3 below is the previous serving baseline** (real 74B serving numbers,
   what shipped, what is left). `05-handoff-h200.md` still has the code map,
   tools and the cross-arch (Appendix D) procedure.
 - On the home box the branch is checked out directly in `vllm/`, on the in-place build. The `vllm-bolt` worktree is gone.
@@ -563,3 +571,65 @@ Two consequences worth keeping:
   is therefore a numerics change to every IQ2 linear, not a kernel tweak.
 - V3 also failed numerically on one shape (`shared_down`, rel 0.77), so the
   `tl.dot` + BK=32 structure is dropped on both speed and correctness.
+
+
+## Round 5 — 2026-10-30: GPU 1, adaptive sparse MoE and dense cache
+
+Question: use GPU 1's free SMs/VRAM for further speed while preserving the
+checkpoint's accuracy. Change: direct decode routing, BF16-preserving ReLU²
+fusion, singleton GEMV inside sparse grouped MoE, and opt-in BF16 caching of
+already-dequantized dense weights. The final sparse tile is BM64/BN32/BK128,
+four warps, one stage. The cache adds 3.28 GiB for this checkpoint.
+
+Correctness: 127 focused tests passed, including exact public `LLM` cache
+parity and graph routing changes. GSM8K numeric-match and throughput results,
+commands, controls and raw evidence are in
+[the final report](06-h200-gpu1-optimization.md).
+
+Observation: the global decode cutoff and per-shape random-routing benchmarks
+alone do not predict serving throughput. The adaptive expert-row test handles
+both repeated and distinct requests. No lossy repack/activation quantization
+was retained. The historical expanded-plane speedup was invalid; the corrected
+benchmark and rejected implementation patch are archived.
+
+Known baseline issues: the older tiny eager/compiled Mamba comparison also
+fails with the original expert implementation; the wide IQ2 prefill tile has
+a small SM90 spill. Removing that spill with wider warps or smaller/split tiles
+regressed performance, so the original fastest large-prefill launch remains.
+Unlike the older script, the dispatch report now fails its exit status when it
+finds a spill. Neither existing test tolerances nor the original mismatch test
+were weakened to make the new changes pass.
+
+Result: measured local plateau after representation, packed-register, cutoff,
+adaptive tile, pipeline, warp and prefill sweeps. New experiments should state
+which routing/workload assumption they improve, and compare against this run's
+full-model controls. No commits, pushes, or server deployment were performed.
+
+## Round 6 — 2026-10-30: served on GPU 1, profiled, Q8 single-kernel trial
+
+Hosted the real model at `127.0.0.1:8001` with compiled CUDA graphs, captured
+single-request and concurrency-32 CUPTI timelines, and then stopped the server.
+The round 5 serving baseline reached 132.1/492.0/865.0 output tokens/s at
+concurrency 1/8/32. The steady single-request graph spans 6.966 ms, with
+6.671 ms of model-kernel time and 0.296 ms with no model kernel executing;
+between-graph kernel idle is 0.069 ms. At concurrency 32 the graph spans
+32.159 ms with 31.806 ms of kernel time. The analysis, serving command, CUDA
+counter limitation and next-agent worklist are in
+[`07-round6-serving-profile.md`](07-round6-serving-profile.md).
+
+The trace has 176 dense GEMV and 176 split-K reduction launches per decode
+graph. A controlled microbenchmark found a one-kernel Hopper Q8 path faster on
+four exact model projection shapes, so a guarded SM90/single-row Q8 dispatch
+was added. Its CUDA-graph latency was 1.5–4.9x faster in the microbenchmark,
+with the existing numerical reference checks passing. All 126 focused kernel
+tests pass. This change has **not** yet had a post-change serving A/B or full
+model accuracy run; the saved 236/250 GSM8K result belongs to the prior server.
+Treat the dispatch as an uncommitted candidate until the next agent completes
+those gates. The LM-head shape did not win and is not dispatched.
+
+Nsight Compute warp-stall and achieved-occupancy counters are blocked by the
+host driver's `ERR_NVGPUCTRPERM`, including as container root. Static CUDA
+occupancy limits were queried from actual cached cubins; the CUDA toolkit
+streaming probe passed at 3194.69 GB/s effective. No host driver changes were
+made. The server is stopped; port 8001 is free. GPU 1 had other resident work
+during parts of this session, so repeat performance runs during a quiet window.
