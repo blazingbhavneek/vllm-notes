@@ -1,5 +1,6 @@
 """Dispatched op vs the better of fused / dequant+cuBLAS, BF16 and FP16."""
 
+import os
 import sys
 from functools import partial
 
@@ -13,9 +14,13 @@ from vllm.model_executor.layers.quantization import (  # noqa: E402
 )
 
 torch.set_default_device("cuda")
+# DTYPES=float16 for Turing; MS=8,16,24,32,48,64 to find a crossover finely.
+DTYPES = [getattr(torch, d) for d in os.environ.get("DTYPES", "bfloat16,float16").split(",")]
+MS = [int(m) for m in os.environ.get("MS", "8,32,64,128,256,512").split(",")]
 torch.manual_seed(0)
 p = torch.cuda.get_device_properties()
-print(p.name, "bus", p.memory_bus_width)
+print(p.name, "bus", p.memory_bus_width, "cutoffs",
+      {c: t.dequant_min_m(c, torch.cuda.current_device()) for c in ("iq2_xxs", "q8_0")})
 print(f"{'layer':12s} {'dtype':8s} {'M':>4s} {'op':>7s} {'fused':>7s} {'deq':>7s} op/best")
 for name, codec, N, K in DENSE:
     if name == "lm_head":
@@ -27,8 +32,8 @@ for name, codec, N, K in DENSE:
     )
     qw, sc = t.repack_blocks(raw, codec)
     lut = t.iq2_lut(qw.device) if codec == "iq2_xxs" else None
-    for dtype in (torch.bfloat16, torch.float16):
-        for M in (8, 32, 64, 128, 256, 512):
+    for dtype in DTYPES:
+        for M in MS:
             x = torch.randn(M, K, dtype=dtype)
             cfg = t._linear_config(M, N, K, codec, p.multi_processor_count,
                                    p.shared_memory_per_block_optin, p.major)
