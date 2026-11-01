@@ -1,0 +1,13 @@
+diff --git a/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py b/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
+index e465e07e2a..a2e39bf262 100644
+--- a/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
++++ b/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
+@@ -749,7 +749,7 @@ def moe_gemv_config(M: int, E: int, top_k: int, codec: str) -> dict[str, int] |
+     other work on the GPU, serving does. On GDDR GPUs the GEMV stays ahead
+     through 64 rows (RTX 5060 Ti: 1.5-2.4x at M=16-64).
+     """
+-    max_rows = 8 if _is_hbm(torch.accelerator.current_device_index()) else 64
++    max_rows = 8 if _is_hbm(torch.accelerator.current_device_index()) else 8
+     if max_rows < M:
+         return None
+     bn, bk, warps = (8, 256, 1) if codec == "iq2_xxs" else (32, 256, 4)

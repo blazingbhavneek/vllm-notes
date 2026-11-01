@@ -633,3 +633,14 @@ occupancy limits were queried from actual cached cubins; the CUDA toolkit
 streaming probe passed at 3194.69 GB/s effective. No host driver changes were
 made. The server is stopped; port 8001 is free. GPU 1 had other resident work
 during parts of this session, so repeat performance runs during a quiet window.
+
+## Round 8 — 2026-11-01: multi-arch rentals, FP16 fix, GDDR cutoffs
+
+Validated on a CMP 170HX (SM80), an L40S (SM89), an RTX 3090 (SM86) and the 5060 Ti (SM120):
+- All kernel suites pass, and BF16 GSM8K-250 scores 230–235.
+- FP16 collapsed to 3/250 because of an upstream MoE-runner scaling bug. The fix on its own branch brings it back to
+  234–235.
+- Serving moved the MoE GEMV cutoff to 8 rows on every GPU. The GDDR IQ2 dense cutoff moved to 65.
+
+All numbers, raw files and the gaps left before the PR are in
+[`09-round8-multi-arch-results.md`](09-round8-multi-arch-results.md).

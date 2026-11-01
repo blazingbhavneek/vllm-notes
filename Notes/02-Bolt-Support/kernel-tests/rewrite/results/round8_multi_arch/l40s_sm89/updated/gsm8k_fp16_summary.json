@@ -1,0 +1,31 @@
+{
+  "dataset_sha256": "3730d312f6e3440559ace48831e51066acaca737f6eabec99bccb9e4b3c39d14",
+  "concurrency": 32,
+  "elapsed_s": 82.40190835201065,
+  "correct": 234,
+  "n": 250,
+  "truncated": 1,
+  "examples": [
+    {
+      "index": 0,
+      "gold": "18",
+      "prediction": "18",
+      "correct": true,
+      "finish_reason": "stop"
+    },
+    {
+      "index": 1,
+      "gold": "3",
+      "prediction": "3",
+      "correct": true,
+      "finish_reason": "stop"
+    },
+    {
+      "index": 2,
+      "gold": "70000",
+      "prediction": "70000",
+      "correct": true,
+      "finish_reason": "stop"
+    }
+  ]
+}

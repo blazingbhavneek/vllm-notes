@@ -1,0 +1,2 @@
+Clearing cache at: /opt/uv/cache
+Removed 20700 files (5.2GiB)

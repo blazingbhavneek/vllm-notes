@@ -1,0 +1,324 @@
+W1101 09:20:22.791000 26976 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1101 09:20:22.792000 26976 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1101 09:20:22.792000 26976 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+(APIServer pid=26976) INFO 11-01 09:20:35 [startup.py:38] 
+(APIServer pid=26976) INFO 11-01 09:20:35 [startup.py:38]        █     █     █▄   ▄█
+(APIServer pid=26976) INFO 11-01 09:20:35 [startup.py:38]  ▄▄ ▄█ █     █     █ ▀▄▀ █  version 0.1.dev24301+gf5e6e1bb0
+(APIServer pid=26976) INFO 11-01 09:20:35 [startup.py:38]   █▄█▀ █     █     █     █  model   /workspace/.hf_home/hub/models--nvidia--NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/snapshots/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f
+(APIServer pid=26976) INFO 11-01 09:20:35 [startup.py:38]    ▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀     ▀
+(APIServer pid=26976) INFO 11-01 09:20:35 [startup.py:38] 
+(APIServer pid=26976) INFO 11-01 09:20:35 [startup.py:96] non-default args: {'model_tag': '/workspace/.hf_home/hub/models--nvidia--NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/snapshots/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f', 'port': 8001, 'model': '/workspace/.hf_home/hub/models--nvidia--NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/snapshots/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f', 'trust_remote_code': True, 'max_model_len': 4096, 'served_model_name': ['nemotron-bolt-h200'], 'gpu_memory_utilization': 0.9, 'language_model_only': True, 'max_num_batched_tokens': 1024, 'max_num_seqs': 32, 'compilation_config': {'mode': None, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': [], 'ir_enable_torch_wrap': None, 'splitting_ops': None, 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': None, 'compile_ranges_endpoints': None, 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': None, 'cudagraph_num_of_warmups': 0, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 32], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': None, 'pass_config': {}, 'max_cudagraph_capture_size': None, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': None, 'static_all_moe_layers': []}, 'kernel_config': KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=[], fused_add_rms_norm=[], gelu_and_mul_sparse=[]), enable_flashinfer_autotune=None, enable_rocm_segmented_attn_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, modelopt_iq2_dense_cache=False, monokernel=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant={'nvfp4_w4a16': 'marlin'}, rdna_hybrid_w4a16_prefill_dequant='disable')}
+(APIServer pid=26976) WARNING 11-01 09:20:35 [interface.py:1480] Unknown vLLM environment variable detected: VLLM_TEST_ENDPOINT
+(APIServer pid=26976) WARNING 11-01 09:20:35 [interface.py:1480] Unknown vLLM environment variable detected: VLLM_MODEL
+(APIServer pid=26976) WARNING 11-01 09:20:35 [interface.py:1480] Unknown vLLM environment variable detected: VLLM_ARGS
+[ERROR] `vision_final_layernorm` is part of NemotronH_Omni_Reasoning_V3_Config.__init__'s signature, but not documented. Make sure to add it to the docstring of the function in /workspace/.hf_home/modules/transformers_modules/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f/17063d245b40fe19/configuration_nemotron_h_omni.py.
+(APIServer pid=26976) INFO 11-01 09:20:36 [model.py:756] Resolved architecture: NemotronH_Omni_Reasoning_V3
+(APIServer pid=26976) INFO 11-01 09:20:36 [model.py:2194] Using max model len 4096
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417] Module nixl_ep was found but failed to import
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417] Traceback (most recent call last):
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "/workspace/vllm/vllm/utils/import_utils.py", line 415, in _has_module
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]     importlib.import_module(module_name)
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]     return _bootstrap._gcd_import(name[level:], package, level)
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 56, in <module>
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]     _pkg = sys.modules[_load_ep_module()]
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]                        ^^^^^^^^^^^^^^^^^
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 36, in _load_ep_module
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]     return importlib.import_module(mod_name).__name__
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]     return _bootstrap._gcd_import(name[level:], package, level)
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "/venv/main/lib/python3.12/site-packages/nixl_ep_cu13/__init__.py", line 27, in <module>
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]     _nixl_ep_cpp = importlib.import_module(f".nixl_ep_cpp_torch{_torch_mm}", __package__)
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]     return _bootstrap._gcd_import(name[level:], package, level)
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417]   File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+(APIServer pid=26976) WARNING 11-01 09:20:37 [import_utils.py:417] ModuleNotFoundError: No module named 'nixl_ep_cu13.nixl_ep_cpp_torch214'
+(APIServer pid=26976) INFO 11-01 09:20:39 [model.py:976] All limits of multimodal modalities supported by the model are set to 0, running in text-only mode.
+(APIServer pid=26976) INFO 11-01 09:20:39 [model.py:1033] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+(APIServer pid=26976) INFO 11-01 09:20:41 [scheduler.py:310] Chunked prefill is enabled with max_num_batched_tokens=1024.
+(APIServer pid=26976) INFO 11-01 09:20:41 [config.py:894] Updating mamba_ssm_cache_dtype to 'float32' for NemotronH model
+(APIServer pid=26976) INFO 11-01 09:20:41 [config.py:832] Mamba cache mode is set to 'align' for NemotronH_Omni_Reasoning_V3 by default when prefix caching is enabled
+(APIServer pid=26976) INFO 11-01 09:20:41 [kernel.py:516] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(APIServer pid=26976) INFO 11-01 09:20:42 [numa_utils.py:575] Automatic NUMA binding unavailable on this host; starting unbound. Enable debug logging for the skip reason.
+W1101 09:20:44.508000 27415 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1101 09:20:44.509000 27415 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1101 09:20:44.509000 27415 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Module nixl_ep was found but failed to import
+Traceback (most recent call last):
+  File "/workspace/vllm/vllm/utils/import_utils.py", line 415, in _has_module
+    importlib.import_module(module_name)
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 56, in <module>
+    _pkg = sys.modules[_load_ep_module()]
+                       ^^^^^^^^^^^^^^^^^
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 36, in _load_ep_module
+    return importlib.import_module(mod_name).__name__
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep_cu13/__init__.py", line 27, in <module>
+    _nixl_ep_cpp = importlib.import_module(f".nixl_ep_cpp_torch{_torch_mm}", __package__)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'nixl_ep_cu13.nixl_ep_cpp_torch214'
+(EngineCore pid=27415) INFO 11-01 09:20:55 [core.py:149] Initializing a V1 LLM engine (v0.1.dev24301+gf5e6e1bb0) with config: model='/workspace/.hf_home/hub/models--nvidia--NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/snapshots/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f', speculative_config=None, tokenizer='/workspace/.hf_home/hub/models--nvidia--NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/snapshots/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=modelopt_mixed, quantization_config=None, enforce_eager=False, aux_output_config=AuxOutputConfig(enable_return_routed_experts=False, max_bytes=None), kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, custom_histogram_buckets=None, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=nemotron-bolt-h200, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::qwen4_exp_qsa_prepare_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::step5_csa_attention', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'cudagraph_decoder_replay': True, 'decoder_replay_cudagraph_capture_sizes': [], 'decoder_replay_trim_threshold': 768, 'compile_sizes': [], 'compile_ranges_endpoints': [1024], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 32], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 32, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_rocm_segmented_attn_autotune=False, enable_cutedsl_warmup=True, enable_jit_warmup=True, modelopt_iq2_dense_cache=False, monokernel=False, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant={'nvfp4_w4a16': 'marlin'}, rdna_hybrid_w4a16_prefill_dequant='disable')
+(EngineCore pid=27415) INFO 11-01 09:20:56 [parallel_state.py:1935] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/b/vllm_dist_a4bcabd0817b4de386f8c61509b1f468 backend=nccl
+(EngineCore pid=27415) INFO 11-01 09:20:56 [parallel_state.py:2391] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank 0, EPLB rank N/A
+(EngineCore pid=27415) INFO 11-01 09:20:56 [gpu_worker.py:520] Using V2 Model Runner
+(EngineCore pid=27415) INFO 11-01 09:20:58 [model_runner.py:399] Loading model from scratch...
+(EngineCore pid=27415) INFO 11-01 09:20:58 [model.py:1033] Disabled mm_prefix attention mode because multimodal inputs are configuration-disabled. Attention backends without mm_prefix support may now be selected.
+(EngineCore pid=27415) INFO 11-01 09:20:58 [__init__.py:264] Applied linear backend override for 'nvfp4_w4a16': 'marlin'
+(EngineCore pid=27415) INFO 11-01 09:20:58 [__init__.py:1314] Using MarlinNvFp4LinearKernel for NVFP4 GEMM
+(EngineCore pid=27415) INFO 11-01 09:20:58 [modelopt_block_quant.py:61] Using Triton kernels for ModelOpt IQ2_XXS linear weights.
+(EngineCore pid=27415) INFO 11-01 09:20:58 [modelopt_block_quant.py:61] Using Triton kernels for ModelOpt Q8_0 linear weights.
+(EngineCore pid=27415) INFO 11-01 09:20:58 [modelopt_block_quant.py:61] Using Triton kernels for ModelOpt IQ2_XXS MoE weights.
+Ignoring incompatible flashinfer-cubin package (cubins will be downloaded on demand to /root/.cache/flashinfer/cubins): flashinfer-cubin version (0.6.18) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+Ignoring incompatible flashinfer-jit-cache package (kernels will be JIT-compiled instead): flashinfer-jit-cache version (0.6.18+cu130) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+(EngineCore pid=27415) INFO 11-01 09:20:59 [cuda.py:512] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=27415) INFO 11-01 09:20:59 [flash_attn.py:1122] Using FlashAttention version 2
+(EngineCore pid=27415) INFO 11-01 09:21:00 [cuda.py:571] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+(EngineCore pid=27415) INFO 11-01 09:21:00 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+[ERROR] `vision_final_layernorm` is part of NemotronH_Omni_Reasoning_V3_Config.__init__'s signature, but not documented. Make sure to add it to the docstring of the function in /workspace/.hf_home/modules/transformers_modules/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f/17063d245b40fe19/configuration_nemotron_h_omni.py.
+(EngineCore pid=27415) INFO 11-01 09:21:02 [nano_nemotron_vl.py:1072] Dynamic resolution is enabled for NanoNemotronVLProcessor
+(EngineCore pid=27415) INFO 11-01 09:21:02 [base_loader.py:95] Initializing model took 4.811645 seconds
+(EngineCore pid=27415) INFO 11-01 09:21:03 [weight_utils.py:1125] Filesystem type for checkpoints: OVERLAY. Checkpoint size: 22.43 GiB. Available RAM: 46.83 GiB.
+(EngineCore pid=27415) INFO 11-01 09:21:03 [weight_utils.py:1148] Auto-prefetch is disabled because the filesystem (OVERLAY) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+Loading safetensors checkpoint shards:   0% Completed | 0/90 [00:00<?, ?it/s]
+Loading safetensors checkpoint shards:   1% Completed | 1/90 [00:00<00:22,  3.93it/s]
+Loading safetensors checkpoint shards:   2% Completed | 2/90 [00:00<00:14,  5.97it/s]
+Loading safetensors checkpoint shards:   3% Completed | 3/90 [00:00<00:13,  6.63it/s]
+Loading safetensors checkpoint shards:   6% Completed | 5/90 [00:00<00:09,  9.27it/s]
+Loading safetensors checkpoint shards:   8% Completed | 7/90 [00:00<00:08, 10.34it/s]
+Loading safetensors checkpoint shards:  11% Completed | 10/90 [00:01<00:06, 11.65it/s]
+Loading safetensors checkpoint shards:  13% Completed | 12/90 [00:01<00:06, 11.57it/s]
+Loading safetensors checkpoint shards:  16% Completed | 14/90 [00:01<00:06, 11.65it/s]
+Loading safetensors checkpoint shards:  18% Completed | 16/90 [00:01<00:06, 11.74it/s]
+Loading safetensors checkpoint shards:  21% Completed | 19/90 [00:01<00:05, 12.35it/s]
+Loading safetensors checkpoint shards:  23% Completed | 21/90 [00:01<00:06, 11.46it/s]
+Loading safetensors checkpoint shards:  26% Completed | 23/90 [00:02<00:07,  9.40it/s]
+Loading safetensors checkpoint shards:  28% Completed | 25/90 [00:02<00:07,  8.40it/s]
+Loading safetensors checkpoint shards:  31% Completed | 28/90 [00:02<00:06, 10.21it/s]
+Loading safetensors checkpoint shards:  33% Completed | 30/90 [00:03<00:06,  9.02it/s]
+Loading safetensors checkpoint shards:  36% Completed | 32/90 [00:03<00:06,  8.85it/s]
+Loading safetensors checkpoint shards:  38% Completed | 34/90 [00:03<00:06,  8.88it/s]
+Loading safetensors checkpoint shards:  40% Completed | 36/90 [00:03<00:06,  8.12it/s]
+Loading safetensors checkpoint shards:  43% Completed | 39/90 [00:04<00:05,  9.10it/s]
+Loading safetensors checkpoint shards:  46% Completed | 41/90 [00:04<00:05,  8.78it/s]
+Loading safetensors checkpoint shards:  48% Completed | 43/90 [00:04<00:05,  8.47it/s]
+Loading safetensors checkpoint shards:  50% Completed | 45/90 [00:04<00:05,  7.72it/s]
+Loading safetensors checkpoint shards:  52% Completed | 47/90 [00:05<00:05,  7.68it/s]
+Loading safetensors checkpoint shards:  56% Completed | 50/90 [00:05<00:05,  7.86it/s]
+Loading safetensors checkpoint shards:  58% Completed | 52/90 [00:05<00:05,  7.31it/s]
+Loading safetensors checkpoint shards:  60% Completed | 54/90 [00:06<00:04,  7.94it/s]
+Loading safetensors checkpoint shards:  62% Completed | 56/90 [00:06<00:04,  7.92it/s]
+Loading safetensors checkpoint shards:  64% Completed | 58/90 [00:06<00:04,  7.74it/s]
+Loading safetensors checkpoint shards:  68% Completed | 61/90 [00:06<00:03,  9.23it/s]
+Loading safetensors checkpoint shards:  70% Completed | 63/90 [00:07<00:02,  9.62it/s]
+Loading safetensors checkpoint shards:  72% Completed | 65/90 [00:07<00:02,  9.99it/s]
+Loading safetensors checkpoint shards:  74% Completed | 67/90 [00:07<00:02, 10.45it/s]
+Loading safetensors checkpoint shards:  77% Completed | 69/90 [00:07<00:01, 10.83it/s]
+Loading safetensors checkpoint shards:  80% Completed | 72/90 [00:07<00:01, 11.39it/s]
+Loading safetensors checkpoint shards:  82% Completed | 74/90 [00:08<00:01, 10.12it/s]
+Loading safetensors checkpoint shards:  84% Completed | 76/90 [00:08<00:01,  8.85it/s]
+Loading safetensors checkpoint shards:  87% Completed | 78/90 [00:08<00:01,  7.93it/s]
+Loading safetensors checkpoint shards:  90% Completed | 81/90 [00:09<00:01,  7.99it/s]
+Loading safetensors checkpoint shards:  92% Completed | 83/90 [00:09<00:00,  7.45it/s]
+Loading safetensors checkpoint shards:  94% Completed | 85/90 [00:09<00:00,  7.06it/s]
+Loading safetensors checkpoint shards:  97% Completed | 87/90 [00:10<00:00,  6.56it/s]
+Loading safetensors checkpoint shards:  99% Completed | 89/90 [00:10<00:00,  6.73it/s]
+Loading safetensors checkpoint shards: 100% Completed | 90/90 [00:10<00:00,  8.74it/s]
+
+(EngineCore pid=27415) INFO 11-01 09:21:13 [default_loader.py:506] Loading weights took 10.33 seconds
+(EngineCore pid=27415) WARNING 11-01 09:21:14 [marlin.py:34] Your GPU does not have native support for FP4 computation but FP4 quantization is being used. Weight-only FP4 compression will be used leveraging the Marlin kernel. This may degrade performance for compute-heavy workloads.
+(EngineCore pid=27415) INFO 11-01 09:21:16 [model_runner.py:428] Model loading took 21.7 GiB memory and 19.424363 seconds
+(EngineCore pid=27415) INFO 11-01 09:21:17 [topk_topp_sampler.py:152] Using FlashInfer for top-p & top-k sampling.
+(EngineCore pid=27415) INFO 11-01 09:21:17 [torch_utils.py:293] Reducing Torch threads from 12 to 1 for serving. Set OMP_NUM_THREADS in the external environment to override.
+(EngineCore pid=27415) INFO 11-01 09:21:17 [interface.py:1113] Setting attention block size to 4160 tokens to ensure that attention page size is >= mamba page size.
+(EngineCore pid=27415) INFO 11-01 09:21:17 [interface.py:1137] Padding mamba page size by 0.10% to ensure that mamba page size and attention page size are exactly equal.
+(EngineCore pid=27415) INFO 11-01 09:21:17 [utils.py:397] Using LBNHC KV cache layout.
+(EngineCore pid=27415) INFO 11-01 09:21:18 [monitor.py:40] [backbone] Starting torch.compile
+(EngineCore pid=27415) INFO 11-01 09:21:29 [backends.py:1125] [backbone] Using cache directory: /workspace/.vllm_cache/torch_compile_cache/baa12fb57a/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=27415) INFO 11-01 09:21:29 [backends.py:1187] [backbone] Dynamo bytecode transform time: 10.84 s
+(EngineCore pid=27415) INFO 11-01 09:21:40 [backends.py:417] [backbone] Compiling a graph for compile range (1, 1024) takes 10.62 s
+(EngineCore pid=27415) INFO 11-01 09:21:46 [backends.py:948] collected artifacts: 49 entries, 12 artifacts, 13994340 bytes total
+(EngineCore pid=27415) INFO 11-01 09:21:46 [decorators.py:752] [backbone] saved AOT compiled function to /workspace/.vllm_cache/torch_compile_cache/torch_aot_compile/b1bc3bc0189d942d4d3852834d1009347da9dca7f138f3cbcac74f6b88d9724d/rank_0_0/model
+(EngineCore pid=27415) INFO 11-01 09:21:46 [monitor.py:62] [backbone] torch.compile took 27.80 s in total
+(EngineCore pid=27415) INFO 11-01 09:21:46 [mamba_mixer2.py:623] Warming up Mamba2 SSD Triton kernels...
+(EngineCore pid=27415) INFO 11-01 09:23:00 [monitor.py:91] [backbone] Initial profiling/warmup run took 74.25 s
+(EngineCore pid=27415) INFO 11-01 09:23:06 [ssu_dispatch.py:635] Using triton Mamba SSU backend.
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/6 [00:00<?, ?it/s](EngineCore pid=27415) WARNING 11-01 09:23:07 [mamba_ssm.py:107] Using default Mamba SSU config. Performance might be sub-optimal! Config file not found at /workspace/vllm/vllm/model_executor/layers/mamba/ops/configs/selective_state_update/headdim=64,dstate=128,device_name=NVIDIA_CMP_170HX,cache_dtype=float32.json
+Capturing CUDA graphs (PIECEWISE):  17%|█▋        | 1/6 [00:04<00:20,  4.18s/it]Capturing CUDA graphs (PIECEWISE):  33%|███▎      | 2/6 [00:04<00:08,  2.01s/it]Capturing CUDA graphs (PIECEWISE):  50%|█████     | 3/6 [00:06<00:05,  1.72s/it]Capturing CUDA graphs (PIECEWISE):  67%|██████▋   | 4/6 [00:07<00:03,  1.67s/it]Capturing CUDA graphs (PIECEWISE):  83%|████████▎ | 5/6 [00:08<00:01,  1.55s/it][rank0]:W1101 09:23:17.878000 27415 torch/_dynamo/convert_frame.py:2008] [2/16] torch._dynamo hit config.recompile_limit (16)
+[rank0]:W1101 09:23:17.878000 27415 torch/_dynamo/convert_frame.py:2008] [2/16]    function: 'grouped_topk' (/workspace/vllm/vllm/model_executor/layers/fused_moe/router/grouped_topk_router.py:76)
+[rank0]:W1101 09:23:17.878000 27415 torch/_dynamo/convert_frame.py:2008] [2/16]    last reason: 2/15: tensor 'e_score_correction_bias' size mismatch at index 0. expected 240, actual 304. Guard failed on a parameter, consider using torch._dynamo.config.force_parameter_static_shapes = False to allow dynamism on parameters.
+[rank0]:W1101 09:23:17.878000 27415 torch/_dynamo/convert_frame.py:2008] [2/16] To log all recompilation reasons, use TORCH_LOGS="recompiles".
+[rank0]:W1101 09:23:17.878000 27415 torch/_dynamo/convert_frame.py:2008] [2/16] To diagnose recompilation issues, see https://docs.pytorch.org/docs/main/user_guide/torch_compiler/compile/programming_model.recompilation.html
+Capturing CUDA graphs (PIECEWISE): 100%|██████████| 6/6 [00:10<00:00,  1.67s/it]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 6/6 [00:10<00:00,  1.81s/it]
+Capturing CUDA graphs (FULL):   0%|          | 0/2 [00:00<?, ?it/s]Capturing CUDA graphs (FULL):  50%|█████     | 1/2 [00:00<00:00,  5.21it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00,  5.45it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00,  5.41it/s]
+(EngineCore pid=27415) INFO 11-01 09:23:19 [model_runner.py:1191] Graph capturing finished in 13 secs, took 0.22 GiB
+(EngineCore pid=27415) INFO 11-01 09:23:20 [gpu_worker.py:782] Available KV cache memory: 33.91 GiB
+(EngineCore pid=27415) INFO 11-01 09:23:20 [gpu_worker.py:797] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.9000 is equivalent to --gpu-memory-utilization=0.8959 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9041. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=27415) INFO 11-01 09:23:20 [kv_cache_utils.py:1171] GPU KV cache size: 273,408 tokens, Maximum concurrency for 4,096 tokens per request: 66.75x
+(EngineCore pid=27415) INFO 11-01 09:23:20 [kv_cache_utils.py:867] kv cache group sizes (4160, 4160, 4160, 4160, 4160, 4160)
+(EngineCore pid=27415) INFO 11-01 09:23:20 [kv_cache_utils.py:868] kv lcm block sizes 4160
+(EngineCore pid=27415) INFO 11-01 09:23:20 [kernel_warmup.py:240] JIT kernel warmup starting.
+(EngineCore pid=27415) INFO 11-01 09:23:20 [kernel_warmup.py:253] JIT kernel warmup finished in 0.00s.
+(EngineCore pid=27415) INFO 11-01 09:23:20 [mamba_triton_warmup.py:42] Warmed Mamba batch_memcpy_kernel.
+(EngineCore pid=27415) INFO 11-01 09:23:24 [modelopt_block_triton_warmup.py:138] Warmed 78 ModelOpt block Triton configs.
+Capturing CUDA graphs (PIECEWISE):   0%|          | 0/6 [00:00<?, ?it/s]Capturing CUDA graphs (PIECEWISE):  17%|█▋        | 1/6 [00:00<00:00,  5.15it/s]Capturing CUDA graphs (PIECEWISE):  33%|███▎      | 2/6 [00:00<00:00,  5.35it/s]Capturing CUDA graphs (PIECEWISE):  50%|█████     | 3/6 [00:00<00:00,  5.58it/s]Capturing CUDA graphs (PIECEWISE):  67%|██████▋   | 4/6 [00:00<00:00,  5.68it/s]Capturing CUDA graphs (PIECEWISE):  83%|████████▎ | 5/6 [00:00<00:00,  5.74it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 6/6 [00:01<00:00,  5.76it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 6/6 [00:01<00:00,  5.66it/s]
+Capturing CUDA graphs (FULL):   0%|          | 0/6 [00:00<?, ?it/s]Capturing CUDA graphs (FULL):  17%|█▋        | 1/6 [00:00<00:00,  5.91it/s]Capturing CUDA graphs (FULL):  33%|███▎      | 2/6 [00:00<00:00,  5.86it/s]Capturing CUDA graphs (FULL):  50%|█████     | 3/6 [00:00<00:00,  5.94it/s]Capturing CUDA graphs (FULL):  67%|██████▋   | 4/6 [00:00<00:00,  5.98it/s]Capturing CUDA graphs (FULL):  83%|████████▎ | 5/6 [00:00<00:00,  6.01it/s]Capturing CUDA graphs (FULL): 100%|██████████| 6/6 [00:01<00:00,  6.05it/s]Capturing CUDA graphs (FULL): 100%|██████████| 6/6 [00:01<00:00,  6.00it/s]
+(EngineCore pid=27415) INFO 11-01 09:23:31 [model_runner.py:1191] Graph capturing finished in 4 secs, took 0.12 GiB
+(EngineCore pid=27415) INFO 11-01 09:23:31 [gpu_worker.py:1013] CUDA graph pool memory: 0.12 GiB (actual), 0.26 GiB (estimated), difference: 0.14 GiB (117.2%).
+(EngineCore pid=27415) INFO 11-01 09:23:31 [gpu_worker.py:1076] Free memory on device (63.01/63.4 GiB) on startup. Desired GPU memory utilization is (0.9, 57.06 GiB). Actual usage is 21.96 GiB for consumed memory (weights + non-torch), 1.18 GiB for peak activation, and 0.12 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=36128987853` (33.65 GiB) to fit into requested memory, or `--kv-cache-memory=42520890880` (39.6 GiB) to fully utilize gpu memory. Current kv cache memory in use is 33.91 GiB.
+(EngineCore pid=27415) INFO 11-01 09:23:32 [jit_monitor.py:87] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(EngineCore pid=27415) INFO 11-01 09:23:33 [core.py:423] init engine (profile, create kv cache, warmup model) took 135.71 s (compilation: 27.80 s)
+(EngineCore pid=27415) INFO 11-01 09:23:33 [kernel.py:516] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+(APIServer pid=26976) INFO 11-01 09:23:33 [entry.py:135] Supported tasks: ['generate']
+(APIServer pid=26976) INFO 11-01 09:23:33 [factories.py:105] Scale-out endpoints are disabled. Restart vllm serve with --enable-scale-out to enable them.
+(APIServer pid=26976) INFO 11-01 09:23:36 [hf.py:736] Detected the chat template content format to be 'openai'. You can set `--chat-template-content-format` to override this.
+(APIServer pid=26976) WARNING 11-01 09:23:37 [model.py:1919] Default vLLM sampling parameters have been overridden by the model's `generation_config.json`: `{'temperature': 1.0, 'top_p': 0.95}`. If this is not intended, please relaunch vLLM instance with `--generation-config vllm`.
+(APIServer pid=26976) INFO 11-01 09:23:41 [entry.py:139] Starting vLLM server on http://0.0.0.0:8001
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:188] Available routes are:
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /openapi.json, Methods: GET, HEAD
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /docs, Methods: GET, HEAD
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /docs/oauth2-redirect, Methods: GET, HEAD
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /redoc, Methods: GET, HEAD
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /load, Methods: GET
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /version, Methods: GET
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /kv_event_sources, Methods: GET
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /health, Methods: GET
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /metrics, Methods: GET
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /tokenize, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /detokenize, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/models, Methods: GET
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/systemone, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/decisions, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /ping, Methods: GET
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /ping, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /invocations, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/chat/completions, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/chat/completions/batch, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/responses, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/responses/{response_id}, Methods: GET
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/responses/{response_id}/cancel, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/completions, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/messages, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/messages/count_tokens, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /generative_scoring, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /scale_elastic_ep, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /is_scaling_elastic_ep, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/chat/completions/render, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/messages/render, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/completions/render, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/responses/render, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/chat/completions/derender, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /v1/completions/derender, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /inference/v1/generate, Methods: POST
+(APIServer pid=26976) INFO 11-01 09:23:41 [launcher.py:197] Route: /inference/v1/abort_requests, Methods: POST
+INFO:     Started server process [26976]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:54674 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:54682 - "GET /v1/models HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34060 - "POST /tokenize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34068 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34068 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34068 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34096 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34110 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34126 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34128 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34130 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34138 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34152 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34162 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34178 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34190 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34196 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34200 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34214 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34216 - "POST /v1/completions HTTP/1.1" 200 OK
+(EngineCore pid=27415) WARNING 11-01 09:24:05 [jit_monitor.py:143] Triton kernel JIT compilation during inference: _causal_conv1d_fwd_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(APIServer pid=26976) INFO 11-01 09:24:12 [loggers.py:335] Engine 000: Avg prompt throughput: 204.8 tokens/s, Avg generation throughput: 192.9 tokens/s, Running: 16 reqs, Waiting: 0 reqs, GPU KV cache usage: 9.0%, Prefix cache hit rate: 0.0%
+INFO:     127.0.0.1:34068 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34126 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34128 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34138 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34096 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34130 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34082 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34110 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34152 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34178 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34200 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34196 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34216 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34162 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34190 - "POST /v1/completions HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34214 - "POST /v1/completions HTTP/1.1" 200 OK
+(APIServer pid=26976) INFO 11-01 09:24:22 [loggers.py:335] Engine 000: Avg prompt throughput: 204.8 tokens/s, Avg generation throughput: 294.3 tokens/s, Running: 16 reqs, Waiting: 0 reqs, GPU KV cache usage: 9.0%, Prefix cache hit rate: 0.0%
+INFO:     127.0.0.1:34068 - "GET /metrics HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34126 - "GET /metrics HTTP/1.1" 200 OK
+(APIServer pid=26976) INFO 11-01 09:24:32 [loggers.py:335] Engine 000: Avg prompt throughput: 0.0 tokens/s, Avg generation throughput: 332.0 tokens/s, Running: 0 reqs, Waiting: 0 reqs, GPU KV cache usage: 0.0%, Prefix cache hit rate: 0.0%
+(APIServer pid=26976) INFO 11-01 09:24:33 [launcher.py:256] [shutdown] API server: shutdown triggered
+(APIServer pid=26976) INFO 11-01 09:24:33 [launcher.py:269] [shutdown] API server: stopping engine client mode=abort timeout=0s
+(APIServer pid=26976) INFO 11-01 09:24:33 [core_client.py:804] [shutdown] MPClient: start timeout=0s
+(APIServer pid=26976) INFO 11-01 09:24:33 [core_client.py:806] [shutdown] MPClient: stopping engine manager
+(APIServer pid=26976) INFO 11-01 09:24:33 [utils.py:628] [shutdown] Process manager: send sigterm to process EngineCore
+(APIServer pid=26976) WARNING 11-01 09:24:33 [utils.py:648] [shutdown] Process manager: force killing remaining processes count=1
+(APIServer pid=26976) WARNING 11-01 09:24:33 [utils.py:653] [shutdown] Process manager: force killing remaining process EngineCore pid 27415
+(EngineCore pid=27415) INFO 11-01 09:24:33 [core.py:1588] [shutdown] EngineCore: trigger received signal=SIGTERM
+(EngineCore pid=27415) INFO 11-01 09:24:33 [core.py:1775] [shutdown] EngineCore: start mode=abort timeout=0s
+(EngineCore pid=27415) INFO 11-01 09:24:33 [core.py:1806] [shutdown] EngineCore: request processing complete; starting resource teardown
+(EngineCore pid=27415) INFO 11-01 09:24:33 [core.py:1636] [shutdown] EngineCore: exiting busy loop
+(APIServer pid=26976) INFO 11-01 09:24:33 [core_client.py:808] [shutdown] MPClient: engine manager stopped
+(APIServer pid=26976) INFO 11-01 09:24:33 [core_client.py:809] [shutdown] MPClient: cleaning up background resources
+(APIServer pid=26976) INFO 11-01 09:24:33 [core_client.py:811] [shutdown] MPClient: complete
+(APIServer pid=26976) INFO 11-01 09:24:33 [launcher.py:278] [shutdown] API server: engine client stopped
+(APIServer pid=26976) INFO 11-01 09:24:33 [launcher.py:281] [shutdown] API server: signalling HTTP server shutdown
+(APIServer pid=26976) INFO 11-01 09:24:33 [launcher.py:304] [shutdown] API server: shutting down FastAPI HTTP server
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+/usr/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+server_exit=0

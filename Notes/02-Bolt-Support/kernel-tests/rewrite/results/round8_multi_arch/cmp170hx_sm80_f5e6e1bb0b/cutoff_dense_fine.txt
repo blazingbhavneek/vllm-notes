@@ -1,0 +1,170 @@
+Ignoring incompatible flashinfer-cubin package (cubins will be downloaded on demand to /root/.cache/flashinfer/cubins): flashinfer-cubin version (0.6.18) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+Ignoring incompatible flashinfer-jit-cache package (kernels will be JIT-compiled instead): flashinfer-jit-cache version (0.6.18+cu130) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+W1101 08:46:29.286000 16877 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1101 08:46:29.287000 16877 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1101 08:46:29.288000 16877 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Module nixl_ep was found but failed to import
+Traceback (most recent call last):
+  File "/workspace/vllm/vllm/utils/import_utils.py", line 415, in _has_module
+    importlib.import_module(module_name)
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 56, in <module>
+    _pkg = sys.modules[_load_ep_module()]
+                       ^^^^^^^^^^^^^^^^^
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 36, in _load_ep_module
+    return importlib.import_module(mod_name).__name__
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep_cu13/__init__.py", line 27, in <module>
+    _nixl_ep_cpp = importlib.import_module(f".nixl_ep_cpp_torch{_torch_mm}", __package__)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'nixl_ep_cu13.nixl_ep_cpp_torch214'
+NVIDIA CMP 170HX bus 4096 cutoffs {'iq2_xxs': 8, 'q8_0': 64}
+layer        dtype       M      op   fused     deq op/best
+/workspace/vllm/benchmarks/kernels/benchmark_modelopt_block_triton.py:61: UserWarning: CUPTI is not installed. Try 'pip install -U cupti-python'. Falling back to CUDA events for benchmarking.
+  return statistics.median(bench_gpu_time_with_cupti(fn, use_cuda_graph=True)) * 1e3
+/venv/main/lib/python3.12/site-packages/flashinfer/testing/utils.py:1069: UserWarning: cold_l2_cache=True but no GPU tensors found in input_args/input_kwargs. Cold L2 benchmarking disabled.
+  return bench_gpu_time_with_cudagraph(
+qkv_proj     bfloat16   16    24.4    30.7    72.3   0.79
+qkv_proj     bfloat16   24    36.1    35.4    71.5   1.02
+qkv_proj     bfloat16   32    36.4    35.9    71.5   1.01
+qkv_proj     bfloat16   48    57.7    56.9    73.0   1.01
+qkv_proj     bfloat16   64    73.1    61.0    72.9   1.20
+qkv_proj     bfloat16   96    81.6   119.3    81.4   1.00
+qkv_proj     bfloat16  128    84.8   133.5    85.4   0.99
+qkv_proj     bfloat16  192    98.3   200.9    99.0   0.99
+qkv_proj     bfloat16  256   102.0   218.1   103.0   0.99
+qkv_proj     bfloat16  384   145.8   307.7   145.6   1.00
+qkv_proj     float16    16    24.4    24.3    70.9   1.00
+qkv_proj     float16    24    35.5    35.1    72.5   1.01
+qkv_proj     float16    32    36.6    36.0    74.3   1.01
+qkv_proj     float16    48    50.7    50.1    72.1   1.01
+qkv_proj     float16    64    73.7    56.3    73.5   1.31
+qkv_proj     float16    96    82.9   124.6    83.2   1.00
+qkv_proj     float16   128    85.5   140.1    86.4   0.99
+qkv_proj     float16   192   112.4   209.6   112.9   1.00
+qkv_proj     float16   256   151.9   225.7   152.4   1.00
+qkv_proj     float16   384   170.1   319.8   170.8   1.00
+o_proj       bfloat16   16    22.4    22.5    64.0   1.00
+o_proj       bfloat16   24    30.6    30.4    62.1   1.01
+o_proj       bfloat16   32    31.7    31.4    63.7   1.01
+o_proj       bfloat16   48    54.8    54.1    63.5   1.01
+o_proj       bfloat16   64    66.0    58.3    65.7   1.13
+o_proj       bfloat16   96    75.2   115.0    75.2   1.00
+o_proj       bfloat16  128    79.1   126.9    78.6   1.01
+o_proj       bfloat16  192    92.0   193.9    92.2   1.00
+o_proj       bfloat16  256    94.8   209.5    96.6   0.98
+o_proj       bfloat16  384   131.1   297.0   131.0   1.00
+o_proj       float16    16    22.6    22.8    64.3   0.99
+o_proj       float16    24    30.6    30.4    65.6   1.01
+o_proj       float16    32    31.8    31.5    64.9   1.01
+o_proj       float16    48    48.3    47.8    65.6   1.01
+o_proj       float16    64    66.7    51.7    67.4   1.29
+o_proj       float16    96    76.5   119.7    77.5   0.99
+o_proj       float16   128    79.2   133.8    79.9   0.99
+o_proj       float16   192   102.6   203.1   102.6   1.00
+o_proj       float16   256   114.0   217.8   113.8   1.00
+o_proj       float16   384   158.5   310.4   159.0   1.00
+fc1_latent   bfloat16   16    13.6    13.8    17.6   0.99
+fc1_latent   bfloat16   24    16.0    16.0    18.1   1.00
+fc1_latent   bfloat16   32    16.2    16.2    18.5   1.00
+fc1_latent   bfloat16   48    24.0    23.9    18.6   1.29
+fc1_latent   bfloat16   64    19.0    25.2    19.1   0.99
+fc1_latent   bfloat16   96    22.4    37.3    22.4   1.00
+fc1_latent   bfloat16  128    24.6    40.3    24.7   1.00
+fc1_latent   bfloat16  192    30.2    66.2    30.2   1.00
+fc1_latent   bfloat16  256    30.2    77.0    30.0   1.01
+fc1_latent   bfloat16  384    37.2    92.2    37.2   1.00
+fc1_latent   float16    16    13.6    13.7    17.6   0.99
+fc1_latent   float16    24    16.0    16.0    17.8   1.00
+fc1_latent   float16    32    16.3    16.3    18.1   1.00
+fc1_latent   float16    48    23.0    23.0    18.8   1.22
+fc1_latent   float16    64    19.7    24.6    19.7   1.00
+fc1_latent   float16    96    22.6    38.4    22.5   1.00
+fc1_latent   float16   128    23.0    41.4    22.9   1.00
+fc1_latent   float16   192    30.3    68.1    30.3   1.00
+fc1_latent   float16   256    30.3    79.5    30.3   1.00
+fc1_latent   float16   384    40.1    95.0    40.1   1.00
+fc2_latent   bfloat16   16    10.1    10.2    16.8   0.99
+fc2_latent   bfloat16   24    13.1    13.1    17.1   1.00
+fc2_latent   bfloat16   32    13.7    13.7    17.2   1.00
+fc2_latent   bfloat16   48    22.5    22.5    17.8   1.26
+fc2_latent   bfloat16   64    18.5    24.0    18.5   1.00
+fc2_latent   bfloat16   96    21.1    46.8    21.0   1.00
+fc2_latent   bfloat16  128    22.5    53.9    22.6   1.00
+fc2_latent   bfloat16  192    28.0    62.9    27.9   1.00
+fc2_latent   bfloat16  256    26.2    76.3    26.3   1.00
+fc2_latent   bfloat16  384    38.5    95.1    38.4   1.00
+fc2_latent   float16    16    10.1    10.1    17.0   1.00
+fc2_latent   float16    24    13.0    13.2    17.1   0.98
+fc2_latent   float16    32    13.6    13.6    17.1   1.00
+fc2_latent   float16    48    21.3    21.3    18.0   1.18
+fc2_latent   float16    64    18.7    24.3    18.6   1.01
+fc2_latent   float16    96    21.1    47.6    21.0   1.00
+fc2_latent   float16   128    21.5    54.9    21.3   1.01
+fc2_latent   float16   192    26.0    64.9    25.8   1.01
+fc2_latent   float16   256    26.4    78.6    26.4   1.00
+fc2_latent   float16   384    40.0    97.8    39.8   1.01
+shared_up    bfloat16   16    88.0   134.0    88.9   0.99
+shared_up    bfloat16   24    94.2   140.5    93.9   1.00
+shared_up    bfloat16   32    94.4   140.3    94.3   1.00
+shared_up    bfloat16   48    88.5   177.5    89.4   0.99
+shared_up    bfloat16   64    88.9   179.9    90.1   0.99
+shared_up    bfloat16   96   103.2   195.4   104.6   0.99
+shared_up    bfloat16  128   105.8   201.4   106.6   0.99
+shared_up    bfloat16  192   117.5   374.2   121.1   0.97
+shared_up    bfloat16  256   139.0   386.2   141.1   0.98
+shared_up    bfloat16  384   158.7   519.6   161.8   0.98
+shared_up    float16    16    88.2   138.2    89.5   0.99
+shared_up    float16    24    88.9   141.9    89.5   0.99
+shared_up    float16    32    88.4   142.8    89.5   0.99
+shared_up    float16    48    88.6   180.9    89.9   0.99
+shared_up    float16    64    91.3   181.8    92.9   0.98
+shared_up    float16    96   101.2   197.7   107.2   0.94
+shared_up    float16   128   106.1   203.4   108.2   0.98
+shared_up    float16   192   122.3   378.1   123.6   0.99
+shared_up    float16   256   167.3   390.7   168.9   0.99
+shared_up    float16   384   192.9   525.8   195.3   0.99
+shared_down  bfloat16   16    88.0   120.3    88.2   1.00
+shared_down  bfloat16   24    93.1   125.5    92.9   1.00
+shared_down  bfloat16   32    93.2   124.7    92.9   1.00
+shared_down  bfloat16   48    89.7   152.5    89.6   1.00
+shared_down  bfloat16   64    90.2   154.3    90.5   1.00
+shared_down  bfloat16   96   101.4   169.3   101.2   1.00
+shared_down  bfloat16  128   104.3   173.1   107.1   0.97
+shared_down  bfloat16  192   121.8   336.4   122.7   0.99
+shared_down  bfloat16  256   126.1   348.7   128.4   0.98
+shared_down  bfloat16  384   165.0   504.5   167.1   0.99
+shared_down  float16    16    88.2   121.5    88.5   1.00
+shared_down  float16    24    95.6   125.2    95.9   1.00
+shared_down  float16    32    91.9   124.8    91.9   1.00
+shared_down  float16    48    92.3   153.3    92.6   1.00
+shared_down  float16    64    93.0   154.7    93.0   1.00
+shared_down  float16    96   100.5   169.6    99.9   1.01
+shared_down  float16   128   107.9   173.1   108.9   0.99
+shared_down  float16   192   122.5   336.1   124.6   0.98
+shared_down  float16   256   127.8   348.9   130.8   0.98
+shared_down  float16   384   168.4   504.5   169.4   0.99
+exit=0

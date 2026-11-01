@@ -1,0 +1,154 @@
+e17acbd246 [Quantization] ModelOpt block Triton: GDDR IQ2_XXS dequant from M=65
+W1101 15:07:24.173000 11989 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1101 15:07:24.173000 11989 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1101 15:07:24.173000 11989 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+In file included from /home/blaze/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/include/python3.13/Python.h:14,
+                 from /home/blaze/.venvs/vllmNotes/lib/python3.13/site-packages/triton/backends/nvidia/driver.c:9:
+/home/blaze/.local/share/uv/python/cpython-3.13.14-linux-x86_64-gnu/include/python3.13/pyconfig.h:1967:9: warning: ‘_POSIX_C_SOURCE’ redefined
+ 1967 | #define _POSIX_C_SOURCE 200809L
+      |         ^~~~~~~~~~~~~~~
+In file included from /usr/include/bits/libc-header-start.h:33,
+                 from /usr/include/stdlib.h:26,
+                 from /home/blaze/.venvs/vllmNotes/lib/python3.13/site-packages/triton/backends/nvidia/include/cuda.h:56,
+                 from /home/blaze/.venvs/vllmNotes/lib/python3.13/site-packages/triton/backends/nvidia/driver.c:1:
+/usr/include/features.h:319:10: note: this is the location of the previous definition
+  319 | # define _POSIX_C_SOURCE        202405L
+      |          ^~~~~~~~~~~~~~~
+/mnt/common/Code/vllmServer/vllm/benchmarks/kernels/benchmark_modelopt_block_triton.py:61: UserWarning: CUPTI is not installed. Try 'pip install -U cupti-python'. Falling back to CUDA events for benchmarking.
+  return statistics.median(bench_gpu_time_with_cupti(fn, use_cuda_graph=True)) * 1e3
+/home/blaze/.venvs/vllmNotes/lib/python3.13/site-packages/flashinfer/testing/utils.py:1069: UserWarning: cold_l2_cache=True but no GPU tensors found in input_args/input_kwargs. Cold L2 benchmarking disabled.
+  return bench_gpu_time_with_cudagraph(
+NVIDIA GeForce RTX 5060 Ti bus 128 cutoffs {'iq2_xxs': 65, 'q8_0': 256}
+layer        dtype       M      op   fused     deq op/best
+qkv_proj     bfloat16   32    37.7    37.1   198.7   1.02
+qkv_proj     bfloat16   48    70.2    70.1   199.5   1.00
+qkv_proj     bfloat16   64    73.0    73.7   201.2   0.99
+qkv_proj     bfloat16   65   132.4   132.4   226.6   1.00
+qkv_proj     bfloat16   80   133.1   133.3   227.1   1.00
+qkv_proj     bfloat16   96   133.5   133.6   227.4   1.00
+qkv_proj     bfloat16  128   134.0   134.0   228.4   1.00
+qkv_proj     bfloat16  192   199.2   199.3   270.7   1.00
+qkv_proj     bfloat16  256   317.3   256.9   319.1   1.24
+qkv_proj     bfloat16  384   415.5   377.6   418.6   1.10
+qkv_proj     bfloat16  512   518.4   497.9   517.9   1.04
+qkv_proj     float16    32    38.2    38.0   198.5   1.00
+qkv_proj     float16    48    69.3    69.0   199.5   1.00
+qkv_proj     float16    64    73.1    73.1   201.2   1.00
+qkv_proj     float16    65   140.0   139.4   226.6   1.00
+qkv_proj     float16    80   140.3   140.3   227.4   1.00
+qkv_proj     float16    96   140.8   140.8   227.8   1.00
+qkv_proj     float16   128   141.6   141.6   229.0   1.00
+qkv_proj     float16   192   211.4   211.4   271.5   1.00
+qkv_proj     float16   256   318.7   273.1   318.8   1.17
+qkv_proj     float16   384   417.5   402.6   420.1   1.04
+qkv_proj     float16   512   520.2   532.3   520.4   1.00
+o_proj       bfloat16   32    37.4    37.2   170.8   1.00
+o_proj       bfloat16   48    74.9    74.5   172.1   1.01
+o_proj       bfloat16   64    79.8    80.3   173.3   0.99
+o_proj       bfloat16   65   134.2   132.4   204.1   1.01
+o_proj       bfloat16   80   135.0   134.9   205.6   1.00
+o_proj       bfloat16   96   136.0   136.1   207.3   1.00
+o_proj       bfloat16  128   138.4   138.4   209.6   1.00
+o_proj       bfloat16  192   199.1   199.1   238.0   1.00
+o_proj       bfloat16  256   283.2   255.2   284.0   1.11
+o_proj       bfloat16  384   379.2   374.3   379.4   1.01
+o_proj       bfloat16  512   474.3   494.3   475.9   1.00
+o_proj       float16    32    38.0    38.0   170.7   1.00
+o_proj       float16    48    71.1    70.4   172.1   1.01
+o_proj       float16    64    75.5    75.5   173.3   1.00
+o_proj       float16    65   134.4   134.4   204.4   1.00
+o_proj       float16    80   135.0   135.1   205.4   1.00
+o_proj       float16    96   136.1   136.0   207.0   1.00
+o_proj       float16   128   138.5   138.4   209.1   1.00
+o_proj       float16   192   210.8   210.8   238.0   1.00
+o_proj       float16   256   283.6   271.8   284.7   1.04
+o_proj       float16   384   383.0   399.1   383.3   1.00
+o_proj       float16   512   476.1   527.5   480.5   0.99
+fc1_latent   bfloat16   32    13.2    12.9    24.5   1.03
+fc1_latent   bfloat16   48    23.5    23.7    30.8   0.99
+fc1_latent   bfloat16   64    25.3    25.5    31.0   0.99
+fc1_latent   bfloat16   65    39.2    39.1    39.3   1.00
+fc1_latent   bfloat16   80    40.1    39.8    39.2   1.02
+fc1_latent   bfloat16   96    40.7    40.4    40.1   1.02
+fc1_latent   bfloat16  128    42.8    43.0    40.0   1.07
+fc1_latent   bfloat16  192    58.2    58.3    49.3   1.18
+fc1_latent   bfloat16  256    61.7    74.5    61.8   1.00
+fc1_latent   bfloat16  384    86.8   108.0    87.2   0.99
+fc1_latent   bfloat16  512   112.2   138.4   112.4   1.00
+fc1_latent   float16    32    13.7    13.7    24.5   1.00
+fc1_latent   float16    48    23.0    23.2    30.8   1.00
+fc1_latent   float16    64    24.3    24.3    31.0   1.00
+fc1_latent   float16    65    39.2    39.2    39.5   1.00
+fc1_latent   float16    80    40.1    40.2    39.3   1.02
+fc1_latent   float16    96    40.8    40.5    41.0   1.01
+fc1_latent   float16   128    43.1    43.1    40.6   1.06
+fc1_latent   float16   192    58.6    58.3    49.3   1.19
+fc1_latent   float16   256    61.7    74.6    61.7   1.00
+fc1_latent   float16   384    87.2   108.5    87.1   1.00
+fc1_latent   float16   512   112.5   138.7   112.7   1.00
+fc2_latent   bfloat16   32    12.7    12.4    21.6   1.03
+fc2_latent   bfloat16   48    23.3    23.3    23.9   1.00
+fc2_latent   bfloat16   64    25.1    25.3    23.8   1.05
+fc2_latent   bfloat16   65    38.4    38.4    37.0   1.04
+fc2_latent   bfloat16   80    38.6    38.6    36.6   1.06
+fc2_latent   bfloat16   96    39.7    39.7    36.5   1.09
+fc2_latent   bfloat16  128    42.0    42.3    37.0   1.13
+fc2_latent   bfloat16  192    51.8    51.6    50.4   1.03
+fc2_latent   bfloat16  256    63.2    66.5    63.0   1.00
+fc2_latent   bfloat16  384    83.0    96.8    83.1   1.00
+fc2_latent   bfloat16  512   109.0   126.4   109.1   1.00
+fc2_latent   float16    32    12.9    12.5    18.8   1.03
+fc2_latent   float16    48    22.4    22.5    23.9   1.00
+fc2_latent   float16    64    24.3    24.2    24.2   1.00
+fc2_latent   float16    65    38.8    38.8    37.0   1.05
+fc2_latent   float16    80    39.5    39.5    36.7   1.08
+fc2_latent   float16    96    40.5    40.5    37.0   1.09
+fc2_latent   float16   128    42.6    42.8    37.0   1.15
+fc2_latent   float16   192    54.5    54.1    50.5   1.08
+fc2_latent   float16   256    63.4    69.8    63.1   1.01
+fc2_latent   float16   384    83.2   101.5    83.1   1.00
+fc2_latent   float16   512   109.2   133.0   109.2   1.00
+shared_up    bfloat16   32   152.8   152.8   229.0   1.00
+shared_up    bfloat16   48   210.8   210.6   231.4   1.00
+shared_up    bfloat16   64   211.8   212.6   233.8   1.00
+shared_up    bfloat16   65   253.9   425.3   253.9   1.00
+shared_up    bfloat16   80   255.7   432.3   255.3   1.00
+shared_up    bfloat16   96   257.3   432.6   256.3   1.00
+shared_up    bfloat16  128   260.8   432.9   260.0   1.00
+shared_up    bfloat16  192   284.7   576.4   284.7   1.00
+shared_up    bfloat16  256   356.2   721.5   358.5   0.99
+shared_up    bfloat16  384   461.6  1017.0   460.3   1.00
+shared_up    bfloat16  512   588.0  1440.0   586.5   1.00
+shared_up    float16    32   152.8   152.8   229.1   1.00
+shared_up    float16    48   210.6   210.4   231.5   1.00
+shared_up    float16    64   212.0   211.5   233.6   1.00
+shared_up    float16    65   254.1   425.3   253.8   1.00
+shared_up    float16    80   255.4   432.2   255.9   1.00
+shared_up    float16    96   257.0   432.3   257.5   1.00
+shared_up    float16   128   260.5   432.7   261.1   1.00
+shared_up    float16   192   284.3   577.2   284.9   1.00
+shared_up    float16   256   360.4   721.8   360.2   1.00
+shared_up    float16   384   462.2  1018.1   462.2   1.00
+shared_up    float16   512   588.6  1442.0   588.4   1.00
+shared_down  bfloat16   32   129.6   129.0   223.9   1.00
+shared_down  bfloat16   48   173.3   172.3   224.0   1.01
+shared_down  bfloat16   64   174.1   174.0   224.7   1.00
+shared_down  bfloat16   65   257.3   381.1   257.0   1.00
+shared_down  bfloat16   80   258.8   387.6   259.0   1.00
+shared_down  bfloat16   96   261.2   388.7   260.7   1.00
+shared_down  bfloat16  128   262.9   390.9   262.2   1.00
+shared_down  bfloat16  192   300.4   559.5   300.1   1.00
+shared_down  bfloat16  256   365.1   750.9   364.8   1.00
+shared_down  bfloat16  384   474.0  1126.8   474.1   1.00
+shared_down  bfloat16  512   606.2  1501.2   604.8   1.00
+shared_down  float16    32   129.7   129.2   223.9   1.00
+shared_down  float16    48   173.5   172.7   224.0   1.00
+shared_down  float16    64   174.3   174.5   224.7   1.00
+shared_down  float16    65   257.8   385.5   257.1   1.00
+shared_down  float16    80   259.3   388.0   259.8   1.00
+shared_down  float16    96   261.1   388.9   261.8   1.00
+shared_down  float16   128   262.7   390.9   262.9   1.00
+shared_down  float16   192   301.0   560.3   301.4   1.00
+shared_down  float16   256   364.8   751.6   366.1   1.00
+shared_down  float16   384   475.8  1126.6   474.6   1.00
+shared_down  float16   512   606.8  1503.5   606.8   1.00

@@ -1,0 +1,8 @@
+.                                                                                                                                                               [100%]
+========================================================================== warnings summary ===========================================================================
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_dense_cache_matches_uncached
+  /usr/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=14554) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 129 deselected, 1 warning in 16.17s

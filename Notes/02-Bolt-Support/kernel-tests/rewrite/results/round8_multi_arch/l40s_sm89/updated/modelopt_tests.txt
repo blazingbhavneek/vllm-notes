@@ -1,0 +1,19 @@
+.......................................................                                                                                                         [100%]
+========================================================================== warnings summary ===========================================================================
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[bfloat16]
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[bfloat16]
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[half]
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[half]
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_dense_cache_matches_uncached
+  /usr/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=26131) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[half]
+  /workspace/vllm/tests/quantization/test_modelopt.py:1881: UserWarning: Test1:
+  Matched tokens:	[523, 3648]
+  eager:	''	{3908: Logprob(logprob=-1.3759053945541382, rank=1, decoded_token=None), 3841: Logprob(logprob=-1.3837178945541382, rank=2, decoded_token=None), 636: Logprob(logprob=-3.2509055137634277, rank=3, decoded_token=None), 3730: Logprob(logprob=-3.3055930137634277, rank=4, decoded_token=None), 15: Logprob(logprob=-3.5009055137634277, rank=5, decoded_token=None)}
+  compiled:	''	{3841: Logprob(logprob=-1.3819694519042969, rank=1, decoded_token=None), 3908: Logprob(logprob=-1.3819694519042969, rank=2, decoded_token=None), 636: Logprob(logprob=-3.249156951904297, rank=3, decoded_token=None), 3730: Logprob(logprob=-3.303844451904297, rank=4, decoded_token=None), 15: Logprob(logprob=-3.499156951904297, rank=5, decoded_token=None)}
+    check_logprobs_close(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+55 passed, 75 deselected, 6 warnings in 422.86s (0:07:02)

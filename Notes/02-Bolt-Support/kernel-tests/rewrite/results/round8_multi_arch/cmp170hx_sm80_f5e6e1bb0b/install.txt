@@ -1,0 +1,168 @@
+Using Python 3.12.3 environment at: /venv/main
+error: Failed to build `vllm @ file:///workspace/vllm`
+  cause: Failed to install requirements from `build-system.requires`
+  cause: Failed to install build dependencies
+  cause: Failed to install: torch-2.14.0+cu132-cp312-cp312-manylinux_2_28_x86_64.whl (torch==2.14.0+cu132)
+  cause: Failed to copy to `/opt/uv/cache/builds-v0/.tmpHv9muK/lib/python3.12/site-packages/torch/lib/libtorch_cuda.so`
+  cause: failed to copy file from /opt/uv/cache/archive-v0/ZYjSUJnZGsvZV-eM/torch/lib/libtorch_cuda.so to
+         /opt/uv/cache/builds-v0/.tmpHv9muK/lib/python3.12/site-packages/torch/lib/.tmpuLvw11: No space left on device (os error 28)
+Using Python 3.12.3 environment at: /venv/main
+error: Failed to build `vllm @ file:///workspace/vllm`
+  cause: The build backend returned an error
+  cause: Call to `setuptools.build_meta.prepare_metadata_for_build_editable` failed (exit status: 1)
+
+         [stderr]
+         Traceback (most recent call last):
+           File "<string>", line 14, in <module>
+           File "/venv/main/lib/python3.12/site-packages/setuptools/build_meta.py", line 484, in prepare_metadata_for_build_editable
+             return self.prepare_metadata_for_build_wheel(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           File "/venv/main/lib/python3.12/site-packages/setuptools/build_meta.py", line 378, in prepare_metadata_for_build_wheel
+             self.run_setup()
+           File "/venv/main/lib/python3.12/site-packages/setuptools/build_meta.py", line 317, in run_setup
+             exec(code, locals())
+           File "<string>", line 21, in <module>
+         ModuleNotFoundError: No module named 'setuptools_rust'
+
+hint: This error likely indicates that `vllm` depends on `setuptools_rust`, but doesn't declare it as a build dependency. If `vllm` is a first-party package, consider adding `setuptools_rust` to its `build-system.requires`. Otherwise, either add it to your `pyproject.toml` under:
+
+[tool.uv.extra-build-dependencies]
+vllm = ["setuptools_rust"]
+
+or `uv pip install setuptools_rust` into the environment and re-run with `--no-build-isolation`.
+Using Python 3.12.3 environment at: /venv/main
+Resolved 45 packages in 367ms
+Downloading pyarrow (51.4MiB)
+Downloading pandas (11.5MiB)
+ Downloaded pandas
+ Downloaded pyarrow
+Prepared 10 packages in 1.01s
+Uninstalled 1 package in 19ms
+Installed 10 packages in 592ms
+ + datasets==5.1.0
+ + gguf==0.19.0
+ - huggingface-hub==1.30.0
+ + huggingface-hub==2.4.0
+ + multiprocess==0.70.19
+ + pandas==3.1.0
+ + pyarrow==26.0.0
+ + pytest-asyncio==1.4.1
+ + semantic-version==2.10.0
+ + setuptools-rust==1.13.0
+ + xxhash==4.0.2
+Using Python 3.12.3 environment at: /venv/main
+Resolved 199 packages in 5.64s
+   Building vllm @ file:///workspace/vllm
+Downloading mistral-common (6.3MiB)
+Downloading aiohttp (1.8MiB)
+Downloading nvidia-cutlass-dsl-libs-base (2.9MiB)
+Downloading nvidia-cusolver (216.9MiB)
+Downloading nvidia-cublas (386.1MiB)
+Downloading nvidia-cusparse (143.9MiB)
+Downloading nvidia-cuda-runtime (2.2MiB)
+Downloading nvidia-cuda-nvrtc (44.8MiB)
+Downloading tokenizers (3.2MiB)
+Downloading nvidia-cuda-cupti (11.4MiB)
+Downloading nvidia-cufile (1.3MiB)
+Downloading triton (235.4MiB)
+Downloading nvidia-curand (57.1MiB)
+Downloading oss-harmony (3.4MiB)
+Downloading nvidia-cutlass-dsl-libs-cu12 (87.5MiB)
+Downloading nvidia-cutlass-dsl-libs-cu13 (87.7MiB)
+Downloading nvidia-cutlass-dsl-libs-core (1.6MiB)
+Downloading instanttensor (6.2MiB)
+Downloading nccl-extensions (21.5MiB)
+Downloading xgrammar (1.3MiB)
+Downloading nvidia-cufft (208.1MiB)
+Downloading tokenspeed-triton (90.5MiB)
+Downloading nvidia-cudnn-cu13 (527.5MiB)
+Downloading transformers (12.4MiB)
+Downloading nvidia-cudnn-frontend (11.1MiB)
+Downloading torch (532.8MiB)
+Downloading pillow (6.8MiB)
+Downloading flashinfer-python (59.2MiB)
+Downloading torchvision (7.2MiB)
+ Downloaded torchvision
+ Downloaded nvidia-cufile
+ Downloaded xgrammar
+ Downloaded nvidia-cutlass-dsl-libs-core
+ Downloaded aiohttp
+ Downloaded nvidia-cuda-runtime
+ Downloaded nvidia-cutlass-dsl-libs-base
+ Downloaded tokenizers
+ Downloaded oss-harmony
+ Downloaded instanttensor
+ Downloaded mistral-common
+ Downloaded pillow
+ Downloaded nvidia-cudnn-frontend
+ Downloaded nvidia-cuda-cupti
+ Downloaded transformers
+ Downloaded nccl-extensions
+ Downloaded triton
+ Downloaded torch
+ Downloaded nvidia-cuda-nvrtc
+ Downloaded nvidia-curand
+ Downloaded flashinfer-python
+ Downloaded nvidia-cutlass-dsl-libs-cu12
+ Downloaded nvidia-cutlass-dsl-libs-cu13
+ Downloaded tokenspeed-triton
+      Built vllm @ file:///workspace/vllm
+ Downloaded nvidia-cusparse
+ Downloaded nvidia-cufft
+ Downloaded nvidia-cusolver
+ Downloaded nvidia-cublas
+ Downloaded nvidia-cudnn-cu13
+Prepared 39 packages in 33.10s
+Uninstalled 36 packages in 2.62s
+error: Failed to install: transformers-5.22.1-py3-none-any.whl (transformers==5.22.1)
+  cause: Failed to create directory `/venv/main/lib/python3.12/site-packages/transformers/models/hunyuan_v1_dense`
+  cause: failed to create directory `/venv/main/lib/python3.12/site-packages/transformers/models/hunyuan_v1_dense`: No space left on device (os error 28)
+Using Python 3.12.3 environment at: /venv/main
+error: Failed to build `vllm @ file:///workspace/vllm`
+  cause: The build backend returned an error
+  cause: Call to `setuptools.build_meta.prepare_metadata_for_build_editable` failed (exit status: 1)
+
+         [stderr]
+         Traceback (most recent call last):
+           File "<string>", line 14, in <module>
+           File "/venv/main/lib/python3.12/site-packages/setuptools/build_meta.py", line 484, in prepare_metadata_for_build_editable
+             return self.prepare_metadata_for_build_wheel(
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+           File "/venv/main/lib/python3.12/site-packages/setuptools/build_meta.py", line 378, in prepare_metadata_for_build_wheel
+             self.run_setup()
+           File "/venv/main/lib/python3.12/site-packages/setuptools/build_meta.py", line 317, in run_setup
+             exec(code, locals())
+           File "<string>", line 17, in <module>
+           File "/venv/main/lib/python3.12/site-packages/torch/__init__.py", line 495, in <module>
+             _load_global_deps()
+           File "/venv/main/lib/python3.12/site-packages/torch/__init__.py", line 453, in _load_global_deps
+             _preload_cuda_deps(err)
+           File "/venv/main/lib/python3.12/site-packages/torch/__init__.py", line 379, in _preload_cuda_deps
+             raise err
+           File "/venv/main/lib/python3.12/site-packages/torch/__init__.py", line 424, in _load_global_deps
+             ctypes.CDLL(global_deps_lib_path, mode=ctypes.RTLD_GLOBAL)
+           File "/usr/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+             self._handle = _dlopen(self._name, mode)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+         OSError: /venv/main/lib/python3.12/site-packages/torch/lib/libtorch_global_deps.so: cannot open shared object file: No such file or directory
+
+hint: Build failures usually indicate a problem with the package or the build environment
+Using Python 3.12.3 environment at: /venv/main
+Resolved 29 packages in 646ms
+Installed 2 packages in 9ms
+Prepared 1 package without build isolation in 12ms
+Installed 1 package in 2.31s
+ + nvidia-cublas==13.4.0.1
+ + nvidia-cudnn-cu13==9.24.0.43
+ + torch==2.14.0+cu132
+Using Python 3.12.3 environment at: /venv/main
+Resolved 199 packages in 7.82s
+Installed 2 packages in 2.03s
+   Building vllm @ file:///workspace/vllm
+      Built vllm @ file:///workspace/vllm
+Prepared 1 package without build isolation in 19.26s
+Uninstalled 1 package in 0.74ms
+Installed 1 package in 4ms
+ + flashinfer-python==0.7.2.post1
+ + transformers==5.22.1
+ ~ vllm==0.1.dev24301+gf5e6e1bb0.precompiled (from file:///workspace/vllm)

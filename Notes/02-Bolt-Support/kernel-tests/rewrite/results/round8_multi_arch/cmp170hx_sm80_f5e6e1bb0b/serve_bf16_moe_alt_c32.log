@@ -1,0 +1,90 @@
+W1101 09:19:16.032000 26377 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1101 09:19:16.033000 26377 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1101 09:19:16.034000 26377 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Module nixl_ep was found but failed to import
+Traceback (most recent call last):
+  File "/workspace/vllm/vllm/utils/import_utils.py", line 415, in _has_module
+    importlib.import_module(module_name)
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 56, in <module>
+    _pkg = sys.modules[_load_ep_module()]
+                       ^^^^^^^^^^^^^^^^^
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 36, in _load_ep_module
+    return importlib.import_module(mod_name).__name__
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep_cu13/__init__.py", line 27, in <module>
+    _nixl_ep_cpp = importlib.import_module(f".nixl_ep_cpp_torch{_torch_mm}", __package__)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'nixl_ep_cu13.nixl_ep_cpp_torch214'
+Namespace(subparser='bench', bench_type='serve', dispatch_function=<function BenchmarkServingSubcommand.cmd at 0x7575ce569940>, trust_remote_code=True, seed=0, num_prompts=32, dataset_name='random', no_stream=False, dataset_path=None, no_oversample=False, skip_chat_template=False, enable_multimodal_chat=False, disable_shuffle=False, custom_output_len=256, custom_ensure_client_side_data=False, spec_bench_output_len=256, spec_bench_category=None, sharegpt_output_len=None, timed_trace_chunk_hash_size=16, timed_trace_sec_multiplier=1, timed_trace_label_timestamp='timestamp', timed_trace_label_input_length='input_length', timed_trace_label_output_length='output_length', timed_trace_label_hash_ids='hash_ids', blazedit_min_distance=0.0, blazedit_max_distance=1.0, asr_max_audio_len_sec=inf, asr_min_audio_len_sec=0.0, random_input_len=128, random_output_len=256, random_range_ratio='0.0', random_prefix_len=0, random_batch_size=1, no_reranker=False, random_mm_base_items_per_request=1, random_mm_num_mm_items_range_ratio=0.0, random_mm_limit_mm_per_prompt={'image': 255, 'video': 1}, random_mm_bucket_config={(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}, hf_subset=None, hf_split=None, hf_name=None, hf_output_len=None, bfcl_categories=None, prefix_repetition_prefix_len=256, prefix_repetition_suffix_len=256, prefix_repetition_num_prefixes=10, prefix_repetition_output_len=128, speed_bench_dataset_subset='qualitative', speed_bench_output_len=4096, speed_bench_category=None, label=None, backend='openai', base_url=None, host='127.0.0.1', port=8001, endpoint='/v1/completions', header=None, max_concurrency=32, model='nemotron-bolt-h200', input_len=None, output_len=None, tokenizer='/workspace/.hf_home/hub/models--nvidia--NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB/snapshots/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f', tokenizer_mode='auto', use_beam_search=False, logprobs=None, request_rate=inf, burstiness=1.0, probe_request_rate=0.0, disable_tqdm=False, num_warmups=0, profile=False, save_result=True, save_detailed=False, append_result=False, metadata=None, result_dir='/workspace/results/cmp-170hx-sm80', result_filename='serve_bf16_moe_alt_c32.json', ignore_eos=True, self_timed=None, percentile_metrics='ttft,tpot,itl,e2el', metric_percentiles='50,90,99', goodput=None, request_id_prefix='bench-a587dec1-', top_p=None, top_k=None, min_p=None, temperature=0.0, frequency_penalty=None, presence_penalty=None, repetition_penalty=None, served_model_name=None, lora_modules=None, lora_assignment='random', ramp_up_strategy=None, ramp_up_start_rps=None, ramp_up_end_rps=None, ready_check_timeout_sec=0, chat_template_kwargs=None, extra_body=None, skip_tokenizer_init=False, insecure=False, plot_timeline=False, timeline_itl_thresholds='25,50', plot_dataset_stats=False, log_config_file=None, logging_config=LoggingConfig(log_level='INFO', formatter='text', configure_logging=True, pylogging_config_file=None))
+[ERROR] `vision_final_layernorm` is part of NemotronH_Omni_Reasoning_V3_Config.__init__'s signature, but not documented. Make sure to add it to the docstring of the function in /workspace/.hf_home/modules/transformers_modules/cf2effc5c4b794ee9fb8d34eab3d1d65ce64142f/17063d245b40fe19/configuration_nemotron_h_omni.py.
+(MainProcess pid=26377) INFO 11-01 09:19:31 [utils.py:88] Sampling input_len from [128, 128] and output_len from [256, 256]
+Starting initial single prompt test run...
+Skipping endpoint ready check.
+Starting main benchmark run...
+Traffic request rate: inf
+Burstiness factor: 1.0 (Poisson process)
+Maximum request concurrency: 32
+  0%|          | 0/32 [00:00<?, ?it/s]  3%|▎         | 1/32 [00:25<13:14, 25.63s/it] 28%|██▊       | 9/32 [00:25<00:47,  2.08s/it]100%|██████████| 32/32 [00:25<00:00,  1.24it/s]
+tip: install termplotlib and gnuplot to plot the metrics
+============ Serving Benchmark Result ============
+Successful requests:                     32        
+Failed requests:                         0         
+Maximum request concurrency:             32        
+Benchmark duration (s):                  25.90     
+Total input tokens:                      4096      
+Total generated tokens:                  8192      
+Request throughput (req/s):              1.24      
+Output token throughput (tok/s):         316.25    
+Peak output token throughput (tok/s):    352.00    
+Peak concurrent requests:                32.00     
+Total token throughput (tok/s):          474.37    
+---------------Time to First Token----------------
+Mean TTFT (ms):                          1517.03   
+Median TTFT (ms):                        1580.43   
+P50 TTFT (ms):                           1580.43   
+P90 TTFT (ms):                           2126.01   
+P99 TTFT (ms):                           2127.16   
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          95.31     
+Median TPOT (ms):                        95.13     
+P50 TPOT (ms):                           95.13     
+P90 TPOT (ms):                           97.58     
+P99 TPOT (ms):                           98.57     
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           95.31     
+Median ITL (ms):                         93.69     
+P50 ITL (ms):                            93.69     
+P90 ITL (ms):                            94.48     
+P99 ITL (ms):                            95.20     
+----------------End-to-end Latency----------------
+Mean E2EL (ms):                          25821.17  
+Median E2EL (ms):                        25839.58  
+P50 E2EL (ms):                           25839.58  
+P90 E2EL (ms):                           25896.17  
+P99 E2EL (ms):                           25897.10  
+==================================================
+exit=0

@@ -1,0 +1,55 @@
+Ignoring incompatible flashinfer-cubin package (cubins will be downloaded on demand to /root/.cache/flashinfer/cubins): flashinfer-cubin version (0.6.18) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+Ignoring incompatible flashinfer-jit-cache package (kernels will be JIT-compiled instead): flashinfer-jit-cache version (0.6.18+cu130) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+W1101 08:43:57.173000 16146 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1101 08:43:57.174000 16146 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1101 08:43:57.174000 16146 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Module nixl_ep was found but failed to import
+Traceback (most recent call last):
+  File "/workspace/vllm/vllm/utils/import_utils.py", line 415, in _has_module
+    importlib.import_module(module_name)
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 56, in <module>
+    _pkg = sys.modules[_load_ep_module()]
+                       ^^^^^^^^^^^^^^^^^
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 36, in _load_ep_module
+    return importlib.import_module(mod_name).__name__
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep_cu13/__init__.py", line 27, in <module>
+    _nixl_ep_cpp = importlib.import_module(f".nixl_ep_cpp_torch{_torch_mm}", __package__)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'nixl_ep_cu13.nixl_ep_cpp_torch214'
+NVIDIA CMP 170HX bus 4096 gemv up to M = 8
+/workspace/vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/moe_threshold_ab.py:42: UserWarning: CUPTI is not installed. Try 'pip install -U cupti-python'. Falling back to CUDA events for benchmarking.
+  return statistics.median(bench_gpu_time_with_cupti(fn, use_cuda_graph=True)) * 1000
+/venv/main/lib/python3.12/site-packages/flashinfer/testing/utils.py:1069: UserWarning: cold_l2_cache=True but no GPU tensors found in input_args/input_kwargs. Cold L2 benchmarking disabled.
+  return bench_gpu_time_with_cudagraph(
+1 dot_us 104.96 gemv_us 62.98 speedup 1.667 scaled_output_gap 0.006195068359375
+8 dot_us 660.07 gemv_us 415.33 speedup 1.589 scaled_output_gap 0.0081787109375
+16 dot_us 1295.97 gemv_us 806.4 speedup 1.607 scaled_output_gap 0.0069580078125
+32 dot_us 2500.51 gemv_us 1597.29 speedup 1.565 scaled_output_gap 0.005584716796875
+64 dot_us 6537.63 gemv_us 3153.2 speedup 2.073 scaled_output_gap 0.006744384765625
+128 dot_us 8612.45 gemv_us 6266.88 speedup 1.374 scaled_output_gap 0.005706787109375
+exit=0

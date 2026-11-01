@@ -1,5 +1,8 @@
 # 05 · Handoff: finish the Bolt Triton path on the H200
 
+> **Latest (2026-11-01):** round 8 multi-arch results and PR evidence are in
+> [`09-round8-multi-arch-results.md`](09-round8-multi-arch-results.md).
+>
 > **Current status (2026-10-30):** The historical plan below predates the
 > rewrite and is not the current code state. Rounds 4–6 and current working
 > tree/results are summarized in [`04-progress-log.md`](04-progress-log.md),

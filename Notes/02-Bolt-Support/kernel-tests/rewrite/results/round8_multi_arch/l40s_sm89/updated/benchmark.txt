@@ -1,0 +1,177 @@
+Ignoring incompatible flashinfer-cubin package (cubins will be downloaded on demand to /root/.cache/flashinfer/cubins): flashinfer-cubin version (0.6.18) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+Ignoring incompatible flashinfer-jit-cache package (kernels will be JIT-compiled instead): flashinfer-jit-cache version (0.6.18+cu130) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+W1101 11:05:01.219000 31418 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1101 11:05:01.220000 31418 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1101 11:05:01.221000 31418 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Module nixl_ep was found but failed to import
+Traceback (most recent call last):
+  File "/workspace/vllm/vllm/utils/import_utils.py", line 415, in _has_module
+    importlib.import_module(module_name)
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 56, in <module>
+    _pkg = sys.modules[_load_ep_module()]
+                       ^^^^^^^^^^^^^^^^^
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep/__init__.py", line 36, in _load_ep_module
+    return importlib.import_module(mod_name).__name__
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 995, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/venv/main/lib/python3.12/site-packages/nixl_ep_cu13/__init__.py", line 27, in <module>
+    _nixl_ep_cpp = importlib.import_module(f".nixl_ep_cpp_torch{_torch_mm}", __package__)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/importlib/__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+ModuleNotFoundError: No module named 'nixl_ep_cu13.nixl_ep_cpp_torch214'
+/workspace/vllm/benchmarks/kernels/benchmark_modelopt_block_triton.py:61: UserWarning: CUPTI is not installed. Try 'pip install -U cupti-python'. Falling back to CUDA events for benchmarking.
+  return statistics.median(bench_gpu_time_with_cupti(fn, use_cuda_graph=True)) * 1e3
+/venv/main/lib/python3.12/site-packages/flashinfer/testing/utils.py:1069: UserWarning: cold_l2_cache=True but no GPU tensors found in input_args/input_kwargs. Cold L2 benchmarking disabled.
+  return bench_gpu_time_with_cudagraph(
+NVIDIA L40S, copy bandwidth 679 GB/s
+layer M ours_us baseline_us ratio GB/s TFLOP/s config
+/workspace/vllm/benchmarks/kernels/benchmark_modelopt_block_triton.py:61: UserWarning: CUPTI is not installed. Try 'pip install -U cupti-python'. Falling back to CUDA events for benchmarking.
+  return statistics.median(bench_gpu_time_with_cupti(fn, use_cuda_graph=True)) * 1e3
+/venv/main/lib/python3.12/site-packages/flashinfer/testing/utils.py:1069: UserWarning: cold_l2_cache=True but no GPU tensors found in input_args/input_kwargs. Cold L2 benchmarking disabled.
+  return bench_gpu_time_with_cudagraph(
+Using default MoE config. Performance might be sub-optimal! Config file not found at /workspace/vllm/vllm/model_executor/layers/fused_moe/configs/E=240,N=2048,device_name=NVIDIA_L40S.json
+Using default MoE config. Performance might be sub-optimal! Config file not found at /workspace/vllm/vllm/model_executor/layers/fused_moe/configs/E=432,N=2560,device_name=NVIDIA_L40S.json
+Using default MoE config. Performance might be sub-optimal! Config file not found at /workspace/vllm/vllm/model_executor/layers/fused_moe/configs/E=496,N=2560,device_name=NVIDIA_L40S.json
+qkv_proj 1 9.8 17.5 0.56 2042 3.8 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 2 13.0 19.5 0.67 1545 5.8 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 4 13.5 19.5 0.69 1489 11.2 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 8 11.7 19.0 0.61 1730 25.9 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 16 12.2 19.6 0.62 1669 49.6 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 32 16.3 26.2 0.62 1266 74.2 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 64 33.1 19.1 1.73 640 73.0 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 128 51.8 27.8 1.87 430 93.3 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 4, 'num_warps': 8, 'num_stages': 2}
+qkv_proj 256 82.2 63.3 1.30 298 117.5 dequant+cuBLAS
+qkv_proj 512 143.9 119.8 1.20 201 134.3 dequant+cuBLAS
+qkv_proj 1024 239.7 224.8 1.07 158 161.3 dequant+cuBLAS
+qkv_proj 2048 443.1 412.6 1.07 126 174.5 dequant+cuBLAS
+qkv_proj 4096 827.4 756.3 1.09 110 186.9 dequant+cuBLAS
+qkv_proj 8192 1578.8 1535.1 1.03 103 195.9 dequant+cuBLAS
+o_proj 1 11.9 17.0 0.70 1502 2.8 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+o_proj 2 12.3 18.0 0.68 1453 5.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+o_proj 4 12.4 17.9 0.69 1444 10.8 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+o_proj 8 10.8 18.1 0.59 1670 25.0 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+o_proj 16 11.3 19.3 0.59 1606 47.7 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+o_proj 32 15.9 21.4 0.74 1156 67.7 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+o_proj 64 28.4 30.8 0.92 665 75.7 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+o_proj 128 38.8 26.8 1.45 513 110.7 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+o_proj 256 56.0 40.9 1.37 393 153.4 dequant+cuBLAS
+o_proj 512 91.4 74.1 1.23 287 188.0 dequant+cuBLAS
+o_proj 1024 156.2 137.7 1.13 222 220.0 dequant+cuBLAS
+o_proj 2048 309.4 284.5 1.09 166 222.1 dequant+cuBLAS
+o_proj 4096 664.6 625.3 1.06 128 206.8 dequant+cuBLAS
+o_proj 8192 1402.9 1349.2 1.04 108 195.9 dequant+cuBLAS
+fc1_latent 1 7.3 8.2 0.89 614 1.2 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 2 7.1 5.9 1.19 634 2.4 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 4 7.1 5.9 1.19 637 4.7 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 8 7.2 6.2 1.15 633 9.4 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 16 7.6 6.6 1.16 610 17.7 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 32 8.3 8.2 1.01 577 32.4 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 64 12.7 11.2 1.14 403 42.3 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 128 15.4 10.9 1.42 375 69.9 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 16, 'num_warps': 8, 'num_stages': 2}
+fc1_latent 256 20.4 15.7 1.30 347 105.4 dequant+cuBLAS
+fc1_latent 512 28.3 23.3 1.21 343 152.0 dequant+cuBLAS
+fc1_latent 1024 46.2 41.2 1.12 324 186.0 dequant+cuBLAS
+fc1_latent 2048 78.6 75.6 1.04 323 218.5 dequant+cuBLAS
+fc1_latent 4096 154.6 153.2 1.01 300 222.2 dequant+cuBLAS
+fc1_latent 8192 330.9 293.7 1.13 267 207.7 dequant+cuBLAS
+fc2_latent 1 4.9 6.2 0.79 909 1.7 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 2 5.9 6.0 0.98 754 2.8 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 4 6.0 5.9 1.02 744 5.6 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 8 6.0 6.1 0.98 751 11.1 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 16 6.6 6.9 0.96 705 20.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 32 8.6 7.2 1.20 556 31.2 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 64 14.5 9.4 1.54 352 36.9 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 128 19.3 9.2 2.09 300 55.8 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+fc2_latent 256 18.2 13.4 1.36 388 117.8 dequant+cuBLAS
+fc2_latent 512 27.5 22.7 1.21 352 155.9 dequant+cuBLAS
+fc2_latent 1024 41.9 37.7 1.11 357 205.1 dequant+cuBLAS
+fc2_latent 2048 81.1 76.5 1.06 314 211.8 dequant+cuBLAS
+fc2_latent 4096 165.5 158.8 1.04 280 207.6 dequant+cuBLAS
+fc2_latent 8192 372.1 363.4 1.02 237 184.7 dequant+cuBLAS
+shared_up 1 16.3 14.3 1.14 350 2.7 {'BM': 1, 'BN': 8, 'BK': 256, 'SPLIT': 8, 'num_warps': 1, 'num_stages': 2}
+shared_up 2 23.6 19.6 1.20 243 3.7 {'BM': 2, 'BN': 8, 'BK': 256, 'SPLIT': 8, 'num_warps': 1, 'num_stages': 2}
+shared_up 4 29.0 19.5 1.49 199 6.1 {'BM': 4, 'BN': 8, 'BK': 256, 'SPLIT': 8, 'num_warps': 1, 'num_stages': 2}
+shared_up 8 42.1 19.9 2.12 138 8.4 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+shared_up 16 42.4 20.8 2.04 141 16.6 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+shared_up 32 47.8 25.9 1.85 131 29.5 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+shared_up 64 61.6 21.9 2.81 112 45.7 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+shared_up 128 52.4 29.6 1.77 155 107.5 dequant+cuBLAS
+shared_up 256 82.3 61.1 1.35 128 136.9 dequant+cuBLAS
+shared_up 512 162.4 129.0 1.26 95 138.9 dequant+cuBLAS
+shared_up 1024 280.2 246.9 1.14 89 160.9 dequant+cuBLAS
+shared_up 2048 464.5 424.6 1.09 96 194.2 dequant+cuBLAS
+shared_up 4096 902.5 846.3 1.07 92 199.9 dequant+cuBLAS
+shared_up 8192 1890.4 1911.4 0.99 85 190.8 dequant+cuBLAS
+shared_down 1 16.7 16.4 1.02 341 2.6 {'BM': 1, 'BN': 8, 'BK': 256, 'SPLIT': 7, 'num_warps': 1, 'num_stages': 2}
+shared_down 2 24.2 22.9 1.05 236 3.6 {'BM': 2, 'BN': 8, 'BK': 256, 'SPLIT': 7, 'num_warps': 1, 'num_stages': 2}
+shared_down 4 29.6 23.4 1.26 194 6.0 {'BM': 4, 'BN': 8, 'BK': 256, 'SPLIT': 7, 'num_warps': 1, 'num_stages': 2}
+shared_down 8 43.6 23.7 1.84 134 8.1 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+shared_down 16 44.1 25.2 1.75 135 16.0 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+shared_down 32 47.9 30.1 1.59 131 29.4 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+shared_down 64 65.1 41.4 1.57 106 43.3 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+shared_down 128 50.0 29.1 1.72 162 112.8 dequant+cuBLAS
+shared_down 256 81.8 52.9 1.55 129 137.8 dequant+cuBLAS
+shared_down 512 119.6 98.0 1.22 129 188.6 dequant+cuBLAS
+shared_down 1024 205.8 189.1 1.09 122 219.1 dequant+cuBLAS
+shared_down 2048 428.2 385.6 1.11 104 210.6 dequant+cuBLAS
+shared_down 4096 897.5 854.8 1.05 93 201.0 dequant+cuBLAS
+shared_down 8192 1838.8 1796.7 1.02 87 196.2 dequant+cuBLAS
+lm_head 1 823.1 1482.1 0.56 693 1.3 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 2 874.4 1478.8 0.59 653 2.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 4 878.7 1483.5 0.59 650 4.9 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 8 884.5 1492.9 0.59 647 9.7 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 16 892.5 1507.6 0.59 644 19.2 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 32 904.6 1645.3 0.55 640 38.0 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 64 960.8 1667.0 0.58 612 71.5 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 128 2667.5 1702.3 1.57 227 51.5 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 1, 'num_warps': 8, 'num_stages': 2}
+lm_head 256 5308.2 1974.4 2.69 120 51.8 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 1, 'num_warps': 8, 'num_stages': 2}
+lm_head 512 10615.8 3193.9 3.32 67 51.8 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 1, 'num_warps': 8, 'num_stages': 2}
+moe_240x2048 1 29.5 31.1 0.95 330 2.6 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 2 47.0 217.6 0.22 414 3.2 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 4 81.8 412.2 0.20 463 3.7 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 8 155.5 759.5 0.20 452 3.9 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 16 358.3 1222.3 0.29 317 3.4 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 64 1361.1 2475.9 0.55 168 3.5 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 256 1827.0 3144.2 0.58 143 10.6 {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_240x2048 1024 1979.0 3418.5 0.58 133 39.1 {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_240x2048 4096 6305.3 4764.4 1.32 44 49.0 {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_432x2560 1 34.8 57.3 0.61 350 2.7 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 2 56.5 270.0 0.21 431 3.3 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 4 99.6 528.0 0.19 489 3.8 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 8 211.7 1031.1 0.21 415 3.6 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 16 478.6 1769.0 0.27 345 3.2 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 64 1799.1 4609.0 0.39 238 3.4 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 256 4016.9 6932.2 0.58 145 6.0 {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_432x2560 1024 4263.1 7281.6 0.59 138 22.7 {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_432x2560 4096 7536.7 8935.6 0.84 80 51.3 {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_496x2560 1 34.7 45.3 0.77 351 2.7 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 2 56.8 270.3 0.21 428 3.3 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 4 100.8 527.7 0.19 483 3.7 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 8 220.1 1016.7 0.22 418 3.4 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 16 462.4 1754.9 0.26 354 3.3 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 64 1817.1 4982.7 0.36 255 3.3 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 256 4581.5 7890.8 0.58 146 5.3 {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_496x2560 1024 4788.6 8276.7 0.58 141 20.2 {'BLOCK_SIZE_M': 64, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_496x2560 4096 8322.7 9962.4 0.84 83 46.4 {'BLOCK_SIZE_M': 128, 'BN': 128, 'BK': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}

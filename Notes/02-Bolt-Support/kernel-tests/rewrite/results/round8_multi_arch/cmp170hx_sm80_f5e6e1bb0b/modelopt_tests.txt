@@ -1,0 +1,27 @@
+.......................................................                                                                                                         [100%]
+========================================================================== warnings summary ===========================================================================
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[bfloat16]
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[bfloat16]
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[half]
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[half]
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_dense_cache_matches_uncached
+  /usr/lib/python3.12/multiprocessing/popen_fork.py:66: DeprecationWarning: This process (pid=12055) is multi-threaded, use of fork() may lead to deadlocks in the child.
+    self.pid = os.fork()
+
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[bfloat16]
+  /workspace/vllm/tests/quantization/test_modelopt.py:1881: UserWarning: Test0:
+  Matched tokens:	[325, 1626, 3220, 164, 1581, 681, 1824, 1519, 2894, 655, 404]
+  eager:	''	{2678: Logprob(logprob=-1.944379448890686, rank=1, decoded_token=None), 2401: Logprob(logprob=-2.0068793296813965, rank=2, decoded_token=None), 3012: Logprob(logprob=-2.1943793296813965, rank=3, decoded_token=None), 2631: Logprob(logprob=-2.1943793296813965, rank=4, decoded_token=None), 1789: Logprob(logprob=-3.1318793296813965, rank=5, decoded_token=None)}
+  compiled:	''	{2401: Logprob(logprob=-1.9553762674331665, rank=1, decoded_token=None), 2678: Logprob(logprob=-1.9553762674331665, rank=2, decoded_token=None), 3012: Logprob(logprob=-2.205376148223877, rank=3, decoded_token=None), 2631: Logprob(logprob=-2.205376148223877, rank=4, decoded_token=None), 1789: Logprob(logprob=-3.142876148223877, rank=5, decoded_token=None)}
+    check_logprobs_close(
+
+tests/quantization/test_modelopt.py::test_modelopt_block_triton_tiny_nemotron_h[bfloat16]
+  /workspace/vllm/tests/quantization/test_modelopt.py:1881: UserWarning: Test2:
+  Matched tokens:	[799, 2059, 3545, 1236, 1893, 3387]
+  eager:	''	{2556: Logprob(logprob=-2.0893847942352295, rank=1, decoded_token=None), 1774: Logprob(logprob=-2.1518847942352295, rank=2, decoded_token=None), 2669: Logprob(logprob=-2.4643847942352295, rank=3, decoded_token=None), 3557: Logprob(logprob=-2.8393847942352295, rank=4, decoded_token=None), 2381: Logprob(logprob=-3.2143847942352295, rank=5, decoded_token=None)}
+  compiled:	''	{1774: Logprob(logprob=-2.141404151916504, rank=2, decoded_token=None), 2556: Logprob(logprob=-2.141404151916504, rank=1, decoded_token=None), 2669: Logprob(logprob=-2.516404151916504, rank=3, decoded_token=None), 3557: Logprob(logprob=-2.766404151916504, rank=4, decoded_token=None), 2381: Logprob(logprob=-3.266404151916504, rank=5, decoded_token=None)}
+    check_logprobs_close(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+55 passed, 75 deselected, 7 warnings in 552.60s (0:09:12)
+exit=0
