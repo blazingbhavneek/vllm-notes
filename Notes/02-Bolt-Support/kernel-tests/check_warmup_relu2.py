@@ -1,6 +1,7 @@
 """After _warm_moe, a ReLU2 decode step through the real experts must not JIT.
 
 Run from the vllm checkout: python ../Notes/02-Bolt-Support/kernel-tests/check_warmup_relu2.py
+Pass `float16` as the first argument to check the FP16 (Turing) path.
 """
 
 import sys
@@ -32,6 +33,7 @@ def compiled(fn):
 
 
 init_workspace_manager(torch.device(0))
+dtype = getattr(torch, sys.argv[1] if len(sys.argv) > 1 else "bfloat16")
 codec, E, K, inter, top_k = "iq2_xxs", 16, 1024, 512, 2
 w1, s1 = kernels.repack_blocks(make_raw((E, inter), K, codec, seed=7), codec)
 w2, s2 = kernels.repack_blocks(make_raw((E, K), inter, codec, seed=8), codec)
@@ -41,16 +43,16 @@ module = types.SimpleNamespace(
     activation=MoEActivation.RELU2_NO_MUL,
 )  # fmt: skip
 method = types.SimpleNamespace(codec=codec, block_size=256)
-_warm_moe(module, method, kernels, moe_align_block_size, 8, set())
+_warm_moe(module, method, kernels, moe_align_block_size, 64, set(), dtype)
 torch.accelerator.synchronize()
 before = compiled(kernels._moe_gemv_kernel)
 
 run, _, _ = make_moe(codec, MoEActivation.RELU2_NO_MUL, E=E, K=K, inter=inter, top_k=top_k)
-for M in (1, 8):
-    x = torch.randn(M, K, device="cuda", dtype=torch.bfloat16)
+for M in (1, 8, 64):  # GEMV covers 64 rows on GDDR GPUs
+    x = torch.randn(M, K, device="cuda", dtype=dtype)
     run(x, *make_routing(M, E, top_k))
 torch.accelerator.synchronize()
 new = compiled(kernels._moe_gemv_kernel) - before
-print(f"warmed variants: {len(before)}, compiled at inference: {len(new)}")
+print(f"{dtype}: warmed {len(before)}, compiled at inference: {len(new)}")
 assert not new, new
 print("OK: no JIT during inference for the ReLU2 GEMV path")

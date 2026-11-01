@@ -9,7 +9,10 @@ from triton.backends.compiler import GPUTarget
 from vllm.model_executor.layers.quantization import modelopt_block_quant_triton as t
 
 BIN = os.path.join(os.path.dirname(triton.__file__), "backends/nvidia/bin")
-LIMIT = {80: 163, 86: 99, 89: 99, 90: 227, 100: 227, 120: 99}
+LIMIT = {75: 64, 80: 163, 86: 99, 89: 99, 90: 227, 100: 227, 120: 99}
+# DTYPE=float16 CCS=75,80 checks the FP16 (Turing) path; defaults unchanged.
+DT = getattr(torch, os.environ.get("DTYPE", "bfloat16"))
+CCS = tuple(int(c) for c in os.environ.get("CCS", "80,86,89,90,100").split(","))
 FAILURES = []
 
 
@@ -28,7 +31,7 @@ def ptxas_spills(ptx, cc):
     return regs, spill
 
 
-def report(name, ck, warps, stages, ccs=(80, 86, 89, 90, 100)):
+def report(name, ck, warps, stages, ccs=CCS):
     row = [name, f"w{warps} s{stages}", f"sm120={ck.metadata.shared / 1024:.0f}"]
     worst = ck.metadata.shared / 1024 > LIMIT[120]
     for cc in ccs:
@@ -40,8 +43,8 @@ def report(name, ck, warps, stages, ccs=(80, 86, 89, 90, 100)):
         kb = k.metadata.shared / 1024
         worst |= kb > LIMIT[cc]
         extra = ""
-        if cc == 90:
-            regs, sp = ptxas_spills(k.asm["ptx"], 90)
+        if cc in (75, 90):
+            regs, sp = ptxas_spills(k.asm["ptx"], cc)
             extra = f"(r{regs} spill{sp})"
             worst |= sp > 0
         row.append(f"sm{cc}={kb:.0f}{extra}")
@@ -72,8 +75,8 @@ for codec in ("iq2_xxs", "q8_0"):
         else [(1, 32, 256, 4)]
     )
     for bm, bn, bk, w in gemv:
-        x = torch.zeros((bm, K), dtype=torch.bfloat16, device=dev)
-        o = torch.zeros((1, bm, N), dtype=torch.bfloat16, device=dev)
+        x = torch.zeros((bm, K), dtype=DT, device=dev)
+        o = torch.zeros((1, bm, N), dtype=DT, device=dev)
         ck = t._gemv_kernel.warmup(
             x,
             qw,
@@ -102,8 +105,8 @@ for codec in ("iq2_xxs", "q8_0"):
         (64, 128, 64, 8),
         (128, 128, 64, 8),
     ]:
-        x = torch.zeros((bm, K), dtype=torch.bfloat16, device=dev)
-        o = torch.zeros((1, bm, N), dtype=torch.bfloat16, device=dev)
+        x = torch.zeros((bm, K), dtype=DT, device=dev)
+        o = torch.zeros((1, bm, N), dtype=DT, device=dev)
         ck = t._gemm_kernel.warmup(
             x,
             qw,
@@ -126,7 +129,7 @@ for codec in ("iq2_xxs", "q8_0"):
         )
         report(f"gemm {codec} BM{bm} BN{bn} BK{bk}", ck, w, 2)
     bn, w = (8, 1) if codec.startswith("iq2") else (32, 4)
-    o = torch.zeros((N, K), dtype=torch.bfloat16, device=dev)
+    o = torch.zeros((N, K), dtype=DT, device=dev)
     ck = t._dequant_kernel.warmup(
         qw,
         sc,
@@ -145,8 +148,8 @@ for codec in ("iq2_xxs", "q8_0"):
     )
     report(f"dequant {codec} BN{bn} BK256", ck, w, 3)
     for bm, bn, bk, w in [(64, 32, 128, 4), (64, 128, 64, 4), (128, 128, 64, 4)]:
-        a = torch.zeros((64, K), dtype=torch.bfloat16, device=dev)
-        cc_ = torch.zeros((64, N), dtype=torch.bfloat16, device=dev)
+        a = torch.zeros((64, K), dtype=DT, device=dev)
+        cc_ = torch.zeros((64, N), dtype=DT, device=dev)
         tw = torch.zeros((64,), dtype=torch.float32, device=dev)
         ids = torch.zeros((256,), dtype=torch.int32, device=dev)
         eids = torch.zeros((16,), dtype=torch.int32, device=dev)
@@ -184,8 +187,8 @@ for codec in ("iq2_xxs", "q8_0"):
         report(f"moe {codec} BM{bm} BN{bn} BK{bk}", ck, w, 1)
     # Decode MoE: one program per routed row (moe_gemv_config), GEMM1 and GEMM2 tiles.
     bn, bk, w = (8, 256, 1) if codec.startswith("iq2") else (32, 256, 4)
-    a = torch.zeros((2, K), dtype=torch.bfloat16, device=dev)
-    cc_ = torch.zeros((2, 1, N), dtype=torch.bfloat16, device=dev)
+    a = torch.zeros((2, K), dtype=DT, device=dev)
+    cc_ = torch.zeros((2, 1, N), dtype=DT, device=dev)
     tw = torch.zeros((2,), dtype=torch.float32, device=dev)
     ids = torch.zeros((2,), dtype=torch.int32, device=dev)
     eids = torch.zeros((2,), dtype=torch.int32, device=dev)
@@ -226,7 +229,7 @@ for codec in ("iq2_xxs", "q8_0"):
 
 # Split-K partial reduction, one config for every shape (BN is not a tile choice).
 p = torch.zeros((2, 4096), dtype=torch.float32, device=dev)
-o = torch.zeros((4096,), dtype=torch.bfloat16, device=dev)
+o = torch.zeros((4096,), dtype=DT, device=dev)
 ck = t._splitk_reduce_kernel.warmup(p, o, 4096, 2, BN=1024, num_warps=4, grid=(1,))
 report("splitk_reduce", ck, 4, 3)
 
