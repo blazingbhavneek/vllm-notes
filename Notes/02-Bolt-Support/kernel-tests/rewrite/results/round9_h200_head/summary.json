@@ -1,0 +1,243 @@
+{
+  "tests": {
+    "kernel_tests": {
+      "passed": 192,
+      "failed": 0,
+      "skipped": 0,
+      "deselected": 0,
+      "seconds": 96.76
+    },
+    "modelopt_block_tests": {
+      "passed": 54,
+      "failed": 1,
+      "skipped": 0,
+      "deselected": 75,
+      "seconds": 167.86
+    }
+  },
+  "serving": {
+    "1": [
+      {
+        "run": 1,
+        "request_rate": "inf",
+        "num_prompts": 12,
+        "output_throughput": 136.31576934820643,
+        "median_tpot_ms": 6.826292644894006,
+        "p99_tpot_ms": 6.833998596245497,
+        "median_ttft_ms": 126.38119253097102,
+        "median_itl_ms": 6.827020028140396,
+        "completed": 12,
+        "failed": 0,
+        "group_median_output_throughput": 136.75605561764496
+      },
+      {
+        "run": 2,
+        "request_rate": "inf",
+        "num_prompts": 12,
+        "output_throughput": 137.19634188708346,
+        "median_tpot_ms": 6.819041402024381,
+        "p99_tpot_ms": 6.8236125626089965,
+        "median_ttft_ms": 124.7318449895829,
+        "median_itl_ms": 6.819906062446535,
+        "completed": 12,
+        "failed": 0,
+        "group_median_output_throughput": 136.75605561764496
+      }
+    ],
+    "8": [
+      {
+        "run": 1,
+        "request_rate": "inf",
+        "num_prompts": 32,
+        "output_throughput": 473.3303500906913,
+        "median_tpot_ms": 15.175764762577327,
+        "p99_tpot_ms": 15.51287132557299,
+        "median_ttft_ms": 315.9960209741257,
+        "median_itl_ms": 15.167854027822614,
+        "completed": 32,
+        "failed": 0,
+        "group_median_output_throughput": 480.8526269889371
+      },
+      {
+        "run": 2,
+        "request_rate": "inf",
+        "num_prompts": 32,
+        "output_throughput": 488.3749038871829,
+        "median_tpot_ms": 15.177448264861882,
+        "p99_tpot_ms": 15.54849825877532,
+        "median_ttft_ms": 315.2837274828926,
+        "median_itl_ms": 15.183109499048442,
+        "completed": 32,
+        "failed": 0,
+        "group_median_output_throughput": 480.8526269889371
+      }
+    ],
+    "16": [
+      {
+        "run": 1,
+        "request_rate": "inf",
+        "num_prompts": 32,
+        "output_throughput": 624.6508074163354,
+        "median_tpot_ms": 23.721141949085993,
+        "p99_tpot_ms": 24.803807940379734,
+        "median_ttft_ms": 520.7473160116933,
+        "median_itl_ms": 23.45302648609504,
+        "completed": 32,
+        "failed": 0,
+        "group_median_output_throughput": 642.2707620822316
+      },
+      {
+        "run": 2,
+        "request_rate": "inf",
+        "num_prompts": 32,
+        "output_throughput": 659.8907167481279,
+        "median_tpot_ms": 22.97680845881319,
+        "p99_tpot_ms": 25.021345195661794,
+        "median_ttft_ms": 381.7462929873727,
+        "median_itl_ms": 22.82573247794062,
+        "completed": 32,
+        "failed": 0,
+        "group_median_output_throughput": 642.2707620822316
+      }
+    ],
+    "32": [
+      {
+        "run": 1,
+        "request_rate": "inf",
+        "num_prompts": 32,
+        "output_throughput": 888.013620425015,
+        "median_tpot_ms": 33.41302632755947,
+        "p99_tpot_ms": 34.87578855601925,
+        "median_ttft_ms": 675.8742914535105,
+        "median_itl_ms": 32.807226525619626,
+        "completed": 32,
+        "failed": 0,
+        "group_median_output_throughput": 891.5184678040189
+      },
+      {
+        "run": 2,
+        "request_rate": "inf",
+        "num_prompts": 32,
+        "output_throughput": 895.0233151830228,
+        "median_tpot_ms": 32.87297456077866,
+        "p99_tpot_ms": 34.196063622763816,
+        "median_ttft_ms": 742.3060995643027,
+        "median_itl_ms": 32.1135955164209,
+        "completed": 32,
+        "failed": 0,
+        "group_median_output_throughput": 891.5184678040189
+      }
+    ]
+  },
+  "gsm8k": {
+    "correct": 231,
+    "n": 250,
+    "truncated": 2,
+    "elapsed_s": 75.68933272094,
+    "dataset_sha256": "3730d312f6e3440559ace48831e51066acaca737f6eabec99bccb9e4b3c39d14"
+  },
+  "q8_singleton_ab": {
+    "gpu": "NVIDIA H200 NVL",
+    "sm": "9.0",
+    "shapes": [
+      {
+        "N": 256,
+        "K": 4096,
+        "singleton_us": 3.52,
+        "splitk_control_us": 8.704,
+        "speedup": 2.472727272727273,
+        "singleton_config": {
+          "BM": 1,
+          "BN": 4,
+          "BK": 4096,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      {
+        "N": 1024,
+        "K": 4096,
+        "singleton_us": 5.664,
+        "splitk_control_us": 11.232000000000001,
+        "speedup": 1.9830508474576274,
+        "singleton_config": {
+          "BM": 1,
+          "BN": 4,
+          "BK": 4096,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      {
+        "N": 4096,
+        "K": 4096,
+        "singleton_us": 11.200999999999999,
+        "splitk_control_us": 17.247,
+        "speedup": 1.5397732345326312,
+        "singleton_config": {
+          "BM": 1,
+          "BN": 4,
+          "BK": 1024,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      {
+        "N": 4096,
+        "K": 1024,
+        "singleton_us": 5.056,
+        "splitk_control_us": 7.904,
+        "speedup": 1.5632911392405062,
+        "singleton_config": {
+          "BM": 1,
+          "BN": 4,
+          "BK": 1024,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      {
+        "N": 131072,
+        "K": 4096,
+        "singleton_us": 199.997,
+        "splitk_control_us": 200.06199999999998,
+        "speedup": 1.000325004875073,
+        "singleton_config": {
+          "BM": 1,
+          "BN": 32,
+          "BK": 256,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 2
+        }
+      }
+    ]
+  },
+  "benchmark_file": "benchmark_h200_head.txt",
+  "microbench_vs_round5": {
+    "reference": "benchmark_h200_round5_reference.txt",
+    "rows": 121,
+    "table": "microbench_vs_round5.tsv",
+    "moe_m_le_8_speedup_min": 2.993969849246231,
+    "moe_m_le_8_speedup_max": 3.7815533980582523,
+    "moe_m_ge_256_speedup_min": 2.2538029738184,
+    "moe_m_ge_256_speedup_max": 3.385896533679785,
+    "dense_m1_speedup_min": 1.2629310344827587,
+    "dense_m1_speedup_max": 2.11764705882353,
+    "dense_m_ge_256_speedup_min": 0.9030168050212594,
+    "dense_m_ge_256_speedup_max": 1.0,
+    "lm_head_m256_speedup": 1.0004487927475092
+  },
+  "warmup": {
+    "modelopt_block_configs_warmed": 77,
+    "inference_jit_kernels": [
+      "_causal_conv1d_fwd_kernel"
+    ],
+    "dynamo_recompile_limit_warning": true
+  },
+  "metadata_present": true
+}

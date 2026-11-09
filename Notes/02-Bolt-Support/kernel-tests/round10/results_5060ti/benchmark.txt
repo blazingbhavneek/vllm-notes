@@ -1,0 +1,123 @@
+NVIDIA GeForce RTX 5060 Ti, copy bandwidth 385 GB/s
+layer M ours_us bf16_us speedup bytes_ratio GB/s %copy TFLOP/s config
+qkv_proj 1 62.1 108.3 1.74 1.88 323 84 0.6 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 2 59.5 101.1 1.70 1.88 338 88 1.3 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 4 60.3 100.4 1.66 1.88 334 87 2.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 8 57.3 102.1 1.78 1.88 352 91 5.3 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 16 59.4 103.7 1.75 1.87 342 89 10.2 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 32 62.0 102.3 1.65 1.86 332 86 19.5 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 64 79.9 104.4 1.31 1.84 265 69 30.2 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+qkv_proj 128 143.3 127.5 0.89 1.79 155 40 33.7 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 1, 'num_warps': 8, 'num_stages': 2}
+qkv_proj 256 370.6 217.1 0.59 1.72 66 17 26.1 dequant+cuBLAS
+qkv_proj 512 573.8 418.8 0.73 1.61 50 13 33.7 dequant+cuBLAS
+qkv_proj 1024 976.9 821.2 0.84 1.47 39 10 39.6 dequant+cuBLAS
+qkv_proj 2048 1780.1 1627.1 0.91 1.32 31 8 43.4 dequant+cuBLAS
+qkv_proj 4096 3398.1 3235.3 0.95 1.19 27 7 45.5 dequant+cuBLAS
+qkv_proj 8192 6604.8 6517.8 0.99 1.11 25 6 46.8 dequant+cuBLAS
+o_proj 1 55.4 99.3 1.79 1.88 322 84 0.6 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+o_proj 2 55.0 92.3 1.68 1.88 325 84 1.2 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+o_proj 4 55.6 92.2 1.66 1.88 322 83 2.4 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+o_proj 8 52.7 94.1 1.78 1.88 341 88 5.1 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+o_proj 16 53.4 96.3 1.80 1.87 339 88 10.1 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+o_proj 32 65.0 94.2 1.45 1.86 282 73 16.5 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+o_proj 64 88.1 95.8 1.09 1.83 214 56 24.4 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+o_proj 128 142.3 124.9 0.88 1.79 140 36 30.2 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 2, 'num_warps': 8, 'num_stages': 2}
+o_proj 256 343.8 204.2 0.59 1.71 64 17 25.0 dequant+cuBLAS
+o_proj 512 524.7 388.6 0.74 1.60 50 13 32.7 dequant+cuBLAS
+o_proj 1024 874.5 739.3 0.85 1.45 40 10 39.3 dequant+cuBLAS
+o_proj 2048 1583.9 1451.6 0.92 1.31 32 8 43.4 dequant+cuBLAS
+o_proj 4096 3020.8 2883.6 0.95 1.19 28 7 45.5 dequant+cuBLAS
+o_proj 8192 5860.4 5784.6 0.99 1.10 26 7 46.9 dequant+cuBLAS
+fc1_latent 1 20.2 33.2 1.64 1.88 221 57 0.4 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 2 20.4 44.7 2.19 1.88 220 57 0.8 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 4 20.9 47.1 2.25 1.87 215 56 1.6 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 8 18.4 44.8 2.43 1.87 246 64 3.6 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 16 18.7 45.1 2.42 1.85 248 64 7.2 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 32 23.2 28.6 1.23 1.82 206 53 11.6 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 64 29.9 34.8 1.17 1.77 171 44 18.0 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc1_latent 128 47.4 41.0 0.86 1.68 122 32 22.6 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 8, 'num_warps': 8, 'num_stages': 2}
+fc1_latent 256 87.4 61.4 0.70 1.56 81 21 24.6 dequant+cuBLAS
+fc1_latent 512 138.2 106.5 0.77 1.41 70 18 31.1 dequant+cuBLAS
+fc1_latent 1024 241.7 213.0 0.88 1.26 62 16 35.5 dequant+cuBLAS
+fc1_latent 2048 416.8 388.1 0.93 1.15 61 16 41.2 dequant+cuBLAS
+fc1_latent 4096 767.5 737.3 0.96 1.08 60 16 44.8 dequant+cuBLAS
+fc1_latent 8192 1477.6 1446.9 0.98 1.04 60 16 46.5 dequant+cuBLAS
+fc2_latent 1 19.7 30.6 1.55 1.88 227 59 0.4 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 2 21.4 26.2 1.23 1.88 209 54 0.8 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 4 22.1 28.7 1.30 1.87 203 53 1.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 8, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 8 17.7 26.1 1.48 1.87 256 67 3.8 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 16 17.8 26.6 1.49 1.85 259 67 7.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 32 21.8 28.7 1.32 1.82 220 57 12.3 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 64 28.2 28.6 1.01 1.77 181 47 19.0 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+fc2_latent 128 45.4 36.7 0.81 1.68 127 33 23.6 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 2, 'num_warps': 8, 'num_stages': 2}
+fc2_latent 256 94.2 58.2 0.62 1.56 75 19 22.8 dequant+cuBLAS
+fc2_latent 512 140.3 108.5 0.77 1.41 69 18 30.6 dequant+cuBLAS
+fc2_latent 1024 231.6 199.6 0.86 1.26 65 17 37.1 dequant+cuBLAS
+fc2_latent 2048 415.8 383.0 0.92 1.15 61 16 41.3 dequant+cuBLAS
+fc2_latent 4096 782.3 749.6 0.96 1.08 59 15 43.9 dequant+cuBLAS
+fc2_latent 8192 1512.4 1477.2 0.98 1.04 58 15 45.4 dequant+cuBLAS
+shared_up 1 48.6 124.7 2.57 7.74 117 30 0.9 {'BM': 1, 'BN': 8, 'BK': 256, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+shared_up 2 73.7 118.8 1.61 7.71 78 20 1.2 {'BM': 2, 'BN': 8, 'BK': 256, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+shared_up 4 94.2 118.8 1.26 7.67 61 16 1.9 {'BM': 4, 'BN': 8, 'BK': 256, 'SPLIT': 2, 'num_warps': 1, 'num_stages': 2}
+shared_up 8 139.3 120.8 0.87 7.58 42 11 2.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+shared_up 16 139.9 122.9 0.88 7.42 43 11 5.0 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+shared_up 32 165.9 139.4 0.84 7.11 38 10 8.5 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+shared_up 64 227.3 144.4 0.64 6.57 30 8 12.4 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+shared_up 128 305.4 157.7 0.52 5.74 27 7 18.5 dequant+cuBLAS
+shared_up 256 414.8 266.2 0.64 4.64 25 7 27.2 dequant+cuBLAS
+shared_up 512 641.0 489.5 0.76 3.49 24 6 35.2 dequant+cuBLAS
+shared_up 1024 1114.1 962.6 0.86 2.53 23 6 40.5 dequant+cuBLAS
+shared_up 2048 2037.4 1886.1 0.93 1.86 22 6 44.3 dequant+cuBLAS
+shared_up 4096 3909.6 3766.3 0.96 1.46 21 6 46.1 dequant+cuBLAS
+shared_up 8192 7655.4 7499.8 0.98 1.24 21 5 47.1 dequant+cuBLAS
+shared_down 1 47.5 120.8 2.54 7.74 120 31 0.9 {'BM': 1, 'BN': 8, 'BK': 256, 'SPLIT': 3, 'num_warps': 1, 'num_stages': 2}
+shared_down 2 69.5 123.9 1.78 7.71 82 21 1.3 {'BM': 2, 'BN': 8, 'BK': 256, 'SPLIT': 3, 'num_warps': 1, 'num_stages': 2}
+shared_down 4 92.2 124.4 1.35 7.67 62 16 1.9 {'BM': 4, 'BN': 8, 'BK': 256, 'SPLIT': 3, 'num_warps': 1, 'num_stages': 2}
+shared_down 8 129.0 125.7 0.97 7.58 45 12 2.7 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+shared_down 16 129.0 126.9 0.98 7.42 46 12 5.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+shared_down 32 135.2 127.0 0.94 7.11 46 12 10.4 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+shared_down 64 178.2 128.8 0.72 6.57 39 10 15.8 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 2, 'num_warps': 4, 'num_stages': 2}
+shared_down 128 317.5 161.8 0.51 5.74 26 7 17.8 dequant+cuBLAS
+shared_down 256 421.4 262.1 0.62 4.64 25 6 26.8 dequant+cuBLAS
+shared_down 512 659.5 504.8 0.77 3.49 23 6 34.2 dequant+cuBLAS
+shared_down 1024 1119.6 963.6 0.86 2.53 22 6 40.3 dequant+cuBLAS
+shared_down 2048 2047.0 1889.8 0.92 1.86 22 6 44.1 dequant+cuBLAS
+shared_down 4096 3928.1 3811.3 0.97 1.46 21 6 45.9 dequant+cuBLAS
+shared_down 8192 7644.7 7569.4 0.99 1.24 21 5 47.2 dequant+cuBLAS
+lm_head 1 1402.0 2564.1 1.83 1.88 407 106 0.8 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 2 1408.5 2585.6 1.84 1.88 405 105 1.5 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 4 1411.1 2585.6 1.83 1.88 405 105 3.0 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 8 1414.4 2591.7 1.83 1.88 405 105 6.1 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 16 1420.3 2598.9 1.83 1.88 405 105 12.1 {'BM': 16, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 32 1429.1 2617.3 1.83 1.87 405 105 24.0 {'BM': 32, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 64 1895.4 2645.0 1.40 1.86 310 80 36.3 {'BM': 64, 'BN': 64, 'BK': 128, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+lm_head 128 4524.0 2915.3 0.64 1.83 134 35 30.4 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 1, 'num_warps': 8, 'num_stages': 2}
+lm_head 256 8938.0 5784.6 0.65 1.79 72 19 30.8 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 1, 'num_warps': 8, 'num_stages': 2}
+lm_head 512 17827.8 11542.5 0.65 1.71 40 10 30.8 {'BM': 64, 'BN': 128, 'BK': 64, 'SPLIT': 1, 'num_warps': 8, 'num_stages': 2}
+moe_240x2048 1 75.8 204.2 2.69 7.75 128 33 1.0 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 2 133.2 387.1 2.91 7.75 146 38 1.1 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 4 245.7 753.7 3.07 7.75 154 40 1.2 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 8 465.8 1350.6 2.90 7.75 151 39 1.3 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_240x2048 16 1635.4 2147.3 1.31 7.75 69 18 0.7 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 32, 'BLOCK_SIZE_K': 128, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_240x2048 64 5132.3 4263.9 0.83 7.75 45 12 0.9 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_240x2048 256 5878.8 4953.1 0.84 7.73 44 12 3.3 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_240x2048 1024 6311.4 6280.2 1.00 7.65 42 11 12.2 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_240x2048 4096 20650.0 13378.6 0.65 7.35 13 3 15.0 {'BLOCK_SIZE_M': 128, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_432x2560 1 89.2 251.6 2.82 7.76 136 35 1.1 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 2 162.2 481.3 2.97 7.76 150 39 1.2 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 4 303.1 939.6 3.10 7.76 161 42 1.2 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 8 575.5 1843.1 3.20 7.76 153 40 1.3 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_432x2560 16 2106.4 3087.4 1.47 7.75 78 20 0.7 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 32, 'BLOCK_SIZE_K': 128, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_432x2560 64 9798.7 7917.6 0.81 7.75 44 11 0.6 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_432x2560 256 13410.3 10981.9 0.82 7.75 44 11 1.8 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_432x2560 1024 13988.9 13686.8 0.98 7.71 42 11 6.9 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_432x2560 4096 24516.6 15618.6 0.64 7.57 25 6 15.8 {'BLOCK_SIZE_M': 128, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_496x2560 1 88.1 251.2 2.85 7.76 138 36 1.1 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 2 161.8 480.3 2.97 7.76 150 39 1.2 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 4 303.1 941.1 3.11 7.76 161 42 1.2 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 8 576.5 1829.9 3.17 7.76 159 41 1.3 {'BN': 8, 'BK': 256, 'num_warps': 1, 'num_stages': 2}
+moe_496x2560 16 2084.9 3061.8 1.47 7.75 78 20 0.7 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 32, 'BLOCK_SIZE_K': 128, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_496x2560 64 10591.2 8560.1 0.81 7.75 44 11 0.6 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_496x2560 256 15249.4 12472.3 0.82 7.75 44 11 1.6 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_496x2560 1024 15946.2 15621.6 0.98 7.72 42 11 6.1 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_496x2560 4096 27706.4 17530.9 0.63 7.59 25 6 14.0 {'BLOCK_SIZE_M': 128, 'BLOCK_SIZE_N': 128, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}

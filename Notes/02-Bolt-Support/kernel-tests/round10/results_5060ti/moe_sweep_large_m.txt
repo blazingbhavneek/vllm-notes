@@ -1,0 +1,4 @@
+NVIDIA GeForce RTX 5060 Ti, copy bandwidth 385 GB/s
+layer M ours_us bf16_us speedup bytes_ratio GB/s %copy TFLOP/s config
+moe_240x2048 1024 5907.5 6280.2 1.06 7.65 45 12 13.1 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 64, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}
+moe_240x2048 4096 17972.2 13283.3 0.74 7.35 15 4 17.2 {'BLOCK_SIZE_M': 64, 'BLOCK_SIZE_N': 64, 'BLOCK_SIZE_K': 64, 'num_warps': 4, 'num_stages': 1, 'gemv': False}

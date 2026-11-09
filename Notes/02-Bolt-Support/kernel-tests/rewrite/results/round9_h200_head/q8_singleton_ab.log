@@ -1,0 +1,23 @@
+Ignoring incompatible flashinfer-cubin package (cubins will be downloaded on demand to /home/seigyo/.cache/flashinfer/cubins): flashinfer-cubin version (0.7.2) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+Ignoring incompatible flashinfer-jit-cache package (kernels will be JIT-compiled instead): flashinfer-jit-cache version (0.7.2+cu130) does not match flashinfer version (0.7.2.post1). Run `flashinfer download-kernels` to install matching kernel wheels, or set FLASHINFER_DISABLE_VERSION_CHECK=1 to use the installed version anyway.
+W1102 07:46:11.397000 1088779 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1102 07:46:11.398000 1088779 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1102 07:46:11.398000 1088779 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+NVIDIA H200 NVL SM90 132 SMs
+N K arm us config
+256 4096 singleton 3.52 {'BM': 1, 'BN': 4, 'BK': 4096, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 1}
+256 4096 splitk_control 8.70 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+256 4096 speedup 2.47x
+1024 4096 singleton 5.66 {'BM': 1, 'BN': 4, 'BK': 4096, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 1}
+1024 4096 splitk_control 11.23 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+1024 4096 speedup 1.98x
+4096 4096 singleton 11.20 {'BM': 1, 'BN': 4, 'BK': 1024, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 1}
+4096 4096 splitk_control 17.25 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 16, 'num_warps': 4, 'num_stages': 2}
+4096 4096 speedup 1.54x
+4096 1024 singleton 5.06 {'BM': 1, 'BN': 4, 'BK': 1024, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 1}
+4096 1024 splitk_control 7.90 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 4, 'num_warps': 4, 'num_stages': 2}
+4096 1024 speedup 1.56x
+131072 4096 singleton 200.00 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+131072 4096 splitk_control 200.06 {'BM': 1, 'BN': 32, 'BK': 256, 'SPLIT': 1, 'num_warps': 4, 'num_stages': 2}
+131072 4096 speedup 1.00x
+wrote /home/seigyo/vllmServer/vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/results/round9_h200_head/q8_singleton_ab.json

@@ -1,0 +1,6 @@
+NVIDIA GeForce RTX 5060 Ti
+qkv_proj         M=1: 1.00  M=8: 1.00  M=64: 1.00  M=512: 1.00
+fc2_latent_proj  M=1: 1.00  M=8: 1.00  M=64: 1.00  M=512: 1.00
+shared_up        M=1: 0.70  M=8: 1.00  M=64: 0.61  M=512: 1.00
+shared_down      M=1: 1.00  M=8: 1.00  M=64: 1.00  M=512: 1.00
+stack up->down   M=1: 0.87 (rel 4.7e-03 vs 5.4e-03)  M=64: 0.73 (rel 4.6e-03 vs 6.3e-03)  M=512: 1.00 (rel 7.0e-03 vs 7.0e-03)

@@ -1,0 +1,37 @@
+Mon Nov  2 07:36:25 UTC 2026
+commit: f533470e67383392d21dfdef52397c468e5569b4
+branch: pr/modelopt-block-triton
+status:
+---versions---
+python 3.13.11
+torch 2.14.0+cu130 cuda 13.0
+triton 3.8.0
+vllm 0.33.0rc1.dev448+gf533470e6 /home/seigyo/vllmServer/vllm/vllm/__init__.py
+gpu_count 2
+0 NVIDIA H200 NVL sm 9 0 sms 132 mem_GiB 139.8 bus 6016 L2_MiB 60.0 smem 232448
+1 NVIDIA H200 NVL sm 9 0 sms 132 mem_GiB 139.8 bus 6016 L2_MiB 60.0 smem 232448
+---nvidia-smi---
+Mon Nov  2 07:36:28 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.1     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H200 NVL                On  |   00000000:18:00.0 Off |                    0 |
+| N/A   50C    P0            260W /  600W |  100811MiB / 143771MiB |    100%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA H200 NVL                On  |   00000000:67:00.0 Off |                    0 |
+| N/A   33C    P0             99W /  600W |   30389MiB / 143771MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+

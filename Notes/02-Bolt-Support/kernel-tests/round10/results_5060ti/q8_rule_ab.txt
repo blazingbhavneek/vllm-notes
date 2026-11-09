@@ -1,0 +1,9 @@
+NVIDIA GeForce RTX 5060 Ti SM120 36 SMs
+   256  4096 current=   9.73 generic=   9.68 wide1024=  10.94 wideK=   8.19  best=wideK
+  1024  4096 current=  19.68 generic=  19.62 wide1024=  19.49 wideK=  18.27  best=wideK
+  4096  4096 current=  55.07 generic=  55.09 wide1024=  53.41 wideK=  53.25  best=wideK
+  4096  1024 current=  19.52 generic=  19.52 wide1024=  17.28 wideK=  17.10  best=wideK
+  4608  4096 current=  62.14 generic=  62.18 wide1024=  57.34 wideK=  58.91  best=wide1024
+  2304  4096 current=  34.02 generic=  34.05 wide1024=  30.75 wideK=  31.50  best=wide1024
+131072  4096 current=1400.83 generic=1400.83 wide1024=1399.81 wideK=1398.50  best=wideK
+wrote /tmp/claude-1000/-mnt-common-Code-vllmServer/ea50d834-c0e5-4cb5-b95c-a77e7de70650/scratchpad/q8_rule_5060ti.json

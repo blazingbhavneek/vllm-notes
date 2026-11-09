@@ -1,0 +1,51 @@
+Warmup / inference-time JIT audit — round 9 (H200, GPU 1)
+=========================================================
+
+Server: vllm serve, BF16, compiled, CUDA graphs [1,2,4,8,16,32],
+gpu_memory_utilization=0.55, IQ2 dense cache on, NVFP4 Mamba linears -> Marlin.
+Log: serve_launch.log
+
+Startup warmup (excerpts)
+-------------------------
+  [kernel_warmup.py:240] JIT kernel warmup starting.
+  [kernel_warmup.py:253] JIT kernel warmup finished in 0.00s.
+  [mamba_triton_warmup.py:42] Warmed Mamba batch_memcpy_kernel.
+  [modelopt_block_triton_warmup.py:138] Warmed 77 ModelOpt block Triton configs.
+  [kernel_warmup.py:143] Warming up ll_bf16 router GEMM kernels for shapes:
+      ((4096, 240), (4096, 304), (4096, 368), (4096, 432), (4096, 496)).
+  [jit_monitor.py:87] Kernel JIT monitor activated; monitored JIT compilations
+      during inference will use mode=warn.
+
+Note: the earlier tiny-model test warmed 39 configs; the full Bolt model has
+more distinct dense/MoE shapes, so the full-server count is 77. The ModelOpt
+block Triton warmup therefore covers all shapes seen by this serving recipe.
+
+Inference-time JIT
+------------------
+Exactly one warning in 760 log lines:
+
+  WARNING 11-02 07:51:46 [jit_monitor.py:143] Triton kernel JIT compilation
+  during inference: _causal_conv1d_fwd_kernel. This causes a latency spike;
+  consider extending warmup to cover this shape/config.
+
+This is the Mamba causal-conv1d kernel, not a ModelOpt block-quant kernel.
+It fired once, during the first c=8 run, and did not repeat for any later pass
+or for GSM8K. It is the pre-existing Mamba warmup gap (the log also reports a
+missing selective_state_update config for dstate=128 on this H200 NVL), not a
+regression from PR #65003.
+
+No ModelOpt block Triton kernel was JIT-compiled during inference.
+
+Non-block noise in the log
+--------------------------
+- `torch._dynamo` hit `config.recompile_limit (16)` for `grouped_topk` because
+  the MoE layers have different `e_score_correction_bias` sizes
+  (240/304/368/432/496). Nonfatal; also seen on the L40S. It can add compile
+  time and may leave some layers on the eager router path, but it is model-side
+  and not block-kernel code.
+- `Failed to load plugin gguf` / ModuleNotFoundError qwen3_5: pre-existing
+  optional gguf plugin mismatch in this checkout; server continues normally.
+- `[ERROR] vision_final_layernorm ... not documented`: remote-code config
+  docstring warning from the model repo; unrelated.
+- `Your GPU does not have native support for FP4 ... Marlin will be used`:
+  expected for SM90 and exactly the requested NVFP4 path.

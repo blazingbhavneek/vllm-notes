@@ -1,0 +1,992 @@
+diff --git a/vllm/config/kernel.py b/vllm/config/kernel.py
+index 3ba8724336b87d0dd47c9a2f9ed0944357ab078d..6b4dae0e5e3d67faa34dab420a8599ea8d4834e2 100644
+--- a/vllm/config/kernel.py
++++ b/vllm/config/kernel.py
+@@ -300,10 +300,7 @@ class KernelConfig:
+     """If True, run JIT compile warmup during kernel warmup."""
+ 
+     modelopt_iq2_dense_cache: bool = False
+-    """Cache BF16 copies of eligible Triton IQ2_XXS dense weights to reuse
+-    across calls that already dequantize to BF16. Small-token GEMV and routed
+-    experts retain packed weights. Uses extra GPU memory; does not affect b12x.
+-    """
++    """Deprecated compatibility option; block weights always remain quantized."""
+ 
+     monokernel: bool = False
+     """If True, run the eligible layers of decode steps on the model's
+diff --git a/vllm/model_executor/layers/fused_moe/experts/modelopt_block_triton_moe.py b/vllm/model_executor/layers/fused_moe/experts/modelopt_block_triton_moe.py
+index 4ec3d108e753f6dd148a0774aae9e6eca3ee3432..0b15cd6364329ed02cc750b6b816c720fb8530f3 100644
+--- a/vllm/model_executor/layers/fused_moe/experts/modelopt_block_triton_moe.py
++++ b/vllm/model_executor/layers/fused_moe/experts/modelopt_block_triton_moe.py
+@@ -12,8 +12,8 @@ from vllm.model_executor.layers.fused_moe.config import (
+     FusedMoEQuantConfig,
+ )
+ from vllm.model_executor.layers.fused_moe.experts.triton_moe import TritonExperts
+-from vllm.model_executor.layers.fused_moe.moe_align_block_size import (
+-    moe_align_block_size,
++from vllm.model_executor.layers.fused_moe.fused_moe import (
++    _prepare_expert_assignment,
+ )
+ from vllm.model_executor.layers.fused_moe.utils import _resize_cache
+ from vllm.model_executor.layers.quantization.modelopt_block_quant_triton import (
+@@ -75,7 +75,7 @@ class ModelOptBlockTritonExperts(TritonExperts):
+             hidden_states, w1, w2, topk_ids
+         )
+         gemv = moe_gemv_config(num_tokens, E, top_k, self.codec)
+-        config = gemv or moe_config(num_tokens, E, top_k)
++        config = gemv or moe_config(num_tokens, E, top_k, w2.shape, self.codec)
+         launch = invoke_block_moe_gemv_kernel if gemv else invoke_block_moe_kernel
+         cache1 = _resize_cache(workspace2, (num_tokens, top_k, N))
+         cache2 = _resize_cache(
+@@ -88,8 +88,15 @@ class ModelOptBlockTritonExperts(TritonExperts):
+             # Each GEMV CTA owns one routed row, so sorting cannot share work.
+             routing = (None, topk_ids.contiguous(), None)
+         else:
+-            routing = moe_align_block_size(
+-                topk_ids, 1 if gemv else config["BLOCK_SIZE_M"], E, expert_map
++            routing = _prepare_expert_assignment(
++                topk_ids,
++                {"BLOCK_SIZE_M": 1} if gemv else config,
++                num_tokens,
++                top_k,
++                E
++                if expert_map is None or global_num_experts == -1
++                else global_num_experts,
++                expert_map,
+             )
+ 
+         launch(
+@@ -104,4 +111,4 @@ class ModelOptBlockTritonExperts(TritonExperts):
+             cache2, w2, self.w2_scale, self.lut, cache3, topk_weights, *routing,
+             not apply_router_weight_on_input, 1, config, self.codec,
+         )  # fmt: skip
+-        self.moe_sum(cache3, output)
++        self._finalize_expert_output(cache3, output, topk_ids, expert_map)
+diff --git a/vllm/model_executor/layers/fused_moe/fused_moe.py b/vllm/model_executor/layers/fused_moe/fused_moe.py
+index 7e9f0e28f6ac0b640a2c03ab2e365eea75495156..bbc0a334fb2e9dbf4f2647a8a525569813902027 100644
+--- a/vllm/model_executor/layers/fused_moe/fused_moe.py
++++ b/vllm/model_executor/layers/fused_moe/fused_moe.py
+@@ -31,6 +31,10 @@ from vllm.model_executor.layers.fused_moe.utils import (
+     resolve_moe_use_td,
+     warn_if_moe_use_td_ineffective,
+ )
++from vllm.model_executor.layers.quantization.modelopt_block_quant_triton import (
++    _block_matvec,
++    _decode_tile,
++)
+ from vllm.platforms import current_platform
+ from vllm.triton_utils import tl, triton
+ from vllm.triton_utils.allocation import set_triton_allocator
+@@ -294,7 +298,7 @@ def fused_moe_kernel_gptq_awq(
+     tl.store(c_ptrs, accumulator, mask=c_mask)
+ 
+ 
+-@triton.jit
++@triton.jit(do_not_specialize=["EM", "num_valid_tokens"])
+ def fused_moe_kernel(
+     # Pointers to matrices
+     a_ptr,
+@@ -353,6 +357,8 @@ def fused_moe_kernel(
+     # Tensor-descriptor path for the A gather and B load in the K-loop.
+     USE_TD: tl.constexpr = False,
+     USE_TMA_B: tl.constexpr = False,
++    BLOCK_CODEC: tl.constexpr = -1,
++    b_lut_ptr=None,
+ ):
+     """Implements the fused computation for a Mixture of Experts (MOE) using
+     token and expert matrices.
+@@ -442,6 +448,48 @@ def fused_moe_kernel(
+     offs_bn = (pid_n * BLOCK_SIZE_N + tl.arange(0, BLOCK_SIZE_N).to(tl.int64)) % N
+     offs_k = tl.arange(0, BLOCK_SIZE_K)
+     # TD gather and the SWAP_AB accumulator layout are mutually exclusive.
++    if tl.constexpr(
++        BLOCK_CODEC >= 0
++        and BLOCK_SIZE_M == 64
++        and BLOCK_SIZE_N == 32
++        and BLOCK_SIZE_K == 128
++        and not HAS_BIAS
++    ):
++        # Avoid a padded tensor-core tile for a single routed row.
++        if naive_block_assignment:
++            first = pid_m.to(tl.int64)
++            singleton = True
++        else:
++            first = tl.load(sorted_token_ids_ptr + pid_m * BLOCK_SIZE_M).to(tl.int64)
++            singleton = (
++                tl.load(sorted_token_ids_ptr + pid_m * BLOCK_SIZE_M + 1)
++                >= num_valid_tokens
++            )
++        if singleton:
++            single_n = pid_n * BLOCK_SIZE_N + tl.arange(0, BLOCK_SIZE_N)
++            single = _block_matvec(
++                a_ptr + first // top_k * stride_am,
++                b_ptr + off_experts * stride_be,
++                b_scale_ptr + off_experts * stride_bse,
++                b_lut_ptr,
++                single_n,
++                single_n < N,
++                K,
++                stride_bn,
++                stride_bsn,
++                BLOCK_CODEC,
++                BLOCK_SIZE_N,
++                BLOCK_SIZE_K,
++                True,
++            )
++            if MUL_ROUTED_WEIGHT:
++                single *= tl.load(topk_weights_ptr + first).to(tl.float32)
++            tl.store(
++                c_ptr + first * stride_cm + single_n * stride_cn,
++                single.to(compute_type),
++                mask=single_n < N,
++            )
++            return
+     tl.static_assert(not (USE_TD and SWAP_AB))
+     tl.static_assert(not (USE_TD and USE_TMA_B))
+     if USE_TD:
+@@ -536,10 +584,29 @@ def fused_moe_kernel(
+                 mask=token_mask[:, None] & (offs_k[None, :] < K - k * BLOCK_SIZE_K),
+                 other=0.0,
+             )
+-            if not USE_TMA_B:
++            if not USE_TMA_B and BLOCK_CODEC < 0:
+                 b = tl.load(
+                     b_ptrs, mask=offs_k[:, None] < K - k * BLOCK_SIZE_K, other=0.0
+                 )
++        if BLOCK_CODEC >= 0:
++            b = (
++                _decode_tile(
++                    b_ptr + off_experts * stride_be,
++                    b_scale_ptr + off_experts * stride_bse,
++                    b_lut_ptr,
++                    offs_bn,
++                    offs_bn < N,
++                    k * BLOCK_SIZE_K,
++                    stride_bn,
++                    stride_bsn,
++                    BLOCK_CODEC,
++                    False,
++                    BLOCK_SIZE_N,
++                    BLOCK_SIZE_K,
++                )
++                .to(compute_type)
++                .T
++            )
+         if USE_TMA_B:
+             b = b_desc.load(
+                 [off_experts.to(tl.int32), pid_n * BLOCK_SIZE_N, k * BLOCK_SIZE_K]
+@@ -792,11 +859,18 @@ def invoke_fused_moe_triton_kernel(
+     per_channel_quant: bool,
+     block_shape: list[int] | None = None,
+     B_bias: torch.Tensor | None = None,
++    block_codec: int = -1,
++    B_lut: torch.Tensor | None = None,
+ ):
+     assert topk_weights is not None or not mul_routed_weight
+     assert topk_weights is None or topk_weights.stride(1) == 1
+     assert sorted_token_ids is None or sorted_token_ids.stride(0) == 1
+ 
++    if block_codec >= 0:
++        assert not (use_fp8_w8a8 or use_int8_w8a8 or use_int8_w8a16 or use_int4_w4a16)
++        assert block_shape is None
++        assert A.size(1) % config["BLOCK_SIZE_K"] == 0
++
+     if use_fp8_w8a8:
+         SWAP_AB = enable_swap_ab(config["BLOCK_SIZE_M"], config["BLOCK_SIZE_N"])
+     else:
+@@ -823,7 +897,7 @@ def invoke_fused_moe_triton_kernel(
+         assert block_shape is None or triton.cdiv(
+             B.size(-1), block_shape[1]
+         ) == B_scale.size(-1)
+-    elif use_int8_w8a16 or use_int4_w4a16:
++    elif use_int8_w8a16 or use_int4_w4a16 or block_codec >= 0:
+         assert B_scale is not None
+         assert block_shape is None or block_shape[0] == 0
+     else:
+@@ -907,7 +981,7 @@ def invoke_fused_moe_triton_kernel(
+         expert_ids,
+         num_tokens_post_padded,
+         B.size(1),
+-        B.size(2),
++        A.size(1) if block_codec >= 0 else B.size(2),
+         EM,
+         num_tokens,
+         A.stride(0),
+@@ -941,6 +1015,8 @@ def invoke_fused_moe_triton_kernel(
+         SWAP_AB=SWAP_AB,
+         USE_TD=use_td,
+         USE_TMA_B=use_tma_b,
++        BLOCK_CODEC=block_codec,
++        b_lut_ptr=B_lut,
+         **config,
+     )
+ 
+diff --git a/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors_embedding.py b/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors_embedding.py
+index 23d25261301cd82ef6d475769669303516b69313..14a9e546e6505982a467eb8c4cd8f39868df2c9d 100644
+--- a/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors_embedding.py
++++ b/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors_embedding.py
+@@ -35,6 +35,7 @@ def _dequant_gather_kernel(
+     PACK_FACTOR: tl.constexpr,
+     GROUP_SIZE: tl.constexpr,
+     BLOCK: tl.constexpr,
++    SIGNED: tl.constexpr = False,
+ ):
+     """Gather embedding rows by token id, unpack int32-packed INT weights, and
+     dequantize to ``out`` dtype in one pass (no int8 intermediate)."""
+@@ -48,7 +49,10 @@ def _dequant_gather_kernel(
+     packed = tl.load(
+         packed_ptr + tid * packed_cols + packed_idx, mask=col_mask, other=0
+     )
+-    q = ((packed >> shift) & ((1 << NUM_BITS) - 1)) - (1 << (NUM_BITS - 1))
++    if SIGNED:
++        q = packed
++    else:
++        q = ((packed >> shift) & ((1 << NUM_BITS) - 1)) - (1 << (NUM_BITS - 1))
+ 
+     if GROUP_SIZE == 0:  # channel: one scale per row
+         scale = tl.load(scale_ptr + tid)
+@@ -58,7 +62,9 @@ def _dequant_gather_kernel(
+ 
+     out = q.to(tl.float32) * scale.to(tl.float32)
+     tl.store(
+-        out_ptr + row * hidden + col, out.to(out_ptr.dtype.element_ty), mask=col_mask
++        out_ptr + row.to(tl.int64) * hidden + col,
++        out.to(out_ptr.dtype.element_ty),
++        mask=col_mask,
+     )
+ 
+ 
+diff --git a/vllm/model_executor/layers/quantization/modelopt_block_quant.py b/vllm/model_executor/layers/quantization/modelopt_block_quant.py
+index c5b95dbd8bb747f1499e1b5d64914aea22d7c80b..1a48917aab3c08b48da2741a7eb3eb8681704511 100644
+--- a/vllm/model_executor/layers/quantization/modelopt_block_quant.py
++++ b/vllm/model_executor/layers/quantization/modelopt_block_quant.py
+@@ -28,8 +28,6 @@ from vllm.model_executor.layers.linear import (
+     register_weight_loader_v2_supported_method,
+ )
+ from vllm.model_executor.layers.quantization.modelopt_block_quant_triton import (
+-    DEQUANT_MAX_NUMEL,
+-    dequantize_blocks,
+     iq2_lut,
+     repack_blocks,
+ )
+@@ -382,17 +380,11 @@ class ModelOptBlockQuantLinearMethod(LinearMethodBase):
+                 iq2_lut(qweight.device) if self.codec == "iq2_xxs" else None,
+                 persistent=False,
+             )
+-            cached_weight = None
+-            if (
+-                self.codec == "iq2_xxs"
+-                and self.params_dtype == torch.bfloat16
+-                and get_current_vllm_config().kernel_config.modelopt_iq2_dense_cache
+-                and scales.numel() * self.block_size <= DEQUANT_MAX_NUMEL
+-            ):
+-                cached_weight = dequantize_blocks(
+-                    qweight, scales, layer.iq2_lut, self.codec
++            if get_current_vllm_config().kernel_config.modelopt_iq2_dense_cache:
++                logger.warning_once(
++                    "modelopt_iq2_dense_cache is ignored; ModelOpt block weights "
++                    "remain quantized in GPU memory."
+                 )
+-            layer.register_buffer("weight_bf16", cached_weight, persistent=False)
+             return
+ 
+         from b12x.sequence import embedding
+@@ -502,7 +494,6 @@ class ModelOptBlockQuantLinearMethod(LinearMethodBase):
+                 layer.weight_scale,
+                 layer.iq2_lut,
+                 self.codec,
+-                layer.weight_bf16,
+             )
+             if bias is not None:
+                 out.add_(bias)
+diff --git a/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py b/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
+index 13f36be34b86d0ce3d6c29b228b203428637f53b..928d5b06b05ecf48ae8ef07472aa19978c9cd45e 100644
+--- a/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
++++ b/vllm/model_executor/layers/quantization/modelopt_block_quant_triton.py
+@@ -6,6 +6,12 @@ import functools
+ 
+ import torch
+ 
++from vllm import envs
++from vllm.model_executor.determinism.batch_invariant import _fixed_order_sum_kernel
++from vllm.model_executor.layers.quantization.compressed_tensors.compressed_tensors_embedding import (  # noqa: E501
++    _dequant_gather_kernel,
++)
++from vllm.model_executor.layers.utils import dispatch_unquantized_gemm
+ from vllm.platforms import current_platform
+ from vllm.triton_utils import tl, triton
+ from vllm.utils.torch_utils import direct_register_custom_op
+@@ -184,7 +190,7 @@ def _decode_tile(
+ 
+ 
+ @triton.jit(do_not_specialize=["M"])
+-def _gemm_kernel(
++def _linear_kernel(
+     x_ptr,
+     qw_ptr,
+     sc_ptr,
+@@ -204,54 +210,13 @@ def _gemm_kernel(
+     """out[pid_k] = x[:, split] @ W[:, split]^T; out is [SPLIT, M, N]."""
+     pid = tl.program_id(0)
+     pid_k = tl.program_id(1)
+-    num_n = tl.cdiv(N, BN)
+-    offs_m = (pid // num_n) * BM + tl.arange(0, BM)
+-    offs_n = (pid % num_n) * BN + tl.arange(0, BN)
+-    m_mask = offs_m < M
+-    n_mask = offs_n < N
+-    x_rows = x_ptr + offs_m.to(tl.int64)[:, None] * stride_xm
+-    acc = tl.zeros((BM, BN), dtype=tl.float32)
+-    for k0 in range(pid_k * k_per_split, (pid_k + 1) * k_per_split, BK):
+-        x = tl.load(
+-            x_rows + (k0 + tl.arange(0, BK))[None, :], mask=m_mask[:, None], other=0.0
+-        )
+-        w = _decode_tile(
+-            qw_ptr, sc_ptr, lut_ptr, offs_n, n_mask, k0, stride_qn, stride_sn,
+-            CODEC, False, BN, BK,
+-        )  # fmt: skip
+-        acc += tl.dot(x, tl.trans(w.to(x.dtype)))
+-    out = (pid_k * M + offs_m.to(tl.int64))[:, None] * N + offs_n[None, :]
+-    tl.store(
+-        out_ptr + out,
+-        acc.to(out_ptr.dtype.element_ty),
+-        mask=m_mask[:, None] & n_mask[None, :],
+-    )
+-
+-
+-@triton.jit(do_not_specialize=["M"])
+-def _gemv_kernel(
+-    x_ptr,
+-    qw_ptr,
+-    sc_ptr,
+-    lut_ptr,
+-    out_ptr,
+-    M,
+-    N,
+-    k_per_split,
+-    stride_xm,
+-    stride_qn,
+-    stride_sn,
+-    CODEC: tl.constexpr,
+-    BM: tl.constexpr,
+-    BN: tl.constexpr,
+-    BK: tl.constexpr,
+-):
+-    """Small M without tensor cores, decoding each tile once for all BM rows:
+-    out[pid_k] = x[:, split] @ W[:, split]^T; out is [SPLIT, M, N]."""
+-    pid_n = tl.program_id(0)
+-    pid_k = tl.program_id(1)
+-    offs_m = tl.arange(0, BM)
+-    offs_n = pid_n * BN + tl.arange(0, BN)
++    if BM < 16:
++        offs_m = tl.arange(0, BM)
++        offs_n = pid * BN + tl.arange(0, BN)
++    else:
++        num_n = tl.cdiv(N, BN)
++        offs_m = (pid // num_n) * BM + tl.arange(0, BM)
++        offs_n = (pid % num_n) * BN + tl.arange(0, BN)
+     m_mask = offs_m < M
+     n_mask = offs_n < N
+     x_rows = x_ptr + offs_m.to(tl.int64)[:, None] * stride_xm
+@@ -259,9 +224,9 @@ def _gemv_kernel(
+     for k0 in range(pid_k * k_per_split, (pid_k + 1) * k_per_split, BK):
+         w = _decode_tile(
+             qw_ptr, sc_ptr, lut_ptr, offs_n, n_mask, k0, stride_qn, stride_sn,
+-            CODEC, True, BN, BK,
++            CODEC, BM < 16, BN, BK,
+         )  # fmt: skip
+-        if BM == 1:  # the 3-D form below is ~35% slower for one row
++        if BM == 1:
+             x = tl.load(x_ptr + k0 + tl.arange(0, BK)).to(tl.float32)
+             acc += tl.sum(w * x[None, :], axis=1)[None, :]
+         else:
+@@ -269,8 +234,11 @@ def _gemv_kernel(
+                 x_rows + (k0 + tl.arange(0, BK))[None, :],
+                 mask=m_mask[:, None],
+                 other=0.0,
+-            ).to(tl.float32)
+-            acc += tl.sum(w[None, :, :] * x[:, None, :], axis=2)
++            )
++            if BM < 16:
++                acc += tl.sum(w[None, :, :] * x.to(tl.float32)[:, None, :], axis=2)
++            else:
++                acc += tl.dot(x, tl.trans(w.to(x.dtype)))
+     out = (pid_k * M + offs_m.to(tl.int64))[:, None] * N + offs_n[None, :]
+     tl.store(
+         out_ptr + out,
+@@ -295,108 +263,6 @@ def _dequant_kernel(
+     tl.store(out_ptr + out, w.to(out_ptr.dtype.element_ty), mask=n_mask[:, None])
+ 
+ 
+-@triton.jit(do_not_specialize=["EM", "num_valid_tokens"])
+-def _moe_gemm_kernel(
+-    a_ptr,
+-    qw_ptr,
+-    sc_ptr,
+-    lut_ptr,
+-    c_ptr,
+-    topk_weights_ptr,
+-    sorted_token_ids_ptr,
+-    expert_ids_ptr,
+-    num_tokens_post_padded_ptr,
+-    N,
+-    K,
+-    EM,
+-    num_valid_tokens,
+-    stride_am,
+-    stride_qe,
+-    stride_qn,
+-    stride_se,
+-    stride_sn,
+-    stride_cm,
+-    top_k: tl.constexpr,
+-    MUL_ROUTED_WEIGHT: tl.constexpr,
+-    CODEC: tl.constexpr,
+-    BM: tl.constexpr,
+-    BN: tl.constexpr,
+-    BK: tl.constexpr,
+-):
+-    """`fused_moe_kernel` with B decoded from packed blocks of expert e."""
+-    pid = tl.program_id(0)
+-    num_n = tl.cdiv(N, BN)
+-    pid_m = pid // num_n
+-    if pid_m * BM >= tl.load(num_tokens_post_padded_ptr):
+-        return
+-    offs_token = tl.load(sorted_token_ids_ptr + pid_m * BM + tl.arange(0, BM))
+-    offs_token = offs_token.to(tl.int64)
+-    token_mask = offs_token < num_valid_tokens
+-    e = tl.load(expert_ids_ptr + pid_m).to(tl.int64)
+-    offs_n = (pid % num_n) * BN + tl.arange(0, BN)
+-    n_mask = offs_n < N
+-    a_rows = a_ptr + (offs_token // top_k)[:, None] * stride_am
+-    qw_ptr += e * stride_qe
+-    sc_ptr += e * stride_se
+-    if tl.constexpr(BM == 64 and BN == 32 and BK == 128):
+-        # Sparse expert tiles avoid multiplying 63 padding rows by decoded weights.
+-        first = tl.load(sorted_token_ids_ptr + pid_m * BM).to(tl.int64)
+-        second = tl.load(sorted_token_ids_ptr + pid_m * BM + 1)
+-        if second >= num_valid_tokens:
+-            row = a_ptr + (first // top_k) * stride_am
+-            single = tl.zeros((BN,), dtype=tl.float32)
+-            for k0 in range(0, K, BK):
+-                # Match the tensor-core path's weight rounding.
+-                single_w = (
+-                    _decode_tile(
+-                        qw_ptr,
+-                        sc_ptr,
+-                        lut_ptr,
+-                        offs_n,
+-                        n_mask,
+-                        k0,
+-                        stride_qn,
+-                        stride_sn,
+-                        CODEC,
+-                        True,
+-                        BN,
+-                        BK,
+-                    )
+-                    .to(a_ptr.dtype.element_ty)
+-                    .to(tl.float32)
+-                )
+-                single_x = tl.load(row + k0 + tl.arange(0, BK)).to(tl.float32)
+-                single += tl.sum(single_w * single_x[None, :], axis=1)
+-            if MUL_ROUTED_WEIGHT:
+-                single *= tl.load(topk_weights_ptr + first).to(tl.float32)
+-            tl.store(
+-                c_ptr + first * stride_cm + offs_n,
+-                single.to(c_ptr.dtype.element_ty),
+-                n_mask,
+-            )
+-            return
+-    acc = tl.zeros((BM, BN), dtype=tl.float32)
+-    for k0 in range(0, K, BK):
+-        a = tl.load(
+-            a_rows + (k0 + tl.arange(0, BK))[None, :],
+-            mask=token_mask[:, None],
+-            other=0.0,
+-        )
+-        w = _decode_tile(
+-            qw_ptr, sc_ptr, lut_ptr, offs_n, n_mask, k0, stride_qn, stride_sn,
+-            CODEC, False, BN, BK,
+-        )  # fmt: skip
+-        acc += tl.dot(a, tl.trans(w.to(a.dtype)))
+-    if MUL_ROUTED_WEIGHT:
+-        weight = tl.load(topk_weights_ptr + offs_token, mask=token_mask, other=0.0)
+-        acc *= weight.to(tl.float32)[:, None]
+-    tl.store(
+-        c_ptr + offs_token[:, None] * stride_cm + offs_n[None, :],
+-        acc.to(c_ptr.dtype.element_ty),
+-        mask=token_mask[:, None] & n_mask[None, :],
+-    )
+-
+-
+ @triton.jit(do_not_specialize=["num_valid_tokens"])
+ def _moe_gemv_kernel(
+     a_ptr,
+@@ -428,7 +294,7 @@ def _moe_gemv_kernel(
+ 
+     For decode, when there are fewer routed rows than experts: no tensor cores,
+     so no rows are decoded that nobody asked for, and the LUT gather decode
+-    beats the 2-bit codes used by `_moe_gemm_kernel`'s `tl.dot` layout.
++    beats the 2-bit codes used by the grouped GEMM's `tl.dot` layout.
+     """
+     slot = tl.program_id(0)
+     if DIRECT_ROUTING:
+@@ -444,14 +310,10 @@ def _moe_gemv_kernel(
+     a_row = a_ptr + row * stride_am
+     qw_ptr += e * stride_qe
+     sc_ptr += e * stride_se
+-    acc = tl.zeros((BN,), dtype=tl.float32)
+-    for k0 in range(0, K, BK):
+-        w = _decode_tile(
+-            qw_ptr, sc_ptr, lut_ptr, offs_n, n_mask, k0, stride_qn, stride_sn,
+-            CODEC, True, BN, BK,
+-        )  # fmt: skip
+-        x = tl.load(a_row + k0 + tl.arange(0, BK)).to(tl.float32)
+-        acc += tl.sum(w * x[None, :], axis=1)
++    acc = _block_matvec(
++        a_row, qw_ptr, sc_ptr, lut_ptr, offs_n, n_mask, K,
++        stride_qn, stride_sn, CODEC, BN, BK,
++    )  # fmt: skip
+     if MUL_ROUTED_WEIGHT:
+         weight = tl.load(topk_weights_ptr + offs_token, mask=valid, other=0.0)
+         acc *= weight.to(tl.float32)
+@@ -466,33 +328,23 @@ def _moe_gemv_kernel(
+     )
+ 
+ 
+-@triton.jit(do_not_specialize=["total", "split"])
+-def _splitk_reduce_kernel(p_ptr, out_ptr, total, split, BN: tl.constexpr):
+-    """Sum the split-K partials: p [split, total] fp32 -> [total] in out's dtype."""
+-    offs = tl.program_id(0) * BN + tl.arange(0, BN)
+-    mask = offs < total
+-    acc = tl.load(p_ptr + offs, mask=mask, other=0.0)
+-    for s in range(1, split):
+-        acc += tl.load(p_ptr + s * total + offs, mask=mask, other=0.0)
+-    tl.store(out_ptr + offs, acc.to(out_ptr.dtype.element_ty), mask=mask)
+-
+-
+ @triton.jit
+-def _q8_embedding_kernel(
+-    ids_ptr, qw_ptr, sc_ptr, out_ptr, H, stride_qn, stride_sn, stride_om,
+-    BH: tl.constexpr,
++def _block_matvec(
++    a_ptr, qw_ptr, sc_ptr, lut_ptr, offs_n, n_mask, K, stride_qn, stride_sn,
++    CODEC: tl.constexpr, BN: tl.constexpr, BK: tl.constexpr,
++    ROUND_WEIGHT: tl.constexpr = False,
+ ):  # fmt: skip
+-    t = tl.program_id(0)
+-    offs = tl.program_id(1) * BH + tl.arange(0, BH)
+-    mask = offs < H
+-    row = tl.load(ids_ptr + t).to(tl.int64)
+-    q = tl.load(qw_ptr + row * stride_qn + offs, mask=mask).to(tl.float32)
+-    d = tl.load(sc_ptr + row * stride_sn + offs // 32, mask=mask).to(tl.float32)
+-    tl.store(
+-        out_ptr + t.to(tl.int64) * stride_om + offs,
+-        (q * d).to(out_ptr.dtype.element_ty),
+-        mask=mask,
+-    )
++    acc = tl.zeros((BN,), dtype=tl.float32)
++    for k0 in range(0, K, BK):
++        w = _decode_tile(
++            qw_ptr, sc_ptr, lut_ptr, offs_n, n_mask, k0, stride_qn, stride_sn,
++            CODEC, True, BN, BK,
++        )  # fmt: skip
++        if ROUND_WEIGHT:
++            w = w.to(a_ptr.dtype.element_ty).to(tl.float32)
++        x = tl.load(a_ptr + k0 + tl.arange(0, BK)).to(tl.float32)
++        acc += tl.sum(w * x[None, :], axis=1)
++    return acc
+ 
+ 
+ def _linear_config(
+@@ -573,26 +425,21 @@ def launch_linear(
+         else torch.empty((split, M, N), dtype=torch.float32, device=x.device)
+     )
+     launch = {"num_warps": cfg["num_warps"], "num_stages": cfg["num_stages"]}
+-    if cfg["BM"] < 16:  # tl.dot needs BM >= 16
++    if cfg["BM"] < 16:
+         assert cfg["BM"] >= M
+-        _gemv_kernel[(triton.cdiv(N, cfg["BN"]), split)](
+-            x, qweight, scales, lut, out, M, N, K // split, x.stride(0),
+-            qweight.stride(0), scales.stride(0), CODEC=_CODEC_ID[codec],
+-            BM=cfg["BM"], BN=cfg["BN"], BK=cfg["BK"], **launch,
+-        )  # fmt: skip
+-    else:
+-        grid = (triton.cdiv(M, cfg["BM"]) * triton.cdiv(N, cfg["BN"]), split)
+-        _gemm_kernel[grid](
+-            x, qweight, scales, lut, out, M, N, K // split, x.stride(0),
+-            qweight.stride(0), scales.stride(0), CODEC=_CODEC_ID[codec],
+-            BM=cfg["BM"], BN=cfg["BN"], BK=cfg["BK"], **launch,
+-        )  # fmt: skip
++    grid = (triton.cdiv(M, cfg["BM"]) * triton.cdiv(N, cfg["BN"]), split)
++    _linear_kernel[grid](
++        x, qweight, scales, lut, out, M, N, K // split, x.stride(0),
++        qweight.stride(0), scales.stride(0), CODEC=_CODEC_ID[codec],
++        BM=cfg["BM"], BN=cfg["BN"], BK=cfg["BK"], **launch,
++    )  # fmt: skip
+     if split == 1:
+         return out
+     y = x.new_empty((M, N))
+     total = M * N
+-    _splitk_reduce_kernel[(triton.cdiv(total, 1024),)](
+-        out, y, total, split, BN=1024, num_warps=4
++    _fixed_order_sum_kernel[(triton.cdiv(total, 1024),)](
++        out, y, total, total, WORLD_SIZE=split, BLOCK_SIZE=1024,
++        LARGE=split * total >= 2**31, num_warps=4,
+     )  # fmt: skip
+     return y
+ 
+@@ -666,21 +513,26 @@ def _modelopt_block_linear(
+     M, K = x.shape
+     if M == 0:
+         return x.new_empty((0, qweight.shape[0]))
+-    if (
+-        dequant_min_m(codec, x.device.index) <= M
+-        and qweight.shape[0] * K <= DEQUANT_MAX_NUMEL
++    if qweight.shape[0] * K <= DEQUANT_MAX_NUMEL and (
++        envs.VLLM_BATCH_INVARIANT or dequant_min_m(codec, x.device.index) <= M
+     ):
+         weight = (
+             weight_bf16
+             if weight_bf16 is not None
+             else dequantize_blocks(qweight, scales, lut, codec, x.dtype)
+         )
+-        return x @ weight.T
++        if envs.VLLM_BATCH_INVARIANT:
++            from vllm.model_executor.determinism.batch_invariant import (
++                linear_batch_invariant,
++            )
++
++            return linear_batch_invariant(x, weight)
++        return dispatch_unquantized_gemm()(None, x, weight)
+     if x.stride(1) != 1:
+         x = x.contiguous()
+     props = torch.cuda.get_device_properties(x.device)
+     cfg = _linear_config(
+-        M,
++        32 if envs.VLLM_BATCH_INVARIANT else M,
+         qweight.shape[0],
+         K,
+         codec,
+@@ -688,6 +540,8 @@ def _modelopt_block_linear(
+         props.shared_memory_per_block_optin,
+         props.major,
+     )
++    if envs.VLLM_BATCH_INVARIANT:
++        cfg["SPLIT"] = 1
+     return launch_linear(x, qweight, scales, lut, codec, cfg)
+ 
+ 
+@@ -710,9 +564,10 @@ def _modelopt_block_embedding(
+         (ids.numel(), qweight.shape[1]), dtype=dtype, device=qweight.device
+     )
+     if ids.numel():
+-        _q8_embedding_kernel[(ids.numel(), triton.cdiv(out.shape[1], 1024))](
++        _dequant_gather_kernel[(ids.numel(), triton.cdiv(out.shape[1], 1024))](
+             ids, qweight, scales, out, out.shape[1], qweight.stride(0),
+-            scales.stride(0), out.stride(0), BH=1024,
++            scales.stride(0), NUM_BITS=8, PACK_FACTOR=1, GROUP_SIZE=32,
++            BLOCK=1024, SIGNED=True,
+         )  # fmt: skip
+     return out
+ 
+@@ -743,7 +598,7 @@ def moe_gemv_config(M: int, E: int, top_k: int, codec: str) -> dict[str, int] |
+     both HBM and GDDR GPUs, `moe_config`'s padded `tl.dot` tiles win above 8
+     rows, even though a standalone kernel sweep keeps the GEMV ahead longer.
+     """
+-    if M > 8:
++    if M > 8 or envs.VLLM_BATCH_INVARIANT:
+         return None
+     bn, bk, warps = (8, 256, 1) if codec == "iq2_xxs" else (32, 256, 4)
+     return {"BN": bn, "BK": bk, "num_warps": warps, "num_stages": 2}
+@@ -786,8 +641,30 @@ def invoke_block_moe_gemv_kernel(
+     )  # fmt: skip
+ 
+ 
+-def moe_config(M: int, E: int, top_k: int) -> dict[str, int]:
++def moe_config(
++    M: int,
++    E: int,
++    top_k: int,
++    w2_shape: tuple[int, ...] | None = None,
++    codec: str | None = None,
++) -> dict[str, int]:
+     """Tile sizes for `invoke_block_moe_kernel`, from tokens per expert."""
++    if envs.VLLM_BATCH_INVARIANT:
++        from vllm.model_executor.layers.fused_moe.fused_moe import get_default_config
++
++        return get_default_config(M, E, 0, 0, top_k, None)
++    if w2_shape is not None:
++        from vllm.model_executor.layers.fused_moe.fused_moe import (
++            _get_configured_moe_config,
++        )
++
++        logical_shape = (
++            *w2_shape[:-1],
++            w2_shape[-1] * (16 if codec == "iq2_xxs" else 1),
++        )
++        tuned = _get_configured_moe_config(logical_shape, f"modelopt_{codec}", M)
++        if tuned is not None:
++            return tuned
+     per_expert = M * top_k / E
+     if per_expert < 1:
+         # Decode: widen N and deepen K instead of pipelining.
+@@ -805,8 +682,8 @@ def moe_config(M: int, E: int, top_k: int) -> dict[str, int]:
+         bm, bn, bk, warps = min(bm, 64), 64, 32, 8
+     return {
+         "BLOCK_SIZE_M": bm,
+-        "BN": bn,
+-        "BK": bk,
++        "BLOCK_SIZE_N": bn,
++        "BLOCK_SIZE_K": bk,
+         "num_warps": warps,
+         "num_stages": 1,
+     }
+@@ -819,7 +696,7 @@ def invoke_block_moe_kernel(
+     lut: torch.Tensor | None,
+     c: torch.Tensor,
+     topk_weights: torch.Tensor | None,
+-    sorted_token_ids: torch.Tensor,
++    sorted_token_ids: torch.Tensor | None,
+     expert_ids: torch.Tensor,
+     num_tokens_post_padded: torch.Tensor,
+     mul_routed_weight: bool,
+@@ -847,16 +724,15 @@ def invoke_block_moe_kernel(
+         codec: "iq2_xxs" or "q8_0".
+ 
+     """
+-    bm = config["BLOCK_SIZE_M"]
+-    em = sorted_token_ids.size(0)
+-    if a.size(0) < bm:
+-        em = min(em, a.size(0) * top_k * bm)
+-    N = qweight.size(1)
+-    _moe_gemm_kernel[(triton.cdiv(em, bm) * triton.cdiv(N, config["BN"]),)](
+-        a, qweight, scales, lut, c, topk_weights, sorted_token_ids, expert_ids,
+-        num_tokens_post_padded, N, a.size(1), em, a.size(0) * top_k, a.stride(0),
+-        qweight.stride(0), qweight.stride(1), scales.stride(0), scales.stride(1),
+-        c.stride(-2), top_k=top_k, MUL_ROUTED_WEIGHT=mul_routed_weight,
+-        CODEC=_CODEC_ID[codec], BM=bm, BN=config["BN"], BK=config["BK"],
+-        num_warps=config["num_warps"], num_stages=config["num_stages"],
++    from vllm.model_executor.layers.fused_moe.fused_moe import (
++        invoke_fused_moe_triton_kernel,
++    )
++
++    invoke_fused_moe_triton_kernel(
++        a, qweight, c, None, scales, topk_weights, sorted_token_ids, expert_ids,
++        num_tokens_post_padded, mul_routed_weight, top_k,
++        {"GROUP_SIZE_M": 1, **config},
++        tl.bfloat16 if a.dtype == torch.bfloat16 else tl.float16,
++        False, False, False, False, False,
++        block_codec=_CODEC_ID[codec], B_lut=lut,
+     )  # fmt: skip
+diff --git a/vllm/model_executor/warmup/modelopt_block_triton_warmup.py b/vllm/model_executor/warmup/modelopt_block_triton_warmup.py
+index 1bca49337f2e767fc54a8832c949203c0063c64f..6cc0deb6d6cb572881e8a57cfe4027a876800a9b 100644
+--- a/vllm/model_executor/warmup/modelopt_block_triton_warmup.py
++++ b/vllm/model_executor/warmup/modelopt_block_triton_warmup.py
+@@ -52,9 +52,6 @@ def modelopt_block_triton_warmup(worker: "Worker") -> None:
+     if not layers:
+         return
+ 
+-    from vllm.model_executor.layers.fused_moe.moe_align_block_size import (
+-        moe_align_block_size,
+-    )
+     from vllm.model_executor.layers.quantization import (
+         modelopt_block_quant_triton as kernels,
+     )
+@@ -77,7 +74,6 @@ def modelopt_block_triton_warmup(worker: "Worker") -> None:
+                 module,
+                 method,
+                 kernels,
+-                moe_align_block_size,
+                 max_tokens,
+                 seen_moe,
+                 dtype,
+@@ -100,24 +96,27 @@ def modelopt_block_triton_warmup(worker: "Worker") -> None:
+         k = module.weight_scale.shape[1] * method.block_size
+         fused_configs: dict[tuple, int] = {}
+         min_m = kernels.dequant_min_m(codec, device.index)
+-        for m in range(1, max_tokens + 1):
+-            if m >= min_m and n * k <= kernels.DEQUANT_MAX_NUMEL:
+-                key: tuple = (codec, n, k)
+-                if key not in seen_dequant:
+-                    seen_dequant.add(key)
+-                    x = torch.zeros((min_m, k), dtype=dtype, device=device)
+-                    torch.ops.vllm.modelopt_block_linear(
+-                        x,
+-                        qweight,
+-                        module.weight_scale,
+-                        getattr(module, "iq2_lut", None),
+-                        codec,
+-                        getattr(module, "weight_bf16", None),
+-                    )
+-                    warmed += 1
+-                continue
++        fused_max = max_tokens
++        if n * k <= kernels.DEQUANT_MAX_NUMEL:
++            fused_max = min(fused_max, min_m - 1)
++            key: tuple = (codec, n, k, dtype)
++            if max_tokens >= min_m and key not in seen_dequant:
++                seen_dequant.add(key)
++                x = torch.zeros((min_m, k), dtype=dtype, device=device)
++                method.apply(module, x)
++                warmed += 1
++        # Above 64 rows only the count of M tiles can change split-K.
++        bm = kernels._linear_config(65, n, k, codec, num_sms, smem, props.major)["BM"]
++        counts = set(range(1, min(fused_max, 65) + 1))
++        counts.update(
++            m + delta
++            for m in range(bm + 1, fused_max + 1, bm)
++            for delta in (0, 1)
++            if m + delta <= fused_max
++        )
++        for m in sorted(counts):
+             cfg = kernels._linear_config(m, n, k, codec, num_sms, smem, props.major)
+-            key = (codec, n, k, tuple(sorted(cfg.items())))
++            key = (codec, n, k, dtype, (m * n) % 16 == 0, tuple(sorted(cfg.items())))
+             if key not in seen_linear:
+                 seen_linear.add(key)
+                 fused_configs[key] = m
+@@ -129,7 +128,6 @@ def modelopt_block_triton_warmup(worker: "Worker") -> None:
+                 module.weight_scale,
+                 getattr(module, "iq2_lut", None),
+                 codec,
+-                getattr(module, "weight_bf16", None),
+             )
+             warmed += 1
+ 
+@@ -143,97 +141,54 @@ def _warm_moe(
+     module: torch.nn.Module,
+     method,
+     kernels,
+-    moe_align_block_size,
+     max_tokens: int,
+     seen: set[tuple],
+     dtype: torch.dtype,
+ ) -> None:
+-    codec = method.codec
+-    device = module.w13_weight.device
+-    num_experts = module.w13_weight.shape[0]
++    e, k = module.w2_weight.shape[:2]
+     top_k = module.top_k
+-    warm_k = module.w2_weight.shape[1]
+-    n1 = module.w13_weight.shape[1]
+-    n2 = module.w2_weight.shape[1]
+-    k2 = module.w2_weight_scale.shape[2] * method.block_size
+-    mul_routed_weight = not module.apply_router_weight_on_input
+-    lut = kernels.iq2_lut(device) if codec == "iq2_xxs" else None
+-
+-    configs: dict[tuple, tuple[dict[str, int], bool]] = {}
+-    for m in range(1, max_tokens + 1):
+-        gemv = kernels.moe_gemv_config(m, num_experts, top_k, codec)
+-        cfg = gemv or kernels.moe_config(m, num_experts, top_k)
++    # Dispatch changes at 8 rows, 1 and 64 rows/expert, and the shared
++    # direct-routing threshold. Warm through the same pipeline as inference.
++    counts = {
++        1,
++        2,
++        8,
++        9,
++        e // (4 * top_k),
++        e // (4 * top_k) + 1,
++        (e + top_k - 1) // top_k,
++        (64 * e + top_k - 1) // top_k,
++    }
++    from vllm.model_executor.layers.fused_moe.fused_moe import get_moe_configs
++
++    inter = module.w2_weight_scale.shape[2] * method.block_size
++    tuned = get_moe_configs(e, inter, f"modelopt_{method.codec}")
++    if tuned:
++        sizes = sorted(tuned)
++        for lo, hi in zip(sizes, sizes[1:]):
++            counts.update(((lo + hi) // 2, (lo + hi) // 2 + 1))
++    for m in sorted(n for n in counts if 0 < n <= max_tokens):
++        gemv = kernels.moe_gemv_config(m, e, top_k, method.codec)
++        cfg = gemv or kernels.moe_config(
++            m, e, top_k, module.w2_weight.shape, method.codec
++        )
+         key = (
+-            codec,
+-            n1,
+-            warm_k,
+-            n2,
+-            k2,
++            method.codec,
++            module.w13_weight.shape,
++            module.w2_weight.shape,
++            dtype,
++            module.activation,
+             top_k,
+-            mul_routed_weight,
++            module.apply_router_weight_on_input,
+             gemv is not None,
+-            module.expert_map is None,
+-            module.activation,
++            m * top_k * 4 <= e,
+             tuple(sorted(cfg.items())),
+         )
+         if key in seen:
+             continue
+         seen.add(key)
+-        configs[key] = (cfg, gemv is not None)
+-
+-    for key, (cfg, gemv) in configs.items():
+-        launch = (
+-            kernels.invoke_block_moe_gemv_kernel
+-            if gemv
+-            else kernels.invoke_block_moe_kernel
+-        )
+-        # One aligned block per routed row on the GEMV path; the token count there
+-        # only sizes the dummy routing, the kernel takes no tile in M.
+-        bm = 1 if gemv else cfg["BLOCK_SIZE_M"]
+-        rows = 2 if gemv else bm
+-        topk_ids = torch.randint(
+-            0, num_experts, (rows, top_k), dtype=torch.int32, device=device
+-        )
+-        topk_weights = torch.rand((rows, top_k), dtype=torch.float32, device=device)
+-        routing = (
+-            (None, topk_ids, None)
+-            if gemv and module.expert_map is None
+-            else moe_align_block_size(topk_ids, bm, num_experts, module.expert_map)
+-        )
+-        a1 = torch.zeros((rows, warm_k), dtype=dtype, device=device)
+-        c1 = torch.empty((rows, top_k, n1), dtype=dtype, device=device)
+-        launch(
+-            a1,
+-            module.w13_weight,
+-            module.w13_weight_scale,
+-            lut,
+-            c1,
+-            None,
+-            *routing,
+-            False,
+-            top_k,
+-            cfg,
+-            codec,
+-            # MoEActivation is a plain Enum: compare its value, not the member.
+-            **(
+-                {"apply_relu2": module.activation.value == "relu2_no_mul"}
+-                if gemv
+-                else {}
+-            ),
+-        )
+-        a2 = torch.empty((rows * top_k, k2), dtype=dtype, device=device)
+-        c2 = torch.empty((rows, top_k, n2), dtype=dtype, device=device)
+-        launch(
+-            a2,
+-            module.w2_weight,
+-            module.w2_weight_scale,
+-            lut,
+-            c2,
+-            topk_weights,
+-            *routing,
+-            mul_routed_weight,
+-            1,
+-            cfg,
+-            codec,
+-        )
+-        del topk_ids, topk_weights, routing, a1, c1, a2, c2
++        x = torch.zeros((m, k), dtype=dtype, device=module.w2_weight.device)
++        ids = torch.arange(top_k, dtype=torch.int32, device=x.device)
++        ids = ids.expand(m, -1).contiguous()
++        weights = torch.full((m, top_k), 1 / top_k, device=x.device)
++        method.apply(module, x, weights, ids, None, None)

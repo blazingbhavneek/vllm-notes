@@ -1,0 +1,144 @@
+{
+  "gpu": "NVIDIA H200 NVL",
+  "sm": "9.0",
+  "num_sms": 132,
+  "torch": "2.14.0+cu130",
+  "triton": "3.8.0",
+  "shapes": [
+    {
+      "N": 256,
+      "K": 4096,
+      "singleton": {
+        "us": 3.52,
+        "config": {
+          "BM": 1,
+          "BN": 4,
+          "BK": 4096,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      "splitk_control": {
+        "us": 8.704,
+        "config": {
+          "BM": 1,
+          "BN": 32,
+          "BK": 256,
+          "SPLIT": 16,
+          "num_warps": 4,
+          "num_stages": 2
+        }
+      },
+      "speedup": 2.472727272727273
+    },
+    {
+      "N": 1024,
+      "K": 4096,
+      "singleton": {
+        "us": 5.664,
+        "config": {
+          "BM": 1,
+          "BN": 4,
+          "BK": 4096,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      "splitk_control": {
+        "us": 11.232000000000001,
+        "config": {
+          "BM": 1,
+          "BN": 32,
+          "BK": 256,
+          "SPLIT": 16,
+          "num_warps": 4,
+          "num_stages": 2
+        }
+      },
+      "speedup": 1.9830508474576274
+    },
+    {
+      "N": 4096,
+      "K": 4096,
+      "singleton": {
+        "us": 11.200999999999999,
+        "config": {
+          "BM": 1,
+          "BN": 4,
+          "BK": 1024,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      "splitk_control": {
+        "us": 17.247,
+        "config": {
+          "BM": 1,
+          "BN": 32,
+          "BK": 256,
+          "SPLIT": 16,
+          "num_warps": 4,
+          "num_stages": 2
+        }
+      },
+      "speedup": 1.5397732345326312
+    },
+    {
+      "N": 4096,
+      "K": 1024,
+      "singleton": {
+        "us": 5.056,
+        "config": {
+          "BM": 1,
+          "BN": 4,
+          "BK": 1024,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 1
+        }
+      },
+      "splitk_control": {
+        "us": 7.904,
+        "config": {
+          "BM": 1,
+          "BN": 32,
+          "BK": 256,
+          "SPLIT": 4,
+          "num_warps": 4,
+          "num_stages": 2
+        }
+      },
+      "speedup": 1.5632911392405062
+    },
+    {
+      "N": 131072,
+      "K": 4096,
+      "singleton": {
+        "us": 199.997,
+        "config": {
+          "BM": 1,
+          "BN": 32,
+          "BK": 256,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 2
+        }
+      },
+      "splitk_control": {
+        "us": 200.06199999999998,
+        "config": {
+          "BM": 1,
+          "BN": 32,
+          "BK": 256,
+          "SPLIT": 1,
+          "num_warps": 4,
+          "num_stages": 2
+        }
+      },
+      "speedup": 1.000325004875073
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+W1102 07:51:07.164000 1094818 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1102 07:51:07.165000 1094818 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1102 07:51:07.165000 1094818 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+Failed to load plugin gguf
+Traceback (most recent call last):
+  File "/home/seigyo/vllmServer/vllm/vllm/plugins/__init__.py", line 69, in load_plugins_by_group
+    func = plugin.load()
+  File "/home/seigyo/.local/share/uv/python/cpython-3.13.11-linux-x86_64-gnu/lib/python3.13/importlib/metadata/__init__.py", line 179, in load
+    module = import_module(match.group('module'))
+  File "/home/seigyo/.local/share/uv/python/cpython-3.13.11-linux-x86_64-gnu/lib/python3.13/importlib/__init__.py", line 88, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 1023, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/home/seigyo/vllmServer/vllm-gguf-plugin/vllm_gguf_plugin/__init__.py", line 3, in <module>
+    from .config_parser import GGUFConfigParser
+  File "/home/seigyo/vllmServer/vllm-gguf-plugin/vllm_gguf_plugin/config_parser.py", line 17, in <module>
+    from .weights_adapter import get_adapter_architecture
+  File "/home/seigyo/vllmServer/vllm-gguf-plugin/vllm_gguf_plugin/weights_adapter/__init__.py", line 16, in <module>
+    from .qwen3_5 import Qwen35GGUFAdapter, Qwen35MtpGGUFAdapter
+  File "/home/seigyo/vllmServer/vllm-gguf-plugin/vllm_gguf_plugin/weights_adapter/qwen3_5.py", line 14, in <module>
+    from vllm.transformers_utils.configs.qwen3_5 import Qwen3_5Config
+ModuleNotFoundError: No module named 'vllm.transformers_utils.configs.qwen3_5'
+Namespace(subparser='bench', bench_type='serve', dispatch_function=<function BenchmarkServingSubcommand.cmd at 0x7cef9bd96c00>, trust_remote_code=True, seed=0, num_prompts=12, dataset_name='random', no_stream=False, dataset_path=None, no_oversample=False, skip_chat_template=False, enable_multimodal_chat=False, disable_shuffle=False, custom_output_len=256, custom_ensure_client_side_data=False, spec_bench_output_len=256, spec_bench_category=None, sharegpt_output_len=None, timed_trace_chunk_hash_size=16, timed_trace_sec_multiplier=1, timed_trace_label_timestamp='timestamp', timed_trace_label_input_length='input_length', timed_trace_label_output_length='output_length', timed_trace_label_hash_ids='hash_ids', blazedit_min_distance=0.0, blazedit_max_distance=1.0, asr_max_audio_len_sec=inf, asr_min_audio_len_sec=0.0, random_input_len=128, random_output_len=256, random_range_ratio='0.0', random_prefix_len=0, random_batch_size=1, no_reranker=False, random_mm_base_items_per_request=1, random_mm_num_mm_items_range_ratio=0.0, random_mm_limit_mm_per_prompt={'image': 255, 'video': 1}, random_mm_bucket_config={(256, 256, 1): 0.5, (720, 1280, 1): 0.5, (720, 1280, 16): 0.0}, hf_subset=None, hf_split=None, hf_name=None, hf_output_len=None, bfcl_categories=None, prefix_repetition_prefix_len=256, prefix_repetition_suffix_len=256, prefix_repetition_num_prefixes=10, prefix_repetition_output_len=128, speed_bench_dataset_subset='qualitative', speed_bench_output_len=4096, speed_bench_category=None, label=None, backend='openai', base_url=None, host='127.0.0.1', port=8001, endpoint='/v1/completions', header=None, max_concurrency=1, model='nemotron-bolt-h200', input_len=None, output_len=None, tokenizer='/home/seigyo/models/nvidia/NVIDIA-Nemotron-3.5-Bolt-74B-A9B-24GB', tokenizer_mode='auto', use_beam_search=False, logprobs=None, request_rate=inf, burstiness=1.0, probe_request_rate=0.0, disable_tqdm=False, num_warmups=0, profile=False, save_result=True, save_detailed=False, append_result=False, metadata=None, result_dir='/home/seigyo/vllmServer/vllm-notes/Notes/02-Bolt-Support/kernel-tests/rewrite/results/round9_h200_head', result_filename='serve_c1_pass1.json', ignore_eos=True, self_timed=None, percentile_metrics='ttft,tpot,itl,e2el', metric_percentiles='50,90,95,99', goodput=None, request_id_prefix='bench-0d361506-', top_p=None, top_k=None, min_p=None, temperature=0.0, frequency_penalty=None, presence_penalty=None, repetition_penalty=None, served_model_name=None, lora_modules=None, lora_assignment='random', ramp_up_strategy=None, ramp_up_start_rps=None, ramp_up_end_rps=None, ready_check_timeout_sec=0, chat_template_kwargs=None, extra_body=None, skip_tokenizer_init=False, insecure=False, plot_timeline=False, timeline_itl_thresholds='25,50', plot_dataset_stats=False, log_config_file=None, logging_config=LoggingConfig(log_level='INFO', formatter='text', configure_logging=True, pylogging_config_file=None))
+[ERROR] `vision_final_layernorm` is part of NemotronH_Omni_Reasoning_V3_Config.__init__'s signature, but not documented. Make sure to add it to the docstring of the function in /home/seigyo/.cache/huggingface/modules/transformers_modules/NVIDIA_hyphen_Nemotron_hyphen_3_dot_5_hyphen_Bolt_hyphen_74B_hyphen_A9B_hyphen_24GB/17063d245b40fe19/configuration_nemotron_h_omni.py.
+(MainProcess pid=1094818) INFO 11-02 07:51:14 [utils.py:88] Sampling input_len from [128, 128] and output_len from [256, 256]
+Starting initial single prompt test run...
+Skipping endpoint ready check.
+Starting main benchmark run...
+Traffic request rate: inf
+Burstiness factor: 1.0 (Poisson process)
+Maximum request concurrency: 1
+  0%|          | 0/12 [00:00<?, ?it/s]  8%|▊         | 1/12 [00:01<00:21,  1.99s/it] 17%|█▋        | 2/12 [00:03<00:19,  1.92s/it] 25%|██▌       | 3/12 [00:05<00:17,  1.90s/it] 33%|███▎      | 4/12 [00:07<00:15,  1.89s/it] 42%|████▏     | 5/12 [00:09<00:13,  1.88s/it] 50%|█████     | 6/12 [00:11<00:11,  1.87s/it] 58%|█████▊    | 7/12 [00:13<00:09,  1.87s/it] 67%|██████▋   | 8/12 [00:15<00:07,  1.87s/it] 75%|███████▌  | 9/12 [00:16<00:05,  1.87s/it] 83%|████████▎ | 10/12 [00:18<00:03,  1.87s/it] 92%|█████████▏| 11/12 [00:20<00:01,  1.87s/it]100%|██████████| 12/12 [00:22<00:00,  1.87s/it]100%|██████████| 12/12 [00:22<00:00,  1.88s/it]
+tip: install termplotlib and gnuplot to plot the metrics
+============ Serving Benchmark Result ============
+Successful requests:                     12        
+Failed requests:                         0         
+Maximum request concurrency:             1         
+Benchmark duration (s):                  22.54     
+Total input tokens:                      1536      
+Total generated tokens:                  3072      
+Request throughput (req/s):              0.53      
+Output token throughput (tok/s):         136.32    
+Peak output token throughput (tok/s):    147.00    
+Peak concurrent requests:                2.00      
+Total token throughput (tok/s):          204.47    
+---------------Time to First Token----------------
+Mean TTFT (ms):                          136.31    
+Median TTFT (ms):                        126.38    
+P50 TTFT (ms):                           126.38    
+P90 TTFT (ms):                           129.65    
+P95 TTFT (ms):                           185.43    
+P99 TTFT (ms):                           239.88    
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          6.83      
+Median TPOT (ms):                        6.83      
+P50 TPOT (ms):                           6.83      
+P90 TPOT (ms):                           6.83      
+P95 TPOT (ms):                           6.83      
+P99 TPOT (ms):                           6.83      
+---------------Inter-token Latency----------------
+Mean ITL (ms):                           6.83      
+Median ITL (ms):                         6.83      
+P50 ITL (ms):                            6.83      
+P90 ITL (ms):                            6.90      
+P95 ITL (ms):                            6.94      
+P99 ITL (ms):                            7.16      
+----------------End-to-end Latency----------------
+Mean E2EL (ms):                          1877.17   
+Median E2EL (ms):                        1866.76   
+P50 E2EL (ms):                           1866.76   
+P90 E2EL (ms):                           1870.38   
+P95 E2EL (ms):                           1925.82   
+P99 E2EL (ms):                           1979.94   
+==================================================

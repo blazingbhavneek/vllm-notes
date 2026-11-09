@@ -256,10 +256,19 @@ fc2_latent at M=128 1.13x. No single Q8 cutoff fixes both the attention and the 
 
 ## Gaps before opening the Triton PR
 
-- **H200 at head.** The last serving and GSM8K runs (236; 132/492/865 tok/s) used the round-5 server.
-  - `f1ec2fb051` then added an SM90 single-row Q8 dispatch, which has never been served or scored.
-  - Either rerun the H200 at head, or drop that dispatch together with `SINGLETON_GEMV`.
+- **H200 at head — done (round 9).** Reran and scored the server at `f533470e67`
+  on GPU 1 with the round-6 recipe (BF16, compiled, graphs 1/2/4/8/16/32, IQ2
+  dense cache, NVFP4 Marlin):
+  - Kernel suite 192 passed; block suite 54 passed, 1 known tiny-Mamba failure.
+  - SM90 single-row Q8 dispatch: 1.54–2.47x on the four dispatched shapes,
+    `lm_head` 1.00x. Keep the dispatch and `SINGLETON_GEMV`.
+  - Serving median: 137 / 481 / 642 / 892 tok/s at c=1/8/16/32; GSM8K 231/250.
+  - 77 block configs warmed; no block-kernel JIT during inference. One
+    pre-existing Mamba `_causal_conv1d_fwd_kernel` JIT warning.
+  - Artifacts: `kernel-tests/rewrite/results/round9_h200_head/` and
+    `results/round9_h200_head_f533470.zip`.
 - **SM75.** There is no hardware run: run the kernel suite on a T4, or limit the PR claim to SM80+.
+
 - **`VLLM_GPU_SYNC_CHECK=error`** has not been run. It can run locally on the tiny Nemotron-H e2e.
 - **3090 graphs at 0.98:** the 24 GB wording waits on it (see 24 GB fit).
 - **Untested GPUs:** B200 (SM100), a real A100, and the L4 (the CI card; same SM89 as the L40S, too small for the full
